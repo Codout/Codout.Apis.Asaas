@@ -32,6 +32,6 @@ namespace Codout.Apis.Asaas.Models.PaymentDunning
 
         public string CustomerProvince { get; set; }
 
-        public List<AsaasFile> Documents { get; set; }
+        public List<AsaasFile> Documents { get; set; } = [];
     }
 }

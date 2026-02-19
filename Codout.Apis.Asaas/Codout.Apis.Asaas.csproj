@@ -6,7 +6,7 @@
 
         <!-- NuGet Package -->
         <PackageId>Asaas.Api</PackageId>
-        <Version>2.0.0</Version>
+        <Version>2.0.1</Version>
         <Authors>Clovis Coli Jr</Authors>
         <Company>Codout</Company>
         <Description>SDK .NET no-oficial para integracao com a API v3 do Asaas (asaas.com). Suporta cobrancas (Boleto, Pix, Cartao), assinaturas, transferencias, links de pagamento, notas fiscais, antecipacoes, negativacoes e muito mais. Zero dependencias externas.</Description>
@@ -18,14 +18,14 @@
         <RepositoryUrl>https://github.com/codout/Codout.Apis.Asaas</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>
-v2.0.0:
-- Migrado de Newtonsoft.Json para System.Text.Json (zero dependencias externas)
-- Adicionado suporte a PUT (PutAsync)
-- Novos modulos: PaymentLink, Pix, Notification, CreditBureauReport, CustomerFiscalInfo
-- Novos endpoints em managers existentes: UndoReceivedInCash, ListPaymentBook, ListPayments, Find transfer, SignAgreement, PaymentStatistics, SplitStatistics, FindAccountNumber, MobilePhoneRecharge webhooks
-- Corrigido path de Balance (/finance/balance)
-- Invoice Update agora usa PUT corretamente
-- 400 testes unitarios
+v2.0.1:
+- Fix: DateTime deserialization — FlexibleDateTimeConverter aceita yyyy-MM-dd e ISO 8601
+- Fix: Abstract types (BaseDeleted, BaseTransfer) agora deserializaveis
+- Fix: SafeEnumConverterFactory — valores de enum desconhecidos nao causam mais crash
+- Fix: Propriedades List inicializadas para evitar NullReferenceException
+- Add: ExternalReference em Invoice, CreateInvoiceRequest, UpdateInvoiceRequest
+- Add: WhatsappEnabledForCustomer em UpdateNotificationRequest
+- Veja CHANGELOG.md para historico completo
         </PackageReleaseNotes>
         <Copyright>Copyright (c) Clovis Coli Jr</Copyright>
 

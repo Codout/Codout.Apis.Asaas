@@ -68,5 +68,5 @@ public class Payment
 
     public Common.CreditCard CreditCard { get; set; }
 
-    public List<Split> Split { get; set; }
+    public List<Split> Split { get; set; } = [];
 }

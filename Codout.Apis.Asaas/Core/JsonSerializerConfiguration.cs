@@ -16,7 +16,9 @@ internal static class JsonSerializerConfiguration
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        options.Converters.Add(new JsonStringEnumConverter());
+        options.Converters.Add(new SafeEnumConverterFactory());
+        options.Converters.Add(new FlexibleDateTimeConverter());
+        options.Converters.Add(new FlexibleNullableDateTimeConverter());
 
         return options;
     }

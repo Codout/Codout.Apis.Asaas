@@ -41,7 +41,7 @@ namespace Codout.Apis.Asaas.Models.Payment
 
         public string RemoteIp { get; set; }
 
-        public List<Split> Split { get; set; }
+        public List<Split> Split { get; set; } = [];
 
         public string? CreditCardToken { get; set; }
     }

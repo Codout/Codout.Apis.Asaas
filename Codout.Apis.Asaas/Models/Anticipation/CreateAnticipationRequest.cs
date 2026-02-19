@@ -14,6 +14,6 @@ namespace Codout.Apis.Asaas.Models.Anticipation
 
         public string AgreementSignature { get; set; }
 
-        public List<AsaasFile> Documents { get; set; }
+        public List<AsaasFile> Documents { get; set; } = [];
     }
 }

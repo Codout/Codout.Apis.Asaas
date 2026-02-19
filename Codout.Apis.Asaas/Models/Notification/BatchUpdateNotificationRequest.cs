@@ -5,7 +5,7 @@ namespace Codout.Apis.Asaas.Models.Notification
     public class BatchUpdateNotificationRequest
     {
         public string Customer { get; set; }
-        public List<NotificationItem> Notifications { get; set; }
+        public List<NotificationItem> Notifications { get; set; } = [];
     }
 
     public class NotificationItem

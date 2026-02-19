@@ -3,7 +3,7 @@ using Codout.Apis.Asaas.Models.Transfer.Enums;
 
 namespace Codout.Apis.Asaas.Models.Transfer.Base
 {
-    public abstract class BaseTransfer {
+    public class BaseTransfer {
         public string Id { get; set; }
 
         public TransferType Type { get; set; }

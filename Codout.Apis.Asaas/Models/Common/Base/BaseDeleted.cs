@@ -1,6 +1,6 @@
 ﻿namespace Codout.Apis.Asaas.Models.Common.Base
 {
-    public abstract class BaseDeleted
+    public class BaseDeleted
     {
         public string Id { get; set; }
 

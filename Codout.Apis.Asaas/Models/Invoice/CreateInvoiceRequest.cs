@@ -31,6 +31,8 @@ namespace Codout.Apis.Asaas.Models.Invoice
 
         public string MunicipalServiceName { get; set; }
 
+        public string ExternalReference { get; set; }
+
         public Taxes Taxes { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Managers;
 using Codout.Apis.Asaas.Models.Transfer;
 using Codout.Apis.Asaas.Models.Transfer.Base;
+using Codout.Apis.Asaas.Models.Transfer.Enums;
 using Codout.Apis.Asaas.Tests.Helpers;
 
 namespace Codout.Apis.Asaas.Tests.Managers;
@@ -170,11 +171,16 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
     [Fact]
     public async Task Find_DeserializesResponseCorrectly()
     {
-        // BaseTransfer is abstract and cannot be deserialized by System.Text.Json.
-        // Verify that attempting to deserialize an abstract type throws NotSupportedException.
         SetupOkResponse("{\"id\":\"trans_123\",\"value\":1000.00,\"type\":\"BANK_ACCOUNT\",\"transferFee\":5.00,\"authorized\":true}");
 
-        await Assert.ThrowsAsync<NotSupportedException>(() => Manager.Find("trans_123"));
+        var result = await Manager.Find("trans_123");
+
+        Assert.True(result.WasSucessfull());
+        Assert.Equal("trans_123", result.Data.Id);
+        Assert.Equal(1000.00m, result.Data.Value);
+        Assert.Equal(TransferType.BANK_ACCOUNT, result.Data.Type);
+        Assert.Equal(5.00m, result.Data.TransferFee);
+        Assert.True(result.Data.Authorized);
     }
 
     [Fact]

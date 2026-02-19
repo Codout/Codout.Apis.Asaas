@@ -15,6 +15,8 @@ namespace Codout.Apis.Asaas.Models.Invoice
 
         public DateTime? EffectiveDate { get; set; }
 
+        public string ExternalReference { get; set; }
+
         public Taxes Taxes { get; set; }
     }
 }
