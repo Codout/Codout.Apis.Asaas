@@ -1,0 +1,2480 @@
+openapi: 3.0.0
+info:
+  title: API ASAAS v3
+  description: >-
+    Nós aqui do Asaas adoramos poupar tempo de todo mundo, por isso fizemos essa
+    collection com todas as nossas APIs. 👍
+
+
+    # Documentação
+
+      
+    A documentação completa pode ser acessada [neste
+    link.](https://asaasv3.docs.apiary.io/)
+
+
+    Ambientes disponíveis:
+
+
+    *   Local
+
+    *   Sandbox
+
+    *   Produção
+        
+
+    Não esquece de consultar as variáveis da coleção.
+
+
+    ## Autenticação
+
+
+    Para testar os exemplos aqui descritos é necessário ter uma conta no Asaas.
+    Caso você ainda não tenha, basta [criar uma conta clicando
+    aqui](https://www.asaas.com/onboarding/createAccount?utm_source=postman) ou
+    [aqui para criar em nossa
+    sandbox](https://sandbox.asaas.com/onboarding/createAccount).
+
+
+    A autenticação é feita através do fornecimento da sua API Key. Ela deve ser
+    transmitida em todas as requisições no header \`access_token\`. Caso a API
+    Key seja inválida ou não seja informada, o Asaas retornará `HTTP 401`.  
+
+    As API Keys são distintas entre os ambientes de Sandbox e Produção, portanto
+    lembre-se de alterá-la quando mudar a URL.  
+
+    Para obter sua API Key [acesse a Aba Integração na área Minha
+    Conta](https://www.asaas.com/config/index?tab=pushNotification).  
+
+    Na collection sua API Key pode ser informada na área de ambientes.
+
+
+    > ***Atenção***:  
+
+    > Sua API Key carrega muitos privilégios, portanto certifique-se de mantê-la
+    protegida. Não informe ela em atendimentos e nem a exponha no front-end da
+    sua aplicação. Além disso, não é possível recuperá-la caso perdida, sendo
+    necessário a geração de uma nova.
+  version: 1.0.0
+servers:
+  - url: http://{{domain}}
+  - url: https://www.asaas.com
+components:
+  securitySchemes:
+    apikeyAuth:
+      type: http
+      scheme: apikey
+security:
+  - apikeyAuth: []
+tags:
+  - name: Clientes
+  - name: Cobranças
+  - name: Parcelamentos
+  - name: Assinaturas
+  - name: Link de Pagamentos
+  - name: Notificações
+  - name: Transferências
+  - name: Antecipações
+  - name: Negativações
+  - name: Pagamento de contas
+  - name: Consulta SERASA
+  - name: Extrato
+  - name: Informações financeiras
+  - name: Informações e personalização da conta
+  - name: Notas fiscais
+  - name: Informações fiscais
+  - name: Pix
+  - name: Configurações de Webhook
+  - name: Configurações de Webhook > Webhook de Cobrança
+  - name: Configurações de Webhook > Webhook de Notas Fiscais
+  - name: Configurações de Webhook > Webhook de Recarga de celular
+  - name: Contas Asaas
+paths:
+  /v3/customers:
+    post:
+      tags:
+        - Clientes
+      summary: Criar novo cliente
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"name\": \"Marcelo Almeida\",\r\n  \"email\":
+                \"marcelo.almeida@gmail.com\",\r\n  \"phone\":
+                \"4738010919\",\r\n  \"mobilePhone\": \"4799376637\",\r\n 
+                \"cpfCnpj\": \"24971563792\",\r\n  \"postalCode\":
+                \"01310-000\",\r\n  \"address\": \"Av. Paulista\",\r\n 
+                \"addressNumber\": \"150\",\r\n  \"complement\": \"Sala
+                201\",\r\n  \"province\": \"Centro\",\r\n 
+                \"externalReference\": \"12987382\",\r\n 
+                \"notificationDisabled\": false,\r\n  \"additionalEmails\":
+                \"marcelo.almeida2@gmail.com,marcelo.almeida3@gmail.com\",\r\n 
+                \"municipalInscription\": \"46683695908\",\r\n 
+                \"stateInscription\": \"646681195275\",\r\n  \"observations\":
+                \"ótimo pagador, nenhum problema até o momento\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Clientes
+      summary: Listar clientes
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/customers/{id_do_cliente}:
+    get:
+      tags:
+        - Clientes
+      summary: Recuperar um único cliente
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_cliente
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Clientes
+      summary: Atualizar cliente existente
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"name\": \"Marcelo Almeida\",\r\n  \"email\":
+                \"marcelo.almeida@gmail.com\",\r\n  \"phone\":
+                \"4738010919\",\r\n  \"mobilePhone\": \"4799376637\",\r\n 
+                \"cpfCnpj\": \"24971563792\",\r\n  \"postalCode\":
+                \"01310-000\",\r\n  \"address\": \"Av. Paulista\",\r\n 
+                \"addressNumber\": \"150\",\r\n  \"complement\": \"Sala
+                201\",\r\n  \"province\": \"Centro\",\r\n 
+                \"externalReference\": \"12987382\",\r\n 
+                \"notificationDisabled\": false,\r\n  \"additionalEmails\":
+                \"marcelo.almeida2@gmail.com,marcelo.almeida3@gmail.com\",\r\n 
+                \"municipalInscription\": \"46683695908\",\r\n 
+                \"stateInscription\": \"646681195275\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_cliente
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Clientes
+      summary: Remover cliente
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_cliente
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/customers/{id_do_cliente}/restore:
+    post:
+      tags:
+        - Clientes
+      summary: Restaurar cliente removido
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_cliente
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/payments:
+    post:
+      tags:
+        - Cobranças
+      summary: Criar cobrança com split
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"customer\": \"{CUSTOMER_ID}\",\r\n  \"billingType\":
+                \"BOLETO\",\r\n  \"dueDate\": \"2017-06-10\",\r\n  \"value\":
+                100,\r\n  \"description\": \"Pedido 056984\",\r\n 
+                \"externalReference\": \"056984\",\r\n  \"split\": [\r\n   
+                {\r\n      \"walletId\":
+                \"48548710-9baa-4ec1-a11f-9010193527c6\",\r\n     
+                \"fixedValue\": 20\r\n    },\r\n    {\r\n      \"walletId\":
+                \"0b763922-aa88-4cbe-a567-e3fe8511fa06\",\r\n     
+                \"percentualValue\": 10\r\n    }\r\n  ]\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Cobranças
+      summary: Obter linha digitável do boleto
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/payments/{id_da_cobranca}:
+    get:
+      tags:
+        - Cobranças
+      summary: Recuperar uma única cobrança
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_cobranca
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Cobranças
+      summary: Atualizar cobrança existente
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"billingType\": \"BOLETO\",\r\n  \"dueDate\":
+                \"2017-06-10\",\r\n  \"value\": 100,\r\n  \"description\":
+                \"Pedido 056984\",\r\n  \"externalReference\": \"056984\",\r\n 
+                \"discount\": {\r\n    \"value\": 10,\r\n   
+                \"dueDateLimitDays\": 0\r\n  },\r\n  \"fine\": {\r\n   
+                \"value\": 1\r\n  },\r\n  \"interest\": {\r\n    \"value\":
+                2\r\n  },\r\n  \"postalService\": false\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_cobranca
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Cobranças
+      summary: Remover cobrança
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_cobranca
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/payments/{id_da_cobranca}/restore:
+    post:
+      tags:
+        - Cobranças
+      summary: Restaurar cobrança removida
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_cobranca
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/payments/{id_da_cobranca}/refund:
+    post:
+      tags:
+        - Cobranças
+      summary: Estornar cobrança
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: '"{\n    \"value\": 5,\n    \"description\": \"Valor a mais\"\n}"'
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_cobranca
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/payments/{id_da_cobranca}/pixQrCode:
+    get:
+      tags:
+        - Cobranças
+      summary: Obter QR Code PIX
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_cobranca
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/payments/{id_da_cobranca}/receiveInCash:
+    post:
+      tags:
+        - Cobranças
+      summary: Confirmar recebimento em dinheiro
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_cobranca
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/payments/{id_da_cobranca}/undoReceivedInCash:
+    post:
+      tags:
+        - Cobranças
+      summary: Desfazer confirmação de recebimento em dinheiro
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_cobranca
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/installments/{id_da_parcela}:
+    get:
+      tags:
+        - Parcelamentos
+      summary: Recuperar um único parcelamento
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_parcela
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Parcelamentos
+      summary: Remover parcelamento
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_parcela
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/installments:
+    get:
+      tags:
+        - Parcelamentos
+      summary: Listar parcelamentos
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/installments/{id_da_parcela}/paymentBook:
+    get:
+      tags:
+        - Parcelamentos
+      summary: Listar carnê de parcelamento
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_parcela
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/installments/{id_da_parcela}/refund:
+    post:
+      tags:
+        - Parcelamentos
+      summary: Estornar parcelamento
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_parcela
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/subscriptions:
+    post:
+      tags:
+        - Assinaturas
+      summary: Criar assinatura com cartão de crédito
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"customer\": \"{CUSTOMER_ID}\",\r\n  \"billingType\":
+                \"CREDIT_CARD\",\r\n  \"nextDueDate\": \"2017-05-15\",\r\n 
+                \"value\": 19.9,\r\n  \"cycle\": \"MONTHLY\",\r\n 
+                \"description\": \"Assinatura Plano Pró\",\r\n  \"creditCard\":
+                {\r\n    \"holderName\": \"marcelo h almeida\",\r\n   
+                \"number\": \"5162306219378829\",\r\n    \"expiryMonth\":
+                \"05\",\r\n    \"expiryYear\": \"2021\",\r\n    \"ccv\":
+                \"318\"\r\n  },\r\n  \"creditCardHolderInfo\": {\r\n   
+                \"name\": \"Marcelo Henrique Almeida\",\r\n    \"email\":
+                \"marcelo.almeida@gmail.com\",\r\n    \"cpfCnpj\":
+                \"24971563792\",\r\n    \"postalCode\": \"89223-005\",\r\n   
+                \"addressNumber\": \"277\",\r\n    \"addressComplement\":
+                null,\r\n    \"phone\": \"4738010919\",\r\n    \"mobilePhone\":
+                \"47998781877\"\r\n  },\r\n  \"creditCardToken\":
+                \"a75a1d98-c52d-4a6b-a413-71e00b193c99\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Assinaturas
+      summary: Listar assinaturas
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/subscriptions/{id_da_assinatura}:
+    get:
+      tags:
+        - Assinaturas
+      summary: Recuperar uma única assinatura
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_assinatura
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Assinaturas
+      summary: Atualizar assinatura existente
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"billingType\": \"BOLETO\",\r\n  \"nextDueDate\":
+                \"2017-06-15\",\r\n  \"value\": 29.9,\r\n  \"cycle\":
+                \"MONTHLY\",\r\n  \"description\": \"Assinatura Plano
+                Pró\",\r\n  \"updatePendingPayments\": true,\r\n  \"discount\":
+                {\r\n    \"value\": 10,\r\n    \"dueDateLimitDays\": 0\r\n 
+                },\r\n  \"fine\": {\r\n    \"value\": 1\r\n  },\r\n 
+                \"interest\": {\r\n    \"value\": 2\r\n  }\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_assinatura
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Assinaturas
+      summary: Remover assinatura
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_assinatura
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/subscriptions/{id_da_assinatura}/payments:
+    get:
+      tags:
+        - Assinaturas
+      summary: Listar cobranças de uma assinatura
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_assinatura
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/subscriptions/{id_da_assinatura}/paymentBook:
+    get:
+      tags:
+        - Assinaturas
+      summary: Listar carnê de parcelamento de assinatura
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/jsonapplication/json
+        - name: id_da_assinatura
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/subscriptions/{id_da_assinatura}/invoices:
+    get:
+      tags:
+        - Assinaturas
+      summary: Listar notas fiscais de uma assinatura
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_assinatura
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/subscriptions/{id_da_assinatura}/invoiceSettings:
+    post:
+      tags:
+        - Assinaturas
+      summary: Atualizar configuração para emissão de notas fiscais
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_assinatura
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Assinaturas
+      summary: Recuperar configuração para emissão de notas fiscais
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_assinatura
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Assinaturas
+      summary: Remover configuração para emissão de notas fiscais
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_assinatura
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentLinks:
+    post:
+      tags:
+        - Link de Pagamentos
+      summary: Criar um link de pagamentos
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"name\": \"Venda de livros\",\r\n  \"description\":
+                \"Qualquer livro por apenas R$: 50,00\",\r\n  \"endDate\":
+                \"2021-02-05\",\r\n  \"value\": 50,\r\n  \"billingType\":
+                \"UNDEFINED\",\r\n  \"chargeType\": \"DETACHED\",\r\n 
+                \"dueDateLimitDays\": 10,\r\n  \"subscriptionCycle\": null,\r\n 
+                \"maxInstallmentCount\": 1,\r\n  \"notificationEnabled\":
+                true\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Link de Pagamentos
+      summary: Listar link de pagamentos
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentLinks/{id_do_link_de_pagamento}:
+    put:
+      tags:
+        - Link de Pagamentos
+      summary: Atualizar um link de pagamentos
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"name\": \"Venda de livros digitais\",\r\n 
+                \"description\": \"Qualquer livro por apenas R$: 20,00\",\r\n 
+                \"endDate\": \"2022-05-05\",\r\n  \"value\": 20,\r\n 
+                \"active\": true,\r\n  \"billingType\": \"CREDIT_CARD\",\r\n 
+                \"chargeType\": \"INSTALLMENT\",\r\n  \"dueDateLimitDays\":
+                0,\r\n  \"subscriptionCycle\": null,\r\n 
+                \"maxInstallmentCount\": 5,\r\n  \"notificationEnabled\":
+                false\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Link de Pagamentos
+      summary: Recuperar um único link de pagamentos
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Link de Pagamentos
+      summary: Remover um link de pagamentos
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentLinks/{id_do_link_de_pagamento}/restore:
+    post:
+      tags:
+        - Link de Pagamentos
+      summary: Restaurar um link de pagamentos
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentLinks/{id_do_link_de_pagamento}/images:
+    post:
+      tags:
+        - Link de Pagamentos
+      summary: Adicionar uma imagem a um link de pagamentos
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                main:
+                  type: boolean
+                  example: 'true'
+                image:
+                  type: string
+                  format: binary
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: multipart/form-data
+        - name: id_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Link de Pagamentos
+      summary: Listar imagens de um link de pagamentos
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Link de Pagamentos
+      summary: Remover uma imagem do link de pagamentos
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentLinks/{id_do_link_de_pagamento}/images/{id_da_imagem_do_link_de_pagamento}:
+    get:
+      tags:
+        - Link de Pagamentos
+      summary: Recuperar uma única imagem de um link de pagamentos
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: id_da_imagem_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentLinks/{id_do_link_de_pagamento}/images/{id_da_imagem_do_link_de_pagamento}/setAsMain:
+    post:
+      tags:
+        - Link de Pagamentos
+      summary: Definir imagem principal do link de pagamentos
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: id_da_imagem_do_link_de_pagamento
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/notifications/{id_da_notificacao}:
+    post:
+      tags:
+        - Notificações
+      summary: Atualizar notificação existente
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"enabled\": true,\r\n  \"emailEnabledForProvider\":
+                true,\r\n  \"smsEnabledForProvider\": true,\r\n 
+                \"emailEnabledForCustomer\": true,\r\n 
+                \"smsEnabledForCustomer\": true,\r\n 
+                \"phoneCallEnabledForCustomer\": false,\r\n  \"scheduleOffset\":
+                5\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_notificacao
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/notifications/batch:
+    post:
+      tags:
+        - Notificações
+      summary: Atualizar notificação existente em lote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                customer: '{CUSTOMER_ID}'
+                notifications:
+                  - id: '{NOTIFICATION_ID}'
+                    enabled: true
+                    emailEnabledForProvider: true
+                    smsEnabledForProvider: true
+                    emailEnabledForCustomer: true
+                    smsEnabledForCustomer: true
+                    phoneCallEnabledForCustomer: false
+                    whatsappEnabledForCustomer: false
+                  - id: '{NOTIFICATION_ID}'
+                    enabled: true
+                    emailEnabledForProvider: true
+                    smsEnabledForProvider: true
+                    emailEnabledForCustomer: true
+                    smsEnabledForCustomer: true
+                    phoneCallEnabledForCustomer: false
+                    whatsappEnabledForCustomer: false
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/transfers:
+    post:
+      tags:
+        - Transferências
+      summary: Transferir para conta ASAAS
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"value\": 1000,\r\n  \"walletId\":
+                \"0021c712-d963-4d86-a59d-031e7ac51a2e\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Transferências
+      summary: Listar transferências
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/transfers/{id_da_transferencia}:
+    get:
+      tags:
+        - Transferências
+      summary: Recuperar uma única transferência
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_transferencia
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/anticipations:
+    post:
+      tags:
+        - Antecipações
+      summary: Solicitar antecipação
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                agreementSignature:
+                  type: string
+                  example: João Felix
+                installment:
+                  type: string
+                  example: 'null'
+                payment:
+                  type: string
+                  example: pay_626366773834
+                documents:
+                  type: string
+                  format: binary
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: multipart/form-data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Antecipações
+      summary: Listar antecipações
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/anticipations/simulate:
+    post:
+      tags:
+        - Antecipações
+      summary: Simular antecipação
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"installment\": null,\r\n  \"payment\":
+                \"pay_626366773834\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/anticipations/{id_da_antecipacao}:
+    get:
+      tags:
+        - Antecipações
+      summary: Recuperar uma única antecipação
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_antecipacao
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/anticipations/agreement/sign:
+    post:
+      tags:
+        - Antecipações
+      summary: >-
+        Concordar ou discordar com Aditivo aos Termos de Uso do ASAAS para
+        contratação do Serviço de Antecipação
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: '"{\r\n  \"agreed\": true\r\n}"'
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentDunnings:
+    post:
+      tags:
+        - Negativações
+      summary: Criar uma negativação
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                payment:
+                  type: string
+                  example: pay_080225913252
+                description:
+                  type: string
+                  example: >-
+                    Duas mesas com 8 cadeiras solicitadas via encomenda no dia
+                    01/05/2019
+                customerName:
+                  type: string
+                  example: Marcelo Almeida
+                customerCpfCnpj:
+                  type: integer
+                  example: '24971563792'
+                customerPrimaryPhone:
+                  type: integer
+                  example: '4738010919'
+                customerSecundaryPhone:
+                  type: integer
+                  example: '4732026941'
+                customerPostalCode:
+                  type: string
+                  example: 01310-000
+                customerAddress:
+                  type: string
+                  example: Av. Paulista
+                customerAddressNumber:
+                  type: integer
+                  example: '150'
+                customerProvince:
+                  type: string
+                  example: Centro
+                customerComplement:
+                  type: string
+                  example: Sala 201
+                type:
+                  type: string
+                  example: CREDIT_BUREAU
+                documents:
+                  type: string
+                  format: binary
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: multipart/form-data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Negativações
+      summary: Listar negativações
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentDunnings/simulate:
+    post:
+      tags:
+        - Negativações
+      summary: Simular uma negativação
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: '"\r\n{\r\n  \"payment\": \"pay_080225913252\"\r\n}"'
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentDunnings/{id_da_recuperacao}:
+    get:
+      tags:
+        - Negativações
+      summary: Recuperar uma única negativação
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_recuperacao
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentDunnings/{id_da_recuperacao}/history:
+    get:
+      tags:
+        - Negativações
+      summary: Listar histórico de eventos
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_recuperacao
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentDunnings/{id_da_recuperacao}/partialPayments:
+    get:
+      tags:
+        - Negativações
+      summary: Listar pagamentos recebidos
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_recuperacao
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentDunnings/paymentsAvailableForDunning:
+    get:
+      tags:
+        - Negativações
+      summary: Listar cobranças disponíveis para negativação
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentDunnings/{id_da_recuperacao}/documents:
+    post:
+      tags:
+        - Negativações
+      summary: Reenviar documentos
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                documents:
+                  type: string
+                  format: binary
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: multipart/form-data
+        - name: id_da_recuperacao
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/paymentDunnings/{id_da_recuperacao}/cancel:
+    post:
+      tags:
+        - Negativações
+      summary: Cancelar negativação
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_recuperacao
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/bill:
+    post:
+      tags:
+        - Pagamento de contas
+      summary: Criar um pagamento de conta
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"identificationField\": \"03399.77779 29900.000000
+                04751.101017 1 81510000002990\",\r\n  \"scheduleDate\":
+                \"2020-03-15\",\r\n  \"description\": \"Celular 03/12\",\r\n 
+                \"discount\": 2,\r\n  \"dueDate\": \"2020-03-30\",\r\n 
+                \"value\": 98\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Pagamento de contas
+      summary: Listar pagamentos de conta
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/bill/simulate:
+    post:
+      tags:
+        - Pagamento de contas
+      summary: Simular um pagamento de conta
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"identificationField\": \"03399.77779 29900.000000
+                04751.101017 1 81510000002990\",\r\n  \"barCode\":
+                \"34197830200000050001090000010231248018531000\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/bill/{id_do_pagamento_de_conta}:
+    get:
+      tags:
+        - Pagamento de contas
+      summary: Recuperar um único pagamento de conta
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_pagamento_de_conta
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/bill/{id_do_pagamento_de_conta}/cancel:
+    post:
+      tags:
+        - Pagamento de contas
+      summary: Cancelar pagamento de conta
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_do_pagamento_de_conta
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/creditBureauReport:
+    post:
+      tags:
+        - Consulta SERASA
+      summary: Realizar consulta
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"customer\": \"cus_000000002750\",\r\n  \"cpfCnpj\":
+                null,\r\n  \"state\": \"SC\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Consulta SERASA
+      summary: Listar consultas
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/creditBureauReport/{id_da_consulta_serasa}:
+    get:
+      tags:
+        - Consulta SERASA
+      summary: Recuperar uma consulta
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_consulta_serasa
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/financialTransactions:
+    get:
+      tags:
+        - Extrato
+      summary: Recuperar extrato
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/finance/balance:
+    get:
+      tags:
+        - Informações financeiras
+      summary: Recuperar saldo da conta
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/finance/payment/statistics:
+    get:
+      tags:
+        - Informações financeiras
+      summary: Estatísticas de cobranças
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/finance/split/statistics:
+    get:
+      tags:
+        - Informações financeiras
+      summary: Recuperar valores de split
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/wallets:
+    get:
+      tags:
+        - Informações e personalização da conta
+      summary: Recuperar WalletId
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/myAccount/:
+    get:
+      tags:
+        - Informações e personalização da conta
+      summary: Recuperar dados comerciais
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/myAccount/paymentCheckoutConfig/:
+    post:
+      tags:
+        - Informações e personalização da conta
+      summary: Salvar personalização da fatura
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                logoBackgroundColor:
+                  type: string
+                  example: '#ff0000'
+                infoBackgroundColor:
+                  type: string
+                  example: '#000000'
+                fontColor:
+                  type: string
+                  example: '#00ff00'
+                enabled:
+                  type: boolean
+                  example: 'true'
+                logoFile:
+                  type: string
+                  format: binary
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: multipart/form-data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Informações e personalização da conta
+      summary: Recuperar configurações de personalização
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/myAccount/accountNumber/:
+    get:
+      tags:
+        - Informações e personalização da conta
+      summary: Recuperar número de conta no Asaas
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/invoices:
+    post:
+      tags:
+        - Notas fiscais
+      summary: Agendar nota fiscal
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"payment\": \"pay_637959110194\",\r\n  \"installment\":
+                null,\r\n  \"serviceDescription\": \"Nota fiscal da Fatura
+                101940. \\nDescrição dos Serviços: ANÁLISE E DESENVOLVIMENTO DE
+                SISTEMAS\",\r\n  \"observations\": \"Mensal referente aos
+                trabalhos de Junho.\",\r\n  \"value\": 300,\r\n  \"deductions\":
+                0,\r\n  \"effectiveDate\": \"2018-07-03\",\r\n 
+                \"externalReference\": null,\r\n  \"taxes\": {\r\n   
+                \"retainIss\": false,\r\n    \"iss\": 3,\r\n    \"cofins\":
+                3,\r\n    \"csll\": 1,\r\n    \"inss\": 0,\r\n    \"ir\":
+                1.5,\r\n    \"pis\": 0.65\r\n  },\r\n  \"municipalServiceId\":
+                null,\r\n  \"municipalServiceCode\": \"1.01\",\r\n 
+                \"municipalServiceName\": \"Análise e desenvolvimento de
+                sistemas\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Notas fiscais
+      summary: Listar notas fiscais
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/invoices/{id_da_nota_fiscal}:
+    put:
+      tags:
+        - Notas fiscais
+      summary: Atualizar nota fiscal
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"serviceDescription\": \"Nota fiscal da Fatura 101940.
+                \\nDescrição dos Serviços: ANÁLISE E DESENVOLVIMENTO DE
+                SISTEMAS\",\r\n  \"observations\": \"Mensal referente aos
+                trabalhos de Junho.\",\r\n  \"value\": 300,\r\n  \"deductions\":
+                10,\r\n  \"effectiveDate\": \"2018-07-03\",\r\n 
+                \"externalReference\": null,\r\n  \"taxes\": {\r\n   
+                \"retainIss\": false,\r\n    \"iss\": 3,\r\n    \"cofins\":
+                3,\r\n    \"csll\": 1,\r\n    \"inss\": 0,\r\n    \"ir\":
+                1.5,\r\n    \"pis\": 0.65\r\n  }\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_nota_fiscal
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Notas fiscais
+      summary: Recuperar uma nota fiscal
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_nota_fiscal
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/invoices/{id_da_nota_fiscal}/authorize:
+    post:
+      tags:
+        - Notas fiscais
+      summary: Emitir uma nota fiscal
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_nota_fiscal
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/invoices/{id_da_nota_fiscal}/cancel:
+    post:
+      tags:
+        - Notas fiscais
+      summary: Cancelar uma nota fiscal
+      requestBody:
+        content: {}
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: id_da_nota_fiscal
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/invoices/municipalServices:
+    get:
+      tags:
+        - Notas fiscais
+      summary: Listar serviços municipais
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/customerFiscalInfo/municipalOptions:
+    get:
+      tags:
+        - Informações fiscais
+      summary: Listar configurações municipais
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/customerFiscalInfo:
+    post:
+      tags:
+        - Informações fiscais
+      summary: Criar e atualizar informações fiscais
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: marcelo.almeida@gmail.com
+                municipalInscription:
+                  type: integer
+                  example: '21779501'
+                stateInscription:
+                  type: string
+                  example: 'null'
+                simplesNacional:
+                  type: boolean
+                  example: 'false'
+                culturalProjectsPromoter:
+                  type: boolean
+                  example: 'false'
+                cnae:
+                  type: integer
+                  example: '6209100'
+                specialTaxRegime:
+                  type: integer
+                  example: '1'
+                serviceListItem:
+                  type: string
+                  example: 'null'
+                rpsSerie:
+                  type: integer
+                  example: '1'
+                rpsNumber:
+                  type: integer
+                  example: '1'
+                loteNumber:
+                  type: integer
+                  example: '1'
+                username:
+                  type: string
+                  example: usuario
+                password:
+                  type: string
+                  example: secret
+                accessToken:
+                  type: string
+                  example: abcde12345
+                certificateFile:
+                  type: string
+                  format: binary
+                certificatePassword:
+                  type: string
+                  example: secret
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: multipart/form-data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Informações fiscais
+      summary: Recuperar informações fiscais
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/pix/transactions:
+    get:
+      tags:
+        - Pix
+      summary: Listar transações
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/pix/transactions/{id_da_transacao_pix}/cancel:
+    post:
+      tags:
+        - Pix
+      summary: Cancelar uma transação agendada
+      requestBody:
+        content: {}
+      parameters:
+        - name: id_da_transacao_pix
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/pix/qrCodes/static:
+    post:
+      tags:
+        - Pix
+      summary: Criar um QRCode estático
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                addressKey: marcelo.almeida@gmail.com
+                description: Churrasco
+                value: 50
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/pix/qrCodes/decode:
+    post:
+      tags:
+        - Pix
+      summary: Decodificar um QRCode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                payload: >-
+                  00020126360014br.gov.bcb.pix0114+554799878454552040000530398654040.005802BR5905ASAAS6009São
+                  Paulo61088922730162290525ASAAS-1-2SHTS88FSECYMCUQX6304CA10
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/pix/qrCodes/pay:
+    post:
+      tags:
+        - Pix
+      summary: Pagar um QRCode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                qrCode:
+                  payload: >-
+                    00020126360014br.gov.bcb.pix0114+554799878454552040000530398654040.005802BR5905ASAAS6009São
+                    Paulo61088922730162290525ASAAS-1-2SHTS88FSECYMCUQX6304CA10
+                value: 100
+                description: Suco de laranja
+                scheduleDate: '2022-03-15 00:00:00'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/pix/addressKeys:
+    post:
+      tags:
+        - Pix
+      summary: Criar uma chave
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                type: EVP
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Pix
+      summary: Listar chaves
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/pix/addressKeys/{id_da_chave_pix}:
+    get:
+      tags:
+        - Pix
+      summary: Recuperar uma única chave
+      parameters:
+        - name: id_da_chave_pix
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Pix
+      summary: Remover chave
+      parameters:
+        - name: id_da_chave_pix
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/webhook:
+    post:
+      tags:
+        - Configurações de Webhook > Webhook de Cobrança
+      summary: Criar ou atualizar configurações para Webhook
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"url\": \"https://www.exemplo.com/webhook/asaas\",\r\n 
+                \"email\": \"marcelo.almeida@gmail.com\",\r\n  \"interrupted\":
+                false,\r\n  \"enabled\": true,\r\n  \"apiVersion\": 3,\r\n 
+                \"authToken\": \"5tLxsL6uoN\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Configurações de Webhook > Webhook de Cobrança
+      summary: Recuperar configurações de webhook
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/webhook/invoice:
+    post:
+      tags:
+        - Configurações de Webhook > Webhook de Notas Fiscais
+      summary: Criar ou atualizar configurações para webhook
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"url\": \"https://www.exemplo.com/webhook/asaas\",\r\n 
+                \"email\": \"marcelo.almeida@gmail.com\",\r\n  \"interrupted\":
+                false,\r\n  \"enabled\": true,\r\n  \"apiVersion\": 3,\r\n 
+                \"authToken\": \"5tLxsL6uoN\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Configurações de Webhook > Webhook de Notas Fiscais
+      summary: Recuperar configuração de webhook
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/webhook/mobilePhoneRecharge:
+    post:
+      tags:
+        - Configurações de Webhook > Webhook de Recarga de celular
+      summary: Criar ou atualizar configurações para webhook
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n  \"url\": \"https://www.exemplo.com/webhook/asaas\",\r\n 
+                \"email\": \"marcelo.almeida@gmail.com\",\r\n  \"interrupted\":
+                false,\r\n  \"enabled\": true,\r\n  \"apiVersion\": 3,\r\n 
+                \"authToken\": \"5tLxsL6uoN\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Configurações de Webhook > Webhook de Recarga de celular
+      summary: Recuperar configuração de webhook
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v3/accounts:
+    post:
+      tags:
+        - Contas Asaas
+      summary: Criar conta
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n    \"name\": \"Conta criada via API\",\r\n    \"email\":
+                \"emaildaempresa@gmail.com\",\r\n    \"cpfCnpj\":
+                \"66625514000140\",\r\n    \"companyType\": \"MEI\",\r\n   
+                \"birthDate\": null,\r\n    \"phone\": \"11 32300606\",\r\n   
+                \"mobilePhone\": \"11 988451155\",\r\n    \"address\": \"Av.
+                Rolf Wiest\",\r\n    \"addressNumber\": \"277\",\r\n   
+                \"complement\": \"Sala 502\",\r\n    \"province\": \"Bom
+                Retiro\",\r\n    \"postalCode\": \"89223005\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Contas Asaas
+      summary: Listar contas
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
