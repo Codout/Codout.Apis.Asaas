@@ -19,8 +19,11 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Restore
-        run: dotnet restore Codout.Apis.Asaas/Codout.Apis.Asaas.csproj Codout.Apis.Asaas.Tests/Codout.Apis.Asaas.Tests.csproj
+      - name: Restore library
+        run: dotnet restore Codout.Apis.Asaas/Codout.Apis.Asaas.csproj
+
+      - name: Restore tests
+        run: dotnet restore Codout.Apis.Asaas.Tests/Codout.Apis.Asaas.Tests.csproj
 
       - name: Build library
         run: dotnet build Codout.Apis.Asaas/Codout.Apis.Asaas.csproj --configuration Release --no-restore
