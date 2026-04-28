@@ -5,6 +5,11 @@ Todas as mudancas notaveis deste projeto serao documentadas neste arquivo.
 O formato e baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semantico](https://semver.org/lang/pt-BR/).
 
+## [2.0.2] - 2026-04-27
+
+### Adicionado
+- **CreditCardToken** em `CreateSubscriptionRequest`: agora e possivel criar uma assinatura recorrente reutilizando um token de cartao previamente gerado por `TokenizeCreditCard`, sem precisar enviar novamente os dados sensiveis (numero/CCV). Paridade com `CreatePaymentRequest`, que ja expunha esta propriedade.
+
 ## [2.0.1] - 2026-02-19
 
 ### Corrigido

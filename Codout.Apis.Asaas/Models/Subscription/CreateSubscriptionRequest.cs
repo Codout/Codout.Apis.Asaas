@@ -36,6 +36,8 @@ namespace Codout.Apis.Asaas.Models.Subscription
 
         public CreditCardHolderInfoRequest CreditCardHolderInfo { get; set; }
 
+        public string CreditCardToken { get; set; }
+
         public string RemoteIp { get; set; }
     }
 }
