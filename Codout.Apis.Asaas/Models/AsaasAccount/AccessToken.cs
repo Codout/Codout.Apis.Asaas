@@ -12,17 +12,3 @@ public class AccessToken
     public DateTime? ExpirationDate { get; set; }
     public bool Enabled { get; set; }
 }
-
-public class CreateAccessTokenRequest
-{
-    public string Name { get; set; }
-    public DateTime? ExpirationDate { get; set; }
-    public bool? Enabled { get; set; }
-}
-
-public class UpdateAccessTokenRequest
-{
-    public string Name { get; set; }
-    public DateTime? ExpirationDate { get; set; }
-    public bool? Enabled { get; set; }
-}

@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Codout.Apis.Asaas.Core.Interfaces;
 using Codout.Apis.Asaas.Models.Chargeback.Enums;
 
 namespace Codout.Apis.Asaas.Models.Chargeback;
@@ -32,10 +30,4 @@ public class Chargeback
     public ChargebackDisputeStatus? DisputeStatus { get; set; }
 
     public DateTime? DeadlineToSendDisputeDocuments { get; set; }
-}
-
-public class CreateChargebackDisputeRequest
-{
-    public string Description { get; set; }
-    public List<IAsaasFile> Documents { get; set; } = [];
 }

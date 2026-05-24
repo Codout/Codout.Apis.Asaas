@@ -8,8 +8,22 @@ e este projeto adere ao [Versionamento Semantico](https://semver.org/lang/pt-BR/
 ## [3.0.0] - 2026-05-24
 
 Major release com auditoria completa de conformidade contra a documentacao
-oficial do Asaas (via MCP `https://docs.asaas.com/mcp`). Veja `AUDIT.md` e
-`IMPLEMENTATION_PLAN.md` para o relatorio detalhado.
+oficial do Asaas (via MCP `https://docs.asaas.com/mcp`). Veja `AUDIT.md`,
+`IMPLEMENTATION_PLAN.md` e `REVIEW.md` para o relatorio detalhado.
+
+### Breaking changes adicionais (do REVIEW.md)
+
+- `asaas.ReceivableAnticipation` renomeado para `asaas.Anticipation` (alinhar
+  com o naming dos demais 26 managers que usam nome curto). Migracao:
+  `asaas.ReceivableAnticipation.X` -> `asaas.Anticipation.X`.
+- `ReceivableAnticipationStatusExtension` renomeado para
+  `AnticipationStatusExtension`.
+- `AccountStatus.{CommercialInfo,Documentation,General,BankAccountInfo}`
+  passaram de `string` para enum `AccountApprovalStatus`
+  (PENDING/APPROVED/REJECTED/AWAITING_APPROVAL).
+- `BaseManager._settings` passou de `private` para `protected Settings`
+  (convencao PascalCase de protected field). Codigo que herdava de
+  `BaseManager` e usava `_settings` precisa migrar para `Settings`.
 
 Cobertura do SDK passou de ~45% (70 endpoints) para 100% (~156 endpoints
 documentados). Suite de testes passou de 400 para ~500 testes.

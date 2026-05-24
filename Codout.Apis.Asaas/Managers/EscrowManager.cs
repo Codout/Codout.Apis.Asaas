@@ -38,6 +38,9 @@ public class EscrowManager(ApiSettings settings) : BaseManager(settings)
     public async Task<ResponseObject<Escrow>> FinishPaymentEscrow(string escrowId, FinishEscrowRequest requestObj = null)
     {
         var route = $"{EscrowRoute}/{escrowId}/finish";
+        // Cast (object) eh necessario para que o operador ?? resolva para o overload
+        // PostAsync<T>(string, object). Sem o cast, o compilador inferiria
+        // FinishEscrowRequest como tipo comum e nao combinaria com RequestParameters.
         return await PostAsync<Escrow>(route, (object)requestObj ?? new RequestParameters());
     }
 

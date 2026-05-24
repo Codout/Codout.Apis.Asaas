@@ -3,11 +3,8 @@ using Codout.Apis.Asaas.Models.Checkout.Enums;
 
 namespace Codout.Apis.Asaas.Models.Checkout;
 
-public class Checkout
+public class CreateCheckoutRequest
 {
-    public string Id { get; set; }
-    public string Link { get; set; }
-    public CheckoutStatus Status { get; set; }
     public List<CheckoutBillingType> BillingTypes { get; set; } = [];
     public List<CheckoutChargeType> ChargeTypes { get; set; } = [];
     public int? MinutesToExpire { get; set; }
@@ -17,5 +14,5 @@ public class Checkout
     public CheckoutCustomerData CustomerData { get; set; }
     public CheckoutSubscription Subscription { get; set; }
     public CheckoutInstallment Installment { get; set; }
-    public List<CheckoutSplit> Split { get; set; } = [];
+    public List<CheckoutSplit> Splits { get; set; } = [];
 }
