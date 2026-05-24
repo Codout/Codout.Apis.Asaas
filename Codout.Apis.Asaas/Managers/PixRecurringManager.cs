@@ -9,9 +9,9 @@ public class PixRecurringManager(ApiSettings settings) : BaseManager(settings)
 {
     private const string RecurringsRoute = "/pix/transactions/recurrings";
 
-    public async Task<ResponseList<PixRecurringTransaction>> List(int offset, int limit)
+    public async Task<ResponseList<PixRecurringTransaction>> List(int offset, int limit, PixRecurringTransactionListFilter filter = null)
     {
-        return await GetListAsync<PixRecurringTransaction>(RecurringsRoute, offset, limit);
+        return await GetListAsync<PixRecurringTransaction>(RecurringsRoute, offset, limit, filter);
     }
 
     public async Task<ResponseObject<PixRecurringTransaction>> Find(string recurringId)

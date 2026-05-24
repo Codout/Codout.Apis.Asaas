@@ -76,7 +76,27 @@ Erros oficiais (`{errors:[{code,description}]}`) também validados via fixture c
 - **B-16**: `PixAutomaticPaymentInstruction` tinha `Authorization` como `string` + campos inventados (`Value`, `PaymentDate`, `DateCreated`, `Description`). Schema real: `Authorization` é objeto aninhado (`id`/`endToEndIdentifier`/`customerId`), `DueDate` (não `PaymentDate`), + `endToEndIdentifier`, `paymentId`, `refusalReason`. Status virou enum `PixAutomaticPaymentInstructionStatus`.
 - **B-17**: `PixAutomaticPaymentInstructionListFilter` usava `authorization`/`status`. Schema real: `authorizationId`, `customerId`, `paymentId`, `status` (enum).
 
-## §5 — PixRecurringManager — ⏳
+## §5 — PixRecurringManager — ✅
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `GET /v3/pix/transactions/recurrings` (envelope padrão) | ✅ | `ResponseList<PixRecurringTransaction>` (hasMore/totalCount/limit/offset/data) | `PixRecurring/transactions-list-response.json` | `TransactionsList_UsesStandardEnvelopeWithPagination` | ✅ |
+| `GET /v3/pix/transactions/recurrings` (filtros novos) | ✅ | `PixRecurringTransactionListFilter` (status enum, value decimal invariant, searchText) | inline | `TransactionListFilter_*` (4 tests: SerializesAll, InvariantDecimal, UpperEnum, NullOmitted) | ✅ |
+| `GET /v3/pix/transactions/recurrings/{id}` | ✅ | `PixRecurringTransaction` (id, status enum, origin enum, value, frequency enum, quantity, startDate, finishDate, canBeCancelled, externalAccount nested) | `PixRecurring/transaction-response.json` | `TransactionResponse_DeserializesFromOfficialFixture` | ✅ |
+| `POST /v3/pix/transactions/recurrings/{id}/cancel` | ✅ | body vazio → retorna `PixRecurringTransaction` | reusa | (cobertura unit do manager) | ✅ |
+| `GET /v3/pix/transactions/recurrings/{id}/items` (envelope `{data:[...]}`) | ✅ | `PixRecurringItemsResponse` wrapper (sem paginação) | `PixRecurring/items-list-envelope.json` | `ItemsListEnvelope_UsesMinimalDataOnlyShape` | ✅ |
+| `POST /v3/pix/transactions/recurrings/items/{id}/cancel` | ✅ | body vazio → `PixRecurringItem` (id, status, scheduledDate, canBeCancelled, recurrenceNumber, quantity, value, refusalReasonDescription, externalAccount) | `PixRecurring/item-response.json` | `ItemResponse_DeserializesFromOfficialFixture` | ✅ |
+| Enum `PixRecurringStatus` (5 valores) | ✅ | enum tipado | inline | `TransactionStatus_AllFiveValuesDeserialize` | ✅ |
+| Enum `PixRecurringFrequency` (WEEKLY/MONTHLY) | ✅ | enum tipado | inline | `TransactionFrequency_BothValuesDeserialize` | ✅ |
+| Enum `PixRecurringOrigin` (PIX) | ✅ | enum tipado | inline | `TransactionOrigin_PixDeserializes` | ✅ |
+| Enum `PixRecurringItemStatus` (4 valores) | ✅ | enum tipado | inline | `ItemStatus_AllFourValuesDeserialize` | ✅ |
+
+**Feature nova adicionada nesta fase:**
+- **B-18**: `PixRecurringManager.List(offset, limit)` não aceitava filtro. O schema oficial expõe três filtros opcionais (`status`, `value`, `searchText`). Criado `PixRecurringTransactionListFilter` (request parameters tipado) e novo overload `List(offset, limit, filter)`. Backwards-compatible: `filter` é opcional.
+
+**Quirks de envelope documentados:**
+- `recurrings` (transactions list) usa o envelope padrão (`hasMore`/`totalCount`/`limit`/`offset`/`data`).
+- `recurrings/{id}/items` usa envelope minimalista `{data:[...]}` sem paginação — comportamento diferente do schema padrão, mantido em `PixRecurringItemsResponse` wrapper para evitar deserialização incorreta via `ResponseList<T>` (regressão B-14 já fixada).
 
 ## §6 — MobilePhoneRechargeManager — ⏳
 
