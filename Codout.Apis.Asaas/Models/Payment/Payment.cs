@@ -60,11 +60,38 @@ public class Payment
 
     public string InvoiceNumber { get; set; }
 
-    public bool Deleted { get; set; }
+    public bool? Deleted { get; set; }
 
-    public bool PostalService { get; set; }
+    public bool? PostalService { get; set; }
 
-    public bool Anticipated { get; set; }
+    public bool? Anticipated { get; set; }
+
+    public bool? Anticipable { get; set; }
+
+    public bool? CanBePaidAfterDueDate { get; set; }
+
+    public string Object { get; set; }
+
+    public string PixTransaction { get; set; }
+
+    public string PixQrCodeId { get; set; }
+
+    public string CheckoutSession { get; set; }
+
+    [JsonPropertyName("paymentLink")]
+    public string PaymentLinkId { get; set; }
+
+    public int? InstallmentNumber { get; set; }
+
+    public DateTime? CreditDate { get; set; }
+
+    public DateTime? EstimatedCreditDate { get; set; }
+
+    public string TransactionReceiptUrl { get; set; }
+
+    public string NossoNumero { get; set; }
+
+    public int? DaysAfterDueDateToRegistrationCancellation { get; set; }
 
     public Common.CreditCard CreditCard { get; set; }
 
