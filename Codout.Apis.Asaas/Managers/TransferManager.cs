@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Core.Response;
 using Codout.Apis.Asaas.Models.Transfer;
@@ -18,12 +18,12 @@ public class TransferManager(ApiSettings settings) : BaseManager(settings)
         return await GetListAsync<BaseTransfer>(TransfersRoute, offset, limit, queryMap);
     }
 
-    public async Task<ResponseObject<AsaasAccountTransfer>> Execute(AsaasAccountTransferRequest requestObj)
+    public async Task<ResponseObject<AsaasAccountTransfer>> TransferToAsaasAccount(AsaasAccountTransferRequest requestObj)
     {
-        return await PostAsync<AsaasAccountTransfer>(TransfersRoute, requestObj);
+        return await PostAsync<AsaasAccountTransfer>($"{TransfersRoute}/", requestObj);
     }
 
-    public async Task<ResponseObject<BankAccountTransfer>> Execute(BankAccountTransferRequest requestObj)
+    public async Task<ResponseObject<BankAccountTransfer>> TransferToBankAccount(BankAccountTransferRequest requestObj)
     {
         return await PostAsync<BankAccountTransfer>(TransfersRoute, requestObj);
     }
@@ -31,5 +31,11 @@ public class TransferManager(ApiSettings settings) : BaseManager(settings)
     public async Task<ResponseObject<BaseTransfer>> Find(string transferId)
     {
         return await GetAsync<BaseTransfer>(TransfersRoute, transferId);
+    }
+
+    public async Task<ResponseObject<BaseTransfer>> Cancel(string transferId)
+    {
+        var route = $"{TransfersRoute}/{transferId}/cancel";
+        return await DeleteAsync<BaseTransfer>(route);
     }
 }
