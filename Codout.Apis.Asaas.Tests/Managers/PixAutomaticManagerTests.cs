@@ -1,7 +1,9 @@
+using System;
 using System.Net.Http;
 using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Managers;
 using Codout.Apis.Asaas.Models.PixAutomatic;
+using Codout.Apis.Asaas.Models.PixAutomatic.Enums;
 using Codout.Apis.Asaas.Tests.Helpers;
 
 namespace Codout.Apis.Asaas.Tests.Managers;
@@ -14,13 +16,48 @@ public class PixAutomaticManagerTests : ManagerTestBase<PixAutomaticManager>
     [Fact]
     public async Task CreateAuthorization_SendsPostToAuthorizationsRoute()
     {
-        SetupOkResponse("{\"id\":\"auth_1\",\"status\":\"PENDING\"}");
-        var request = new CreatePixAutomaticAuthorizationRequest { Customer = "cus_1", ContractId = "contract_1" };
+        SetupOkResponse("{\"id\":\"auth_1\",\"status\":\"CREATED\",\"customerId\":\"cus_1\",\"frequency\":\"MONTHLY\"}");
+        var request = new CreatePixAutomaticAuthorizationRequest
+        {
+            Frequency = PixAutomaticRecurringFrequency.MONTHLY,
+            ContractId = "CONTRACT-123",
+            StartDate = new DateTime(2026, 1, 1),
+            CustomerId = "cus_1",
+            Value = 100m,
+            ImmediateQrCode = new CreatePixAutomaticImmediateQrCodeRequest
+            {
+                ExpirationSeconds = 3600,
+                OriginalValue = 100m
+            }
+        };
 
         var result = await Manager.CreateAuthorization(request);
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/pix/automatic/authorizations");
+        Assert.Equal(PixAutomaticAuthorizationStatus.CREATED, result.Data.Status);
+        Assert.Equal(PixAutomaticRecurringFrequency.MONTHLY, result.Data.Frequency);
+    }
+
+    [Fact]
+    public async Task CreateAuthorization_SerializesImmediateQrCodeAndFrequency()
+    {
+        SetupOkResponse("{\"id\":\"auth_1\"}");
+        var request = new CreatePixAutomaticAuthorizationRequest
+        {
+            Frequency = PixAutomaticRecurringFrequency.QUARTERLY,
+            ContractId = "C-9",
+            StartDate = new DateTime(2026, 2, 1),
+            CustomerId = "cus_9",
+            ImmediateQrCode = new CreatePixAutomaticImmediateQrCodeRequest { ExpirationSeconds = 600, OriginalValue = 50m }
+        };
+
+        await Manager.CreateAuthorization(request);
+
+        Assert.NotNull(Handler.LastRequestContent);
+        Assert.Contains("\"frequency\":\"QUARTERLY\"", Handler.LastRequestContent);
+        Assert.Contains("\"immediateQrCode\":{", Handler.LastRequestContent);
+        Assert.Contains("\"expirationSeconds\":600", Handler.LastRequestContent);
     }
 
     [Fact]
