@@ -9,12 +9,14 @@
   <img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet" />
   <img src="https://img.shields.io/nuget/v/Asaas.Api?color=004880&logo=nuget" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
-  <img src="https://img.shields.io/badge/tests-400%20passing-brightgreen" />
+  <img src="https://img.shields.io/badge/tests-492%20passing-brightgreen" />
 </p>
 
-SDK .NET **no-oficial** para integrar com a plataforma de pagamentos [Asaas](https://www.asaas.com). Cobre a **API v3** com suporte a mais de 90 endpoints.
+SDK .NET **no-oficial** para integrar com a plataforma de pagamentos [Asaas](https://www.asaas.com). Cobre **100% da API v3** documentada — mais de **150 endpoints** distribuidos em **27 managers**.
 
 > **Zero dependencias externas** - usa apenas `System.Text.Json` (built-in).
+
+> **v3.0.0** - major release com auditoria de conformidade completa contra a documentacao oficial via MCP. Veja `CHANGELOG.md` para os breaking changes e guia de migracao 2.x -> 3.x.
 
 ---
 
@@ -56,7 +58,7 @@ var customerResponse = await asaas.Customer.Create(new CreateCustomerRequest
     Email = "maria@email.com"
 });
 
-if (customerResponse.WasSucessfull())
+if (customerResponse.WasSuccessful())
 {
     var customer = customerResponse.Data;
 
@@ -70,7 +72,7 @@ if (customerResponse.WasSucessfull())
         Description = "Pedido #1234"
     });
 
-    if (paymentResponse.WasSucessfull())
+    if (paymentResponse.WasSuccessful())
     {
         // 4. Obter QR Code Pix
         var pixQr = await asaas.Payment.GetPixQrCode(paymentResponse.Data.Id);
@@ -96,7 +98,7 @@ Toda chamada retorna `ResponseObject<T>` (item unico) ou `ResponseList<T>` (list
 // Resposta de item unico
 ResponseObject<Customer> response = await asaas.Customer.Find("cus_123");
 
-if (response.WasSucessfull())
+if (response.WasSuccessful())
 {
     Customer customer = response.Data;
     Console.WriteLine(customer.Name);
@@ -147,30 +149,37 @@ var customers = await asaas.Customer.List(0, 50, new CustomerListFilter
 
 ## Modulos Disponiveis
 
-O SDK expoe 20 managers via `AsaasApi`:
+O SDK expoe 27 managers via `AsaasApi`:
 
-| Manager | Propriedade | Endpoints | Descricao |
-|---------|-------------|-----------|-----------|
-| **Clientes** | `asaas.Customer` | Create, Find, List, Update, Delete, Restore | Cadastro de clientes |
-| **Cobrancas** | `asaas.Payment` | Create, Find, List, Update, Delete, Restore, Refund, ReceiveInCash, UndoReceivedInCash, GetBankSlipBarCode, GetPixQrCode | Boletos, Pix, Cartao |
-| **Parcelamentos** | `asaas.Installment` | Find, List, Delete, Refund, ListPaymentBook | Carnezinhos/parcelas |
-| **Assinaturas** | `asaas.Subscription` | Create, Find, List, Update, Delete, ListPayments, ListPaymentBook, ListInvoice, CRUD InvoiceSettings | Cobran cas recorrentes |
-| **Links de Pagamento** | `asaas.PaymentLink` | Create, Find, List, Update, Delete, Restore, AddImage, ListImages, FindImage, DeleteImage, SetMainImage | Links compartilhaveis |
-| **Pix** | `asaas.Pix` | ListTransactions, CancelTransaction, CreateStaticQrCode, DecodeQrCode, PayQrCode, CRUD AddressKeys | Pix completo |
-| **Notas Fiscais** | `asaas.Invoice` | Schedule, Find, List, Update, Authorize, Cancel, ListMunicipalServices | NFS-e |
-| **Financeiro** | `asaas.Finance` | Balance, ListTransactions, PaymentStatistics, SplitStatistics | Saldo e extrato |
-| **Transferencias** | `asaas.Transfer` | Find, List, Execute (Asaas/Banco) | TED e transferencias |
-| **Antecipacoes** | `asaas.ReceivableAnticipation` | Create, Simulate, Find, List, SignAgreement | Antecipacao de recebiveis |
-| **Negativacoes** | `asaas.PaymentDunning` | Create, Simulate, Find, List, ListEventHistory, ListPartialPayments, ListPaymentsAvailable, ResendDocument, Cancel | Protesto e SERASA |
-| **Pagto de Contas** | `asaas.BillPayment` | Create, Simulate, Find, List, Cancel | Pagamento de boletos |
-| **Webhooks** | `asaas.Webhook` | CRUD Payment, Invoice e MobilePhoneRecharge | Notificacoes |
-| **Notificacoes** | `asaas.Notification` | Update, BatchUpdate | Config de notificacoes |
-| **Cartao de Credito** | `asaas.CreditCard` | TokenizeCreditCard | Tokenizacao |
-| **Contas Asaas** | `asaas.AsaasAccount` | Create, List | Subcontas white-label |
-| **Minha Conta** | `asaas.MyAccount` | Find, FindFees, FindAccountNumber, CRUD PaymentCheckoutConfig | Dados da conta |
-| **Carteiras** | `asaas.Wallet` | List | Carteiras digitais |
-| **Consulta SERASA** | `asaas.CreditBureauReport` | Create, Find, List | Consulta de credito |
-| **Info Fiscal** | `asaas.CustomerFiscalInfo` | CreateOrUpdate, Find, ListMunicipalOptions | Config fiscal NFS-e |
+| Manager | Propriedade | Descricao |
+|---------|-------------|-----------|
+| **Clientes** | `asaas.Customer` | CRUD de clientes |
+| **Cobrancas** | `asaas.Payment` | Boletos, Pix, Cartao, documentos, splits, refunds, billing/viewing info, simulate, limits, etc |
+| **Parcelamentos** | `asaas.Installment` | Create, CreateWithCreditCard, Find, List, Delete, Refund, ListPayments, CancelPendingPayments, UpdateSplits, ListPaymentBook |
+| **Assinaturas** | `asaas.Subscription` | CRUD + UpdateCreditCard + InvoiceSettings + ListPayments |
+| **Links de Pagamento** | `asaas.PaymentLink` | CRUD + imagens (add, list, find, delete, setMain) |
+| **Pix** | `asaas.Pix` | CRUD AddressKeys, QrCodes (estatico, decode, pay, delete), Transactions (list, find, cancel), tokenBucket |
+| **Pix Automatico** | `asaas.PixAutomatic` | Autorizacoes recorrentes (Pix Bacen) e payment instructions |
+| **Pix Recorrente** | `asaas.PixRecurring` | Recorrencias parceladas e itens |
+| **Webhooks** | `asaas.Webhook` | CRUD generico em `/v3/webhooks/{id}` com ~100 eventos disponiveis |
+| **Notas Fiscais** | `asaas.Invoice` | Schedule, Find, List, Update, Authorize, Cancel |
+| **Info Fiscal** | `asaas.FiscalInfo` | CreateOrUpdate, Find, ListMunicipalOptions, ListServices |
+| **Financeiro** | `asaas.Finance` | GetBalance, ListTransactions, GetPaymentStatistics, GetSplitStatistics |
+| **Transferencias** | `asaas.Transfer` | TransferToAsaasAccount, TransferToBankAccount, Find, List, Cancel |
+| **Antecipacoes** | `asaas.Anticipation` | Create, Simulate, Find, List, Cancel, GetLimits, GetAutomaticConfiguration, UpdateAutomaticConfiguration |
+| **Negativacoes** | `asaas.PaymentDunning` | Create, Simulate, Find, List, ListEventHistory, ListPartialPayments, ListPaymentsAvailable, ResendDocument, Cancel |
+| **Pagto de Contas** | `asaas.BillPayment` | Create, Simulate, Find, List, Cancel |
+| **Recarga Celular** | `asaas.MobilePhoneRecharge` | Create, Find, List, Cancel, GetProvider |
+| **Notificacoes** | `asaas.Notification` | Update, BatchUpdate |
+| **Cartao de Credito** | `asaas.CreditCard` | TokenizeCreditCard + PreAuthorization config |
+| **Contas Asaas** | `asaas.AsaasAccount` | Create, Find, List, ResendActivationLink, CRUD AccessTokens |
+| **Minha Conta** | `asaas.MyAccount` | GetCommercialInfo, UpdateCommercialInfo, GetStatus, DeleteWhiteLabelAccount, GetFees, GetAccountNumber, PaymentCheckoutConfig, Documents |
+| **Carteiras** | `asaas.Wallet` | List |
+| **Consulta SERASA** | `asaas.CreditBureauReport` | Create, Find, List |
+| **Chargebacks** | `asaas.Chargeback` | List, FindByPayment, CreateDispute |
+| **Escrow** | `asaas.Escrow` | SaveSubaccountConfig, GetSubaccountConfig, SaveDefaultConfig, GetDefaultConfig, FinishPaymentEscrow, GetPaymentEscrow |
+| **Checkout** | `asaas.Checkout` | Create, Cancel |
+| **Sandbox (testes)** | `asaas.Sandbox` | ApproveAccount, ConfirmPayment, ForceOverdue (so funciona em `AsaasEnvironment.SANDBOX`) |
 
 ## Exemplos por Modulo
 
@@ -227,7 +236,7 @@ var link = await asaas.PaymentLink.Create(new CreatePaymentLinkRequest
     DueDateLimitDays = 10
 });
 
-if (link.WasSucessfull())
+if (link.WasSuccessful())
 {
     Console.WriteLine($"Link: {link.Data.Url}");
 }
@@ -257,20 +266,45 @@ var newKey = await asaas.Pix.CreateAddressKey(new CreatePixAddressKeyRequest
 });
 ```
 
+### Webhooks
+
+```csharp
+using Codout.Apis.Asaas.Models.Webhook;
+using Codout.Apis.Asaas.Models.Webhook.Enums;
+
+var webhook = await asaas.Webhook.Create(new CreateWebhookRequest
+{
+    Name = "Notificacoes de pagamento",
+    Url = "https://meusite.com/webhook/asaas",
+    Email = "ops@meusite.com",
+    Enabled = true,
+    Interrupted = false,
+    ApiVersion = 3,
+    AuthToken = "whsec_min_32_caracteres_para_assinar_callbacks",
+    SendType = WebhookSendType.SEQUENTIALLY,
+    Events =
+    [
+        WebhookEvent.PAYMENT_CONFIRMED,
+        WebhookEvent.PAYMENT_RECEIVED,
+        WebhookEvent.PAYMENT_OVERDUE
+    ]
+});
+```
+
 ### Transferencias
 
 ```csharp
 using Codout.Apis.Asaas.Models.Transfer;
 
-// Transferencia para conta Asaas
-var transfer = await asaas.Transfer.Execute(new AsaasAccountTransferRequest
+// Transferencia para conta Asaas (POST /v3/transfers/)
+var transfer = await asaas.Transfer.TransferToAsaasAccount(new AsaasAccountTransferRequest
 {
     WalletId = "wallet_destino",
     Value = 500.00m
 });
 
-// Transferencia bancaria (TED)
-var ted = await asaas.Transfer.Execute(new BankAccountTransferRequest
+// Transferencia bancaria (TED / Pix para outra instituicao - POST /v3/transfers)
+var ted = await asaas.Transfer.TransferToBankAccount(new BankAccountTransferRequest
 {
     Value = 1000.00m,
     BankAccount = new BankAccount
@@ -285,6 +319,9 @@ var ted = await asaas.Transfer.Execute(new BankAccountTransferRequest
         BankAccountType = BankAccountType.CONTA_CORRENTE
     }
 });
+
+// Cancelar transferencia
+await asaas.Transfer.Cancel("trans_123");
 ```
 
 ### Notas Fiscais (NFS-e)
@@ -301,19 +338,34 @@ var invoice = await asaas.Invoice.Schedule(new CreateInvoiceRequest
 
 // Autorizar emissao
 await asaas.Invoice.Authorize("inv_123");
+
+// Listar codigos de servico do municipio (FiscalInfo, nao Invoice)
+var services = await asaas.FiscalInfo.ListServices("consultoria");
 ```
 
 ### Saldo e Extrato
 
 ```csharp
-// Saldo atual
-var balance = await asaas.Finance.Balance();
+// Saldo atual (retorna { balance: number } - acesse via .Value)
+var balance = await asaas.Finance.GetBalance();
+Console.WriteLine($"Saldo: R$ {balance.Data.Value}");
 
 // Extrato
 var transactions = await asaas.Finance.ListTransactions(0, 50);
 
 // Estatisticas de cobran cas
 var stats = await asaas.Finance.GetPaymentStatistics();
+```
+
+### Sandbox (somente em testes)
+
+```csharp
+// Em AsaasEnvironment.SANDBOX, voce pode acelerar fluxos de teste:
+await asaas.Sandbox.ApproveAccount();           // aprova conta sandbox
+await asaas.Sandbox.ConfirmPayment("pay_123");  // confirma pagamento
+await asaas.Sandbox.ForceOverdue("pay_123");    // forca vencimento
+
+// Em PRODUCTION, todos lancam InvalidOperationException antes de fazer HTTP.
 ```
 
 ## Configuracao Avancada
@@ -339,7 +391,7 @@ dotnet build Codout.Apis.Asaas/Codout.Apis.Asaas.csproj
 
 ### Testes
 
-O projeto possui **400 testes unitarios** cobrindo todos os 20 managers, modelos, serializacao e extensions:
+O projeto possui **492 testes unitarios** cobrindo todos os 27 managers, modelos, serializacao e extensions:
 
 ```bash
 # Rodar todos os testes
@@ -362,23 +414,27 @@ dotnet pack Codout.Apis.Asaas/ -c Release
 
 ```
 Codout.Apis.Asaas/
-├── AsaasApi.cs                    # Facade principal (entry point)
+├── AsaasApi.cs                    # Facade principal (entry point) com 27 managers
 ├── Core/
 │   ├── ApiSettings.cs             # Configuracao (token, ambiente, timeout)
-│   ├── BaseManager.cs             # Base HTTP (GET/POST/PUT/DELETE)
-│   ├── JsonSerializerConfiguration.cs  # Config System.Text.Json
+│   ├── BaseManager.cs             # Base HTTP (GET/POST/PUT/DELETE) com SocketsHttpHandler compartilhado
+│   ├── JsonSerializerConfiguration.cs  # Config System.Text.Json (camelCase, SafeEnumConverterFactory, FlexibleDateTimeConverter)
 │   ├── RequestParameters.cs       # Query string builder
 │   ├── Response/
-│   │   ├── Base/BaseResponse.cs   # StatusCode, Errors, WasSucessfull()
+│   │   ├── Base/BaseResponse.cs   # StatusCode, Errors, WasSuccessful()
 │   │   ├── ResponseObject<T>.cs   # Resposta de item unico
 │   │   └── ResponseList<T>.cs     # Resposta paginada
 │   └── Extension/                 # Helpers (DateTime, StatusCode, String)
-├── Managers/                      # 20 domain managers
+├── Managers/                      # 27 domain managers
 │   ├── CustomerManager.cs
 │   ├── PaymentManager.cs
 │   ├── PixManager.cs
+│   ├── PixAutomaticManager.cs
+│   ├── PixRecurringManager.cs
+│   ├── ChargebackManager.cs
+│   ├── EscrowManager.cs
 │   └── ...
-└── Models/                        # Request/Response por dominio
+└── Models/                        # Request/Response por dominio (1 classe por arquivo)
     ├── Customer/
     ├── Payment/
     ├── Pix/
