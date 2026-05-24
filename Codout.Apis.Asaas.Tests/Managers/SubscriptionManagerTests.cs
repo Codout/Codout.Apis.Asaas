@@ -138,7 +138,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
         var result = await Manager.List(0, 10, filter);
 
         AssertRequestUrlContains("customer=cus_1");
-        AssertRequestUrlContains("includeDeleted=True");
+        AssertRequestUrlContains("includeDeleted=true");
     }
 
     #endregion

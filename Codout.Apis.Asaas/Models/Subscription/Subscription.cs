@@ -40,6 +40,6 @@ namespace Codout.Apis.Asaas.Models.Subscription
 
         public Common.CreditCard CreditCard { get; set; }
 
-        public bool Deleted { get; set; }
+        public bool? Deleted { get; set; }
     }
 }

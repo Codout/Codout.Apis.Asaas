@@ -149,23 +149,25 @@ public class RequestParametersTests
     #region Add bool overload
 
     [Fact]
-    public void Add_BoolTrueValue_AddsStringTrue()
+    public void Add_BoolTrueValue_AddsLowercaseTrue()
     {
         var parameters = new RequestParameters();
 
         parameters.Add("active", (bool?)true);
 
-        Assert.Equal("True", parameters["active"]);
+        // API Asaas espera "true"/"false" lowercase (padrao JSON/HTTP),
+        // nao "True"/"False" do bool.ToString() do .NET.
+        Assert.Equal("true", parameters["active"]);
     }
 
     [Fact]
-    public void Add_BoolFalseValue_AddsStringFalse()
+    public void Add_BoolFalseValue_AddsLowercaseFalse()
     {
         var parameters = new RequestParameters();
 
         parameters.Add("active", (bool?)false);
 
-        Assert.Equal("False", parameters["active"]);
+        Assert.Equal("false", parameters["active"]);
     }
 
     [Fact]

@@ -58,7 +58,10 @@ namespace Codout.Apis.Asaas.Core
         {
             if (value != null)
             {
-                Add(key, value.ToString());
+                // bool.ToString() retorna "True"/"False" (PascalCase), mas a API Asaas
+                // espera "true"/"false" lowercase (padrao JSON/HTTP). Sem o ToLower
+                // o filtro e silenciosamente ignorado pela API.
+                Add(key, value.Value ? "true" : "false");
                 return;
             }
 

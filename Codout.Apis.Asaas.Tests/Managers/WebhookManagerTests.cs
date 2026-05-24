@@ -93,7 +93,7 @@ public class WebhookManagerTests : ManagerTestBase<WebhookManager>
         await Manager.List(0, 10, filter);
 
         AssertRequestUrlContains("name=Payments");
-        AssertRequestUrlContains("enabled=True");
+        AssertRequestUrlContains("enabled=true");
     }
 
     #endregion

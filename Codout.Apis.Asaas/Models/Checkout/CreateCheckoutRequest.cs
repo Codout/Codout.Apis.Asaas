@@ -14,5 +14,7 @@ public class CreateCheckoutRequest
     public CheckoutCustomerData CustomerData { get; set; }
     public CheckoutSubscription Subscription { get; set; }
     public CheckoutInstallment Installment { get; set; }
+    // Asaas usa "splits" (plural) no request e "split" (singular) no response.
+    // Nao "corrigir" essa assimetria — a API e assim por design.
     public List<CheckoutSplit> Splits { get; set; } = [];
 }
