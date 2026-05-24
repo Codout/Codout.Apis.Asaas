@@ -451,8 +451,8 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
     [Fact]
     public async Task Simulate_SendsPostToSimulateRoute()
     {
-        SetupOkResponse("{\"value\":100,\"netValue\":95,\"fee\":5}");
-        var request = new SimulatePaymentRequest { Value = 100m, BillingType = BillingType.BOLETO };
+        SetupOkResponse("{\"value\":100,\"creditCard\":{\"netValue\":100,\"feePercentage\":2.49,\"operationFee\":0.49}}");
+        var request = new SimulatePaymentRequest { Value = 100m, BillingTypes = [BillingType.BOLETO, BillingType.PIX] };
 
         var result = await Manager.Simulate(request);
 
@@ -460,20 +460,23 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
         AssertRequestUrl("/v3/payments/simulate");
         Assert.True(result.WasSucessfull());
         Assert.Equal(100m, result.Data.Value);
-        Assert.Equal(95m, result.Data.NetValue);
+        Assert.Equal(100m, result.Data.CreditCard.NetValue);
+        Assert.Equal(2.49m, result.Data.CreditCard.FeePercentage);
     }
 
     [Fact]
     public async Task GetLimits_SendsGetToLimitsRoute()
     {
-        SetupOkResponse("{\"creditCard\":{\"daily\":1000},\"pix\":{\"daily\":500},\"bankSlip\":{\"daily\":2000}}");
+        SetupOkResponse("{\"creation\":{\"daily\":{\"limit\":10,\"used\":5,\"wasReached\":false}}}");
 
         var result = await Manager.GetLimits();
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/payments/limits");
         Assert.True(result.WasSucessfull());
-        Assert.Equal(1000m, result.Data.CreditCard.Daily);
+        Assert.Equal(10, result.Data.Creation.Daily.Limit);
+        Assert.Equal(5, result.Data.Creation.Daily.Used);
+        Assert.False(result.Data.Creation.Daily.WasReached);
     }
 
     #endregion

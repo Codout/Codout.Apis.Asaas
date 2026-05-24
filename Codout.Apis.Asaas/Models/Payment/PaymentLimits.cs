@@ -2,14 +2,17 @@ namespace Codout.Apis.Asaas.Models.Payment;
 
 public class PaymentLimits
 {
-    public PaymentLimitsItem CreditCard { get; set; }
-    public PaymentLimitsItem Pix { get; set; }
-    public PaymentLimitsItem BankSlip { get; set; }
+    public PaymentLimitsCreation Creation { get; set; }
 }
 
-public class PaymentLimitsItem
+public class PaymentLimitsCreation
 {
-    public decimal? Daily { get; set; }
-    public decimal? Monthly { get; set; }
-    public decimal? AverageTicket { get; set; }
+    public PaymentLimitsDaily Daily { get; set; }
+}
+
+public class PaymentLimitsDaily
+{
+    public long Limit { get; set; }
+    public long Used { get; set; }
+    public bool? WasReached { get; set; }
 }

@@ -7,11 +7,7 @@ public class SimulatePaymentRequest
 {
     public decimal Value { get; set; }
 
-    public BillingType BillingType { get; set; }
+    public List<BillingType> BillingTypes { get; set; } = [];
 
     public int? InstallmentCount { get; set; }
-
-    public string DiscountValue { get; set; }
-
-    public List<Split> Splits { get; set; } = [];
 }
