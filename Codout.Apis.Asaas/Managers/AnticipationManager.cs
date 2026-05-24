@@ -36,9 +36,4 @@ public class AnticipationManager(ApiSettings settings) : BaseManager(settings)
         return responseList;
     }
 
-    public async Task<ResponseObject<Anticipation>> SignAgreement(SignAnticipationAgreementRequest requestObj)
-    {
-        var route = $"{AnticipationsRoute}/agreement/sign";
-        return await PostAsync<Anticipation>(route, requestObj);
-    }
 }

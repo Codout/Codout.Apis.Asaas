@@ -168,35 +168,6 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
         Assert.Equal("ant_2", result.Data[1].Id);
     }
 
-    // ── SignAgreement ───────────────────────────────────────────────
-
-    [Fact]
-    public async Task SignAgreement_SendsPostToCorrectUrl()
-    {
-        SetupOkResponse("{\"id\":\"ant_789\",\"status\":\"CREDITED\"}");
-
-        var request = new SignAnticipationAgreementRequest { Agreed = true };
-
-        var result = await Manager.SignAgreement(request);
-
-        AssertRequestMethod(HttpMethod.Post);
-        AssertRequestUrl("/v3/anticipations/agreement/sign");
-    }
-
-    [Fact]
-    public async Task SignAgreement_DeserializesResponse()
-    {
-        SetupOkResponse("{\"id\":\"ant_789\",\"status\":\"CREDITED\",\"totalValue\":300.00}");
-
-        var request = new SignAnticipationAgreementRequest { Agreed = true };
-
-        var result = await Manager.SignAgreement(request);
-
-        Assert.True(result.WasSucessfull());
-        Assert.NotNull(result.Data);
-        Assert.Equal("ant_789", result.Data.Id);
-    }
-
     // ── Error handling ──────────────────────────────────────────────
 
     [Fact]
