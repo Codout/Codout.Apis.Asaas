@@ -16,7 +16,7 @@ public class AsaasApi(ApiSettings apiSettings)
     private Lazy<WalletManager> LazyWallet { get; } = new(() => new WalletManager(apiSettings), true);
     private Lazy<WebhookManager> LazyWebhook { get; } = new(() => new WebhookManager(apiSettings), true);
     private Lazy<AsaasAccountManager> LazyAsaasAccount { get; } = new(() => new AsaasAccountManager(apiSettings), true);
-    private Lazy<AnticipationManager> LazyReceivableAnticipation { get; } = new(() => new AnticipationManager(apiSettings), true);
+    private Lazy<AnticipationManager> LazyAnticipation { get; } = new(() => new AnticipationManager(apiSettings), true);
     private Lazy<MyAccountManager> LazyMyAccount { get; } = new(() => new MyAccountManager(apiSettings), true);
     private Lazy<InvoiceManager> LazyInvoice { get; } = new(() => new InvoiceManager(apiSettings), true);
     private Lazy<PaymentDunningManager> LazyPaymentDunning { get; } = new(() => new PaymentDunningManager(apiSettings), true);
@@ -47,7 +47,7 @@ public class AsaasApi(ApiSettings apiSettings)
     public WalletManager Wallet => LazyWallet.Value;
     public WebhookManager Webhook => LazyWebhook.Value;
     public AsaasAccountManager AsaasAccount => LazyAsaasAccount.Value;
-    public AnticipationManager ReceivableAnticipation => LazyReceivableAnticipation.Value;
+    public AnticipationManager Anticipation => LazyAnticipation.Value;
     public MyAccountManager MyAccount => LazyMyAccount.Value;
     public InvoiceManager Invoice => LazyInvoice.Value;
     public PaymentDunningManager PaymentDunning => LazyPaymentDunning.Value;
