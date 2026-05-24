@@ -35,5 +35,9 @@
         public string Observations { get; set; }
 
         public string GroupName { get; set; }
+
+        public string Company { get; set; }
+
+        public bool? ForeignCustomer { get; set; }
     }
 }
