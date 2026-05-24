@@ -3,10 +3,8 @@ using Codout.Apis.Asaas.Models.Webhook.Enums;
 
 namespace Codout.Apis.Asaas.Models.Webhook;
 
-public class Webhook
+public class CreateWebhookRequest
 {
-    public string Id { get; set; }
-
     public string Name { get; set; }
 
     public string Url { get; set; }
@@ -17,13 +15,11 @@ public class Webhook
 
     public bool Interrupted { get; set; }
 
-    public int ApiVersion { get; set; }
+    public int ApiVersion { get; set; } = 3;
 
-    public bool HasAuthToken { get; set; }
+    public string AuthToken { get; set; }
 
-    public WebhookSendType SendType { get; set; }
-
-    public int PenalizedRequestsCount { get; set; }
+    public WebhookSendType SendType { get; set; } = WebhookSendType.SEQUENTIALLY;
 
     public List<WebhookEvent> Events { get; set; } = [];
 }
