@@ -60,7 +60,21 @@ Erros oficiais (`{errors:[{code,description}]}`) também validados via fixture c
 | Enum `EscrowStatus` ACTIVE/DONE | ✅ | enum tipado | inline | `EscrowStatus_BothValuesDeserialize` | ✅ |
 | Enum `EscrowFinishReason` (6 valores) | ✅ | enum tipado | inline | `EscrowFinishReason_AllSixValuesDeserialize`, `_NullWhenStatusActive` | ✅ |
 
-## §4 — PixAutomaticManager — ⏳
+## §4 — PixAutomaticManager — ✅
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `POST /v3/pix/automatic/authorizations` | ✅ | `CreatePixAutomaticAuthorizationRequest` + `PixAutomaticAuthorization` | `PixAutomatic/authorization-create-request-minimal.json`, `authorization-response.json` | `CreateAuthorizationRequest_*` (2), `AuthorizationResponse_Deserializes*` | ✅ |
+| `GET /v3/pix/automatic/authorizations` | ✅ | envelope padrão (hasMore/totalCount/limit/offset/data) | `PixAutomatic/authorizations-list-response.json` | `AuthorizationsListResponse_UsesStandardEnvelopeWithPagination` | ✅ |
+| `GET /v3/pix/automatic/authorizations/{id}` | ✅ | mesmo `PixAutomaticAuthorization` | reusa | (idem) | ✅ |
+| `DELETE /v3/pix/automatic/authorizations/{id}` | ✅ | retorna `PixAutomaticAuthorization` (não envelope deleted) | reusa | (idem) | ✅ |
+| `GET /v3/pix/automatic/paymentInstructions/{id}` | ✅ | `PixAutomaticPaymentInstruction` (Authorization nested, dueDate, status enum, paymentId, refusalReason) | `PixAutomatic/payment-instruction-response.json` | `PaymentInstruction_DeserializesFromOfficialFixture_WithNestedAuthorization` | ✅ |
+| `GET /v3/pix/automatic/paymentInstructions` (filter) | ✅ | `authorizationId`/`customerId`/`paymentId`/`status` | inline | `PaymentInstructionListFilter_SerializesAuthorizationIdNotAuthorization` | ✅ |
+| Enums Status/Frequency/OriginType/PaymentInstructionStatus | ✅ | enums tipados | inline | `*_AllFiveValuesDeserialize` (3 tests) | ✅ |
+
+**Bugs corrigidos nesta fase final:**
+- **B-16**: `PixAutomaticPaymentInstruction` tinha `Authorization` como `string` + campos inventados (`Value`, `PaymentDate`, `DateCreated`, `Description`). Schema real: `Authorization` é objeto aninhado (`id`/`endToEndIdentifier`/`customerId`), `DueDate` (não `PaymentDate`), + `endToEndIdentifier`, `paymentId`, `refusalReason`. Status virou enum `PixAutomaticPaymentInstructionStatus`.
+- **B-17**: `PixAutomaticPaymentInstructionListFilter` usava `authorization`/`status`. Schema real: `authorizationId`, `customerId`, `paymentId`, `status` (enum).
 
 ## §5 — PixRecurringManager — ⏳
 
