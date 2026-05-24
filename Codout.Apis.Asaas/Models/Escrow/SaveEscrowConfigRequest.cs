@@ -2,6 +2,7 @@ namespace Codout.Apis.Asaas.Models.Escrow;
 
 public class SaveEscrowConfigRequest
 {
-    public bool Enabled { get; set; }
-    public int? DaysUntilExpire { get; set; }
+    public int DaysToExpire { get; set; }
+    public bool? Enabled { get; set; }
+    public bool? IsFeePayer { get; set; }
 }

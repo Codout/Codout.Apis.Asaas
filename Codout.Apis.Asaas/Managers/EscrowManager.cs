@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Core.Response;
 using Codout.Apis.Asaas.Models.Escrow;
+using Codout.Apis.Asaas.Models.Payment;
 
 namespace Codout.Apis.Asaas.Managers;
 
@@ -35,13 +36,12 @@ public class EscrowManager(ApiSettings settings) : BaseManager(settings)
         return await GetAsync<EscrowConfig>(route);
     }
 
-    public async Task<ResponseObject<Escrow>> FinishPaymentEscrow(string escrowId, FinishEscrowRequest requestObj = null)
+    public async Task<ResponseObject<Payment>> FinishPaymentEscrow(string escrowId)
     {
+        // A API documenta retorno PaymentGetResponseDTO (Payment) e request body
+        // PaymentEscrowPathIdRequestDTO sem propriedades, entao mandamos {} vazio.
         var route = $"{EscrowRoute}/{escrowId}/finish";
-        // Cast (object) eh necessario para que o operador ?? resolva para o overload
-        // PostAsync<T>(string, object). Sem o cast, o compilador inferiria
-        // FinishEscrowRequest como tipo comum e nao combinaria com RequestParameters.
-        return await PostAsync<Escrow>(route, (object)requestObj ?? new RequestParameters());
+        return await PostAsync<Payment>(route, new RequestParameters());
     }
 
     public async Task<ResponseObject<Escrow>> GetPaymentEscrow(string paymentId)

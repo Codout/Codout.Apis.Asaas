@@ -45,14 +45,19 @@ public class PixRecurringManagerTests : ManagerTestBase<PixRecurringManager>
     }
 
     [Fact]
-    public async Task ListItems_SendsGetToItemsRoute()
+    public async Task ListItems_SendsGetToItemsRouteAndParsesEnvelope()
     {
-        SetupListResponse<PixRecurringItem>("[]");
+        // API retorna { data: [...] }, nao o envelope padrao de lista
+        SetupOkResponse("{\"data\":[{\"id\":\"item_1\",\"status\":\"PENDING\",\"value\":0.02,\"recurrenceNumber\":1,\"quantity\":2,\"canBeCancelled\":true}]}");
 
         var result = await Manager.ListItems("rec_1", 0, 10);
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrlContains("/v3/pix/transactions/recurrings/rec_1/items");
+        Assert.True(result.WasSuccessful());
+        Assert.Single(result.Data.Data);
+        Assert.Equal("item_1", result.Data.Data[0].Id);
+        Assert.True(result.Data.Data[0].CanBeCancelled);
     }
 
     [Fact]

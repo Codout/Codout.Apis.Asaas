@@ -3,6 +3,7 @@ using System.Net.Http;
 using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Managers;
 using Codout.Apis.Asaas.Models.Escrow;
+using Codout.Apis.Asaas.Models.Escrow.Enums;
 using Codout.Apis.Asaas.Tests.Helpers;
 
 namespace Codout.Apis.Asaas.Tests.Managers;
@@ -15,13 +16,15 @@ public class EscrowManagerTests : ManagerTestBase<EscrowManager>
     [Fact]
     public async Task SaveSubaccountConfig_SendsPostToAccountsEscrowRoute()
     {
-        SetupOkResponse("{\"enabled\":true,\"daysUntilExpire\":30}");
-        var request = new SaveEscrowConfigRequest { Enabled = true, DaysUntilExpire = 30 };
+        SetupOkResponse("{\"daysToExpire\":30,\"enabled\":true,\"isFeePayer\":false}");
+        var request = new SaveEscrowConfigRequest { Enabled = true, DaysToExpire = 30, IsFeePayer = false };
 
         var result = await Manager.SaveSubaccountConfig("acc_1", request);
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/accounts/acc_1/escrow");
+        Assert.Equal(30, result.Data.DaysToExpire);
+        Assert.True(result.Data.Enabled);
     }
 
     [Fact]
@@ -38,9 +41,9 @@ public class EscrowManagerTests : ManagerTestBase<EscrowManager>
     [Fact]
     public async Task SaveDefaultConfig_SendsPostToAccountsEscrowRoot()
     {
-        SetupOkResponse("{\"enabled\":true}");
+        SetupOkResponse("{\"daysToExpire\":30,\"enabled\":true}");
 
-        var result = await Manager.SaveDefaultConfig(new SaveEscrowConfigRequest { Enabled = true });
+        var result = await Manager.SaveDefaultConfig(new SaveEscrowConfigRequest { DaysToExpire = 30, Enabled = true });
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/accounts/escrow");
@@ -58,25 +61,30 @@ public class EscrowManagerTests : ManagerTestBase<EscrowManager>
     }
 
     [Fact]
-    public async Task FinishPaymentEscrow_SendsPostToFinishRoute()
+    public async Task FinishPaymentEscrow_SendsPostToFinishRouteAndDeserializesPayment()
     {
-        SetupOkResponse("{\"id\":\"esc_1\",\"status\":\"DONE\"}");
+        // API real retorna PaymentGetResponseDTO (Payment), nao Escrow
+        SetupOkResponse("{\"id\":\"pay_1\",\"status\":\"RECEIVED\",\"value\":100}");
 
-        var result = await Manager.FinishPaymentEscrow("esc_1", new FinishEscrowRequest { Reason = "MANUAL" });
+        var result = await Manager.FinishPaymentEscrow("esc_1");
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/escrow/esc_1/finish");
+        Assert.True(result.WasSuccessful());
+        Assert.Equal("pay_1", result.Data.Id);
     }
 
     [Fact]
-    public async Task GetPaymentEscrow_SendsGetToPaymentsEscrowRoute()
+    public async Task GetPaymentEscrow_SendsGetToPaymentsEscrowRouteAndDeserializesEnums()
     {
-        SetupOkResponse("{\"id\":\"esc_1\",\"status\":\"ACTIVE\"}");
+        SetupOkResponse("{\"id\":\"esc_1\",\"status\":\"DONE\",\"finishReason\":\"EXPIRED\"}");
 
         var result = await Manager.GetPaymentEscrow("pay_1");
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/payments/pay_1/escrow");
+        Assert.Equal(EscrowStatus.DONE, result.Data.Status);
+        Assert.Equal(EscrowFinishReason.EXPIRED, result.Data.FinishReason);
     }
 
     [Fact]

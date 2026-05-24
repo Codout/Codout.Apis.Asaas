@@ -26,10 +26,17 @@ public class PixRecurringManager(ApiSettings settings) : BaseManager(settings)
         return await PostAsync<PixRecurringTransaction>(route, new RequestParameters());
     }
 
-    public async Task<ResponseList<PixRecurringItem>> ListItems(string recurringId, int offset, int limit)
+    public async Task<ResponseObject<PixRecurringItemsResponse>> ListItems(string recurringId, int offset = 0, int limit = 10)
     {
-        var route = $"{RecurringsRoute}/{recurringId}/items";
-        return await GetListAsync<PixRecurringItem>(route, offset, limit);
+        // API retorna envelope { data: [...] } sem hasMore/totalCount/limit/offset,
+        // entao usamos GetAsync com query string manual e tipamos com wrapper proprio.
+        var query = new RequestParameters
+        {
+            { "offset", offset },
+            { "limit", limit }
+        };
+        var route = $"{RecurringsRoute}/{recurringId}/items{query.Build()}";
+        return await GetAsync<PixRecurringItemsResponse>(route);
     }
 
     public async Task<ResponseObject<PixRecurringItem>> CancelItem(string itemId)
