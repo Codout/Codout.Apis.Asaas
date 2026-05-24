@@ -13,6 +13,30 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
     protected override PaymentManager CreateManager(ApiSettings settings, MockHttpMessageHandler handler)
         => new TestablePaymentManager(settings, handler);
 
+    #region CreateWithCreditCard
+
+    [Fact]
+    public async Task CreateWithCreditCard_SendsPostToPaymentsRootWithTrailingSlash()
+    {
+        SetupOkResponse("{\"id\":\"pay_cc\",\"value\":100.00}");
+        var request = new CreatePaymentRequest
+        {
+            CustomerId = "cus_1",
+            BillingType = BillingType.CREDIT_CARD,
+            Value = 100.00m,
+            DueDate = new DateTime(2026, 3, 15),
+            CreditCardToken = "tok_abc"
+        };
+
+        var result = await Manager.CreateWithCreditCard(request);
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/payments/");
+        Assert.True(result.WasSucessfull());
+    }
+
+    #endregion
+
     #region Create
 
     [Fact]
@@ -351,6 +375,180 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         Assert.True(result.WasSucessfull());
         Assert.Equal("pay_123", result.Data.Id);
+    }
+
+    #endregion
+
+    #region CaptureAuthorizedPayment / PayWithCreditCard
+
+    [Fact]
+    public async Task CaptureAuthorizedPayment_SendsPostToCaptureRoute()
+    {
+        SetupOkResponse("{\"id\":\"pay_1\",\"status\":\"CONFIRMED\"}");
+
+        var result = await Manager.CaptureAuthorizedPayment("pay_1", new CapturePaymentRequest { Value = 50.00m });
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/payments/pay_1/captureAuthorizedPayment");
+    }
+
+    [Fact]
+    public async Task PayWithCreditCard_SendsPostToPayWithCreditCardRoute()
+    {
+        SetupOkResponse("{\"id\":\"pay_1\",\"status\":\"CONFIRMED\"}");
+
+        var result = await Manager.PayWithCreditCard("pay_1", new PayWithCreditCardRequest { CreditCardToken = "tok_abc" });
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/payments/pay_1/payWithCreditCard");
+    }
+
+    #endregion
+
+    #region BillingInfo / ViewingInfo / Status
+
+    [Fact]
+    public async Task GetBillingInfo_SendsGetToBillingInfoRoute()
+    {
+        SetupOkResponse("{\"creditCard\":{\"creditCardNumber\":\"1234\"},\"pix\":null,\"bankSlip\":null}");
+
+        var result = await Manager.GetBillingInfo("pay_1");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/payments/pay_1/billingInfo");
+        Assert.True(result.WasSucessfull());
+        Assert.Equal("1234", result.Data.CreditCard.CreditCardNumber);
+    }
+
+    [Fact]
+    public async Task GetViewingInfo_SendsGetToViewingInfoRoute()
+    {
+        SetupOkResponse("{\"bankSlipViewedDate\":\"2026-05-01\"}");
+
+        var result = await Manager.GetViewingInfo("pay_1");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/payments/pay_1/viewingInfo");
+    }
+
+    [Fact]
+    public async Task GetStatus_SendsGetToStatusRoute()
+    {
+        SetupOkResponse("{\"status\":\"CONFIRMED\"}");
+
+        var result = await Manager.GetStatus("pay_1");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/payments/pay_1/status");
+        Assert.True(result.WasSucessfull());
+        Assert.Equal(Codout.Apis.Asaas.Models.Payment.Enums.PaymentStatus.CONFIRMED, result.Data.Status);
+    }
+
+    #endregion
+
+    #region Simulate / GetLimits
+
+    [Fact]
+    public async Task Simulate_SendsPostToSimulateRoute()
+    {
+        SetupOkResponse("{\"value\":100,\"netValue\":95,\"fee\":5}");
+        var request = new SimulatePaymentRequest { Value = 100m, BillingType = BillingType.BOLETO };
+
+        var result = await Manager.Simulate(request);
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/payments/simulate");
+        Assert.True(result.WasSucessfull());
+        Assert.Equal(100m, result.Data.Value);
+        Assert.Equal(95m, result.Data.NetValue);
+    }
+
+    [Fact]
+    public async Task GetLimits_SendsGetToLimitsRoute()
+    {
+        SetupOkResponse("{\"creditCard\":{\"daily\":1000},\"pix\":{\"daily\":500},\"bankSlip\":{\"daily\":2000}}");
+
+        var result = await Manager.GetLimits();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/payments/limits");
+        Assert.True(result.WasSucessfull());
+        Assert.Equal(1000m, result.Data.CreditCard.Daily);
+    }
+
+    #endregion
+
+    #region Refunds / BankSlip refund
+
+    [Fact]
+    public async Task ListRefunds_SendsGetToRefundsRoute()
+    {
+        SetupListResponse<PaymentRefund>("[{\"value\":10.00,\"status\":\"DONE\"}]");
+
+        var result = await Manager.ListRefunds("pay_1", 0, 10);
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrlContains("/v3/payments/pay_1/refunds");
+    }
+
+    [Fact]
+    public async Task RefundBankSlip_SendsPostToBankSlipRefundRoute()
+    {
+        SetupOkResponse("{\"id\":\"pay_1\",\"status\":\"REFUNDED\"}");
+
+        var result = await Manager.RefundBankSlip("pay_1");
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/payments/pay_1/bankSlip/refund");
+    }
+
+    #endregion
+
+    #region Documents
+
+    [Fact]
+    public async Task ListDocuments_SendsGetToDocumentsRoute()
+    {
+        SetupListResponse<PaymentDocument>("[{\"id\":\"doc_1\",\"name\":\"contrato.pdf\"}]");
+
+        var result = await Manager.ListDocuments("pay_1", 0, 10);
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrlContains("/v3/payments/pay_1/documents");
+    }
+
+    [Fact]
+    public async Task FindDocument_SendsGetToSpecificDocumentRoute()
+    {
+        SetupOkResponse("{\"id\":\"doc_1\",\"name\":\"contrato.pdf\"}");
+
+        var result = await Manager.FindDocument("pay_1", "doc_1");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/payments/pay_1/documents/doc_1");
+    }
+
+    [Fact]
+    public async Task UpdateDocument_SendsPutToSpecificDocumentRoute()
+    {
+        SetupOkResponse("{\"id\":\"doc_1\",\"available\":true}");
+        var request = new UpdatePaymentDocumentRequest { Available = true };
+
+        var result = await Manager.UpdateDocument("pay_1", "doc_1", request);
+
+        AssertRequestMethod(HttpMethod.Put);
+        AssertRequestUrl("/v3/payments/pay_1/documents/doc_1");
+    }
+
+    [Fact]
+    public async Task DeleteDocument_SendsDeleteToSpecificDocumentRoute()
+    {
+        SetupOkResponse("{\"deleted\":true,\"id\":\"doc_1\"}");
+
+        var result = await Manager.DeleteDocument("pay_1", "doc_1");
+
+        AssertRequestMethod(HttpMethod.Delete);
+        AssertRequestUrl("/v3/payments/pay_1/documents/doc_1");
     }
 
     #endregion
