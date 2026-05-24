@@ -128,4 +128,32 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
         Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
+
+    // ── PreAuthorization Config ─────────────────────────────────────
+
+    [Fact]
+    public async Task SavePreAuthorizationConfig_SendsPostToConfigRoute()
+    {
+        SetupOkResponse("{\"enabled\":true,\"automaticCaptureDelay\":1}");
+        var request = new SavePreAuthorizationConfigRequest { Enabled = true, AutomaticCaptureDelay = 1 };
+
+        var result = await Manager.SavePreAuthorizationConfig(request);
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/creditCard/preAuthorization/config");
+        Assert.True(result.Data.Enabled);
+        Assert.Equal(1, result.Data.AutomaticCaptureDelay);
+    }
+
+    [Fact]
+    public async Task GetPreAuthorizationConfig_SendsGetToConfigRoute()
+    {
+        SetupOkResponse("{\"enabled\":false}");
+
+        var result = await Manager.GetPreAuthorizationConfig();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/creditCard/preAuthorization/config");
+        Assert.False(result.Data.Enabled);
+    }
 }
