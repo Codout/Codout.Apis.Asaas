@@ -235,3 +235,13 @@ public class TestableCheckoutManager(ApiSettings settings, HttpMessageHandler ha
         return client;
     }
 }
+
+public class TestableMobilePhoneRechargeManager(ApiSettings settings, HttpMessageHandler handler) : MobilePhoneRechargeManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
