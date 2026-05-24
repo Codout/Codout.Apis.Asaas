@@ -215,3 +215,13 @@ public class TestableChargebackManager(ApiSettings settings, HttpMessageHandler 
         return client;
     }
 }
+
+public class TestableEscrowManager(ApiSettings settings, HttpMessageHandler handler) : EscrowManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}

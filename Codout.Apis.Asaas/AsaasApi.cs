@@ -28,6 +28,7 @@ public class AsaasApi(ApiSettings apiSettings)
     private Lazy<FiscalInfoManager> LazyFiscalInfo { get; } = new(() => new FiscalInfoManager(apiSettings), true);
     private Lazy<PixManager> LazyPix { get; } = new(() => new PixManager(apiSettings), true);
     private Lazy<ChargebackManager> LazyChargeback { get; } = new(() => new ChargebackManager(apiSettings), true);
+    private Lazy<EscrowManager> LazyEscrow { get; } = new(() => new EscrowManager(apiSettings), true);
 
     #endregion
 
@@ -53,5 +54,6 @@ public class AsaasApi(ApiSettings apiSettings)
     public FiscalInfoManager FiscalInfo => LazyFiscalInfo.Value;
     public PixManager Pix => LazyPix.Value;
     public ChargebackManager Chargeback => LazyChargeback.Value;
+    public EscrowManager Escrow => LazyEscrow.Value;
     #endregion
 }
