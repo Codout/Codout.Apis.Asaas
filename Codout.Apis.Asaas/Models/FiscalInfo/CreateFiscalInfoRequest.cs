@@ -1,8 +1,8 @@
 using Codout.Apis.Asaas.Core.Interfaces;
 
-namespace Codout.Apis.Asaas.Models.CustomerFiscalInfo
+namespace Codout.Apis.Asaas.Models.FiscalInfo
 {
-    public class CreateCustomerFiscalInfoRequest
+    public class CreateFiscalInfoRequest
     {
         public string Email { get; set; }
         public string MunicipalInscription { get; set; }

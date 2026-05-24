@@ -2,27 +2,27 @@ using System.Net;
 using System.Net.Http;
 using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Managers;
-using Codout.Apis.Asaas.Models.CustomerFiscalInfo;
+using Codout.Apis.Asaas.Models.FiscalInfo;
 using Codout.Apis.Asaas.Tests.Helpers;
 
 namespace Codout.Apis.Asaas.Tests.Managers;
 
-public class CustomerFiscalInfoManagerTests : ManagerTestBase<CustomerFiscalInfoManager>
+public class FiscalInfoManagerTests : ManagerTestBase<FiscalInfoManager>
 {
-    protected override CustomerFiscalInfoManager CreateManager(ApiSettings settings, MockHttpMessageHandler handler)
-        => new TestableCustomerFiscalInfoManager(settings, handler);
+    protected override FiscalInfoManager CreateManager(ApiSettings settings, MockHttpMessageHandler handler)
+        => new TestableFiscalInfoManager(settings, handler);
 
     #region Find
 
     [Fact]
-    public async Task Find_SendsGetRequest()
+    public async Task Find_SendsGetRequestToFiscalInfoRoute()
     {
         SetupOkResponse("{\"email\":\"test@example.com\",\"municipalInscription\":\"12345\",\"stateInscription\":\"67890\",\"simplesNacional\":true,\"culturalProjectsPromoter\":false,\"cnae\":\"6201-5/00\",\"specialTaxRegime\":\"MICROEMPRESA\",\"serviceListItem\":\"14.01\",\"rpsSerie\":\"A\",\"rpsNumber\":\"100\",\"loteNumber\":\"1\",\"username\":\"testuser\",\"accessToken\":\"token123\"}");
 
         var result = await Manager.Find();
 
         AssertRequestMethod(HttpMethod.Get);
-        AssertRequestUrl("/v3/customerFiscalInfo");
+        AssertRequestUrl("/v3/fiscalInfo");
         Assert.True(result.WasSucessfull());
         Assert.NotNull(result.Data);
         Assert.Equal("test@example.com", result.Data.Email);
@@ -45,14 +45,14 @@ public class CustomerFiscalInfoManagerTests : ManagerTestBase<CustomerFiscalInfo
     #region ListMunicipalOptions
 
     [Fact]
-    public async Task ListMunicipalOptions_SendsGetRequest()
+    public async Task ListMunicipalOptions_SendsGetToFiscalInfoMunicipalOptions()
     {
         SetupListResponse<MunicipalOption>("[{\"id\":\"mo_1\",\"label\":\"Sao Paulo\"},{\"id\":\"mo_2\",\"label\":\"Rio de Janeiro\"}]", totalCount: 2, limit: 100, offset: 0);
 
         var result = await Manager.ListMunicipalOptions();
 
         AssertRequestMethod(HttpMethod.Get);
-        AssertRequestUrlContains("/v3/customerFiscalInfo/municipalOptions");
+        AssertRequestUrlContains("/v3/fiscalInfo/municipalOptions");
         AssertRequestUrlContains("offset=0");
         AssertRequestUrlContains("limit=100");
         Assert.True(result.WasSucessfull());
@@ -74,6 +74,38 @@ public class CustomerFiscalInfoManagerTests : ManagerTestBase<CustomerFiscalInfo
         Assert.Equal(100, result.Limit);
         Assert.Equal(0, result.Offset);
         Assert.False(result.HasMore);
+    }
+
+    #endregion
+
+    #region ListServices
+
+    [Fact]
+    public async Task ListServices_SendsGetToFiscalInfoServices()
+    {
+        SetupListResponse<MunicipalService>("[{\"id\":\"3544\",\"description\":\"1.01 - Analise e desenvolvimento de sistemas\",\"issTax\":5}]", totalCount: 1);
+
+        var result = await Manager.ListServices("1.01");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrlContains("/v3/fiscalInfo/services");
+        AssertRequestUrlContains("description=1.01");
+        Assert.True(result.WasSucessfull());
+        Assert.Single(result.Data);
+        Assert.Equal("3544", result.Data[0].Id);
+        Assert.Equal("1.01 - Analise e desenvolvimento de sistemas", result.Data[0].Description);
+        Assert.Equal(5m, result.Data[0].IssTax);
+    }
+
+    [Fact]
+    public async Task ListServices_IncludesPaginationParameters()
+    {
+        SetupListResponse<MunicipalService>("[]", totalCount: 0, offset: 20, limit: 5);
+
+        var result = await Manager.ListServices("test", offset: 20, limit: 5);
+
+        AssertRequestUrlContains("offset=20");
+        AssertRequestUrlContains("limit=5");
     }
 
     #endregion

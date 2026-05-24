@@ -1,4 +1,4 @@
-namespace Codout.Apis.Asaas.Models.CustomerFiscalInfo
+namespace Codout.Apis.Asaas.Models.FiscalInfo
 {
     public class MunicipalOption
     {

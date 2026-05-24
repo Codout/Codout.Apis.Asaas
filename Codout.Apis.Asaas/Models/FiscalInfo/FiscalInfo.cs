@@ -1,6 +1,6 @@
-namespace Codout.Apis.Asaas.Models.CustomerFiscalInfo
+namespace Codout.Apis.Asaas.Models.FiscalInfo
 {
-    public class CustomerFiscalInfo
+    public class FiscalInfo
     {
         public string Email { get; set; }
         public string MunicipalInscription { get; set; }

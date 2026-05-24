@@ -186,7 +186,7 @@ public class TestableCreditBureauReportManager(ApiSettings settings, HttpMessage
     }
 }
 
-public class TestableCustomerFiscalInfoManager(ApiSettings settings, HttpMessageHandler handler) : CustomerFiscalInfoManager(settings)
+public class TestableFiscalInfoManager(ApiSettings settings, HttpMessageHandler handler) : FiscalInfoManager(settings)
 {
     protected override HttpClient BuildHttpClient()
     {

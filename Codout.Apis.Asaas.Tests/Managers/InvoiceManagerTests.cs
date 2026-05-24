@@ -229,36 +229,6 @@ public class InvoiceManagerTests : ManagerTestBase<InvoiceManager>
         Assert.Equal("inv_123", result.Data.Id);
     }
 
-    // ── ListMunicipalServices ───────────────────────────────────────
-
-    [Fact]
-    public async Task ListMunicipalServices_SendsGetToCorrectUrl()
-    {
-        SetupListResponse<MunicipalService>("[]", totalCount: 0);
-
-        var result = await Manager.ListMunicipalServices("IT");
-
-        AssertRequestMethod(HttpMethod.Get);
-        AssertRequestUrlContains("/v3/invoices/municipalServices");
-        AssertRequestUrlContains("description=IT");
-    }
-
-    [Fact]
-    public async Task ListMunicipalServices_DeserializesResponse()
-    {
-        SetupListResponse<MunicipalService>("[{\"id\":\"ms_1\",\"description\":\"IT Service\",\"iss\":5.0},{\"id\":\"ms_2\",\"description\":\"IT Consulting\",\"iss\":3.0}]", totalCount: 2);
-
-        var result = await Manager.ListMunicipalServices("IT");
-
-        Assert.True(result.WasSucessfull());
-        Assert.NotNull(result.Data);
-        Assert.Equal(2, result.Data.Count);
-        Assert.Equal("ms_1", result.Data[0].Id);
-        Assert.Equal("IT Service", result.Data[0].Description);
-        Assert.Equal(5.0m, result.Data[0].Iss);
-        Assert.Equal("ms_2", result.Data[1].Id);
-    }
-
     // ── Error handling ──────────────────────────────────────────────
 
     [Fact]

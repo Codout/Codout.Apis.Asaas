@@ -25,7 +25,7 @@ public class AsaasApi(ApiSettings apiSettings)
     private Lazy<PaymentLinkManager> LazyPaymentLink { get; } = new(() => new PaymentLinkManager(apiSettings), true);
     private Lazy<NotificationManager> LazyNotification { get; } = new(() => new NotificationManager(apiSettings), true);
     private Lazy<CreditBureauReportManager> LazyCreditBureauReport { get; } = new(() => new CreditBureauReportManager(apiSettings), true);
-    private Lazy<CustomerFiscalInfoManager> LazyCustomerFiscalInfo { get; } = new(() => new CustomerFiscalInfoManager(apiSettings), true);
+    private Lazy<FiscalInfoManager> LazyFiscalInfo { get; } = new(() => new FiscalInfoManager(apiSettings), true);
     private Lazy<PixManager> LazyPix { get; } = new(() => new PixManager(apiSettings), true);
 
     #endregion
@@ -49,7 +49,7 @@ public class AsaasApi(ApiSettings apiSettings)
     public PaymentLinkManager PaymentLink => LazyPaymentLink.Value;
     public NotificationManager Notification => LazyNotification.Value;
     public CreditBureauReportManager CreditBureauReport => LazyCreditBureauReport.Value;
-    public CustomerFiscalInfoManager CustomerFiscalInfo => LazyCustomerFiscalInfo.Value;
+    public FiscalInfoManager FiscalInfo => LazyFiscalInfo.Value;
     public PixManager Pix => LazyPix.Value;
     #endregion
 }

@@ -46,16 +46,4 @@ public class InvoiceManager(ApiSettings settings) : BaseManager(settings)
         var route = $"{InvoicesRoute}/{invoiceId}/cancel";
         return await PostAsync<Invoice>(route, new RequestParameters());
     }
-
-    public async Task<ResponseList<MunicipalService>> ListMunicipalServices(string serviceDescription)
-    {
-        var queryMap = new RequestParameters
-        {
-            { "description", serviceDescription }
-        };
-
-        var route = $"{InvoicesRoute}/municipalServices";
-
-        return await GetListAsync<MunicipalService>(route, 0, 0, queryMap);
-    }
 }

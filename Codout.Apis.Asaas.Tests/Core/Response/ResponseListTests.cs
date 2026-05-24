@@ -5,7 +5,7 @@ using Codout.Apis.Asaas.Models.PaymentLink.Enums;
 using Codout.Apis.Asaas.Models.Common.Enums;
 using Codout.Apis.Asaas.Models.Pix;
 using Codout.Apis.Asaas.Models.Pix.Enums;
-using Codout.Apis.Asaas.Models.CustomerFiscalInfo;
+using Codout.Apis.Asaas.Models.FiscalInfo;
 
 namespace Codout.Apis.Asaas.Tests.Core.Response;
 

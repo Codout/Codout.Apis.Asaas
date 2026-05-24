@@ -8,7 +8,7 @@ using Codout.Apis.Asaas.Models.Common;
 using Codout.Apis.Asaas.Models.Common.Enums;
 using Codout.Apis.Asaas.Models.Notification;
 using Codout.Apis.Asaas.Models.CreditBureauReport;
-using Codout.Apis.Asaas.Models.CustomerFiscalInfo;
+using Codout.Apis.Asaas.Models.FiscalInfo;
 using Codout.Apis.Asaas.Models.Pix;
 using Codout.Apis.Asaas.Models.Pix.Enums;
 
@@ -296,10 +296,10 @@ public class SerializationTests
 
     #endregion
 
-    #region CustomerFiscalInfo Models
+    #region FiscalInfo Models
 
     [Fact]
-    public void CustomerFiscalInfo_Deserialize()
+    public void FiscalInfo_Deserialize()
     {
         var json = """
         {
@@ -319,7 +319,7 @@ public class SerializationTests
         }
         """;
 
-        var result = JsonSerializer.Deserialize<CustomerFiscalInfo>(json, Options);
+        var result = JsonSerializer.Deserialize<FiscalInfo>(json, Options);
 
         Assert.NotNull(result);
         Assert.Equal("fiscal@company.com", result.Email);
