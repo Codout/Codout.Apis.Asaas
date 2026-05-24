@@ -265,3 +265,13 @@ public class TestablePixAutomaticManager(ApiSettings settings, HttpMessageHandle
         return client;
     }
 }
+
+public class TestablePixRecurringManager(ApiSettings settings, HttpMessageHandler handler) : PixRecurringManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}

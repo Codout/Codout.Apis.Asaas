@@ -33,6 +33,7 @@ public class AsaasApi(ApiSettings apiSettings)
     private Lazy<MobilePhoneRechargeManager> LazyMobilePhoneRecharge { get; } = new(() => new MobilePhoneRechargeManager(apiSettings), true);
     private Lazy<SandboxManager> LazySandbox { get; } = new(() => new SandboxManager(apiSettings), true);
     private Lazy<PixAutomaticManager> LazyPixAutomatic { get; } = new(() => new PixAutomaticManager(apiSettings), true);
+    private Lazy<PixRecurringManager> LazyPixRecurring { get; } = new(() => new PixRecurringManager(apiSettings), true);
 
     #endregion
 
@@ -63,5 +64,6 @@ public class AsaasApi(ApiSettings apiSettings)
     public MobilePhoneRechargeManager MobilePhoneRecharge => LazyMobilePhoneRecharge.Value;
     public SandboxManager Sandbox => LazySandbox.Value;
     public PixAutomaticManager PixAutomatic => LazyPixAutomatic.Value;
+    public PixRecurringManager PixRecurring => LazyPixRecurring.Value;
     #endregion
 }
