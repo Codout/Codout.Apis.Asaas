@@ -34,7 +34,18 @@
 
 Erros oficiais (`{errors:[{code,description}]}`) também validados via fixture compartilhada (`error-response.json`).
 
-## §2 — CheckoutManager — ⏳
+## §2 — CheckoutManager — ✅
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `POST /v3/checkouts` (request) | ✅ | `CreateCheckoutRequest` (billingTypes, chargeTypes, callback, items required) | `Checkout/create-request-minimal.json`, `create-request-recurrent.json` | `CreateCheckoutRequest_*` (3 tests) | ✅ |
+| `POST /v3/checkouts` (response) | ✅ | `Checkout` (id, link, status enum, subscriptions, customerData com city/addressNumber `int`) | `Checkout/response.json` | `CheckoutResponse_DeserializesFromOfficialFixture_FullShape`, `_UsesSplitSingular_OnResponse` | ✅ |
+| `POST /v3/checkouts/{id}/cancel` | ✅ | mesmo response `Checkout`, body vazio | reusa `response.json` | (idem) | ✅ |
+| Enum `CheckoutStatus` ACTIVE/CANCELED/EXPIRED/PAID | ✅ | enum tipado | inline | `CheckoutStatus_AllValuesDeserialize` | ✅ |
+
+**Quirk documentado:** request usa `splits` (plural), response usa `split` (singular). Comentário no `CreateCheckoutRequest.cs` evita "correções" futuras erradas.
+
+**Bug pré-existente corrigido em paralelo:** `Subscription.Enums.Cycle` estava faltando o valor `BIMONTHLY` (presente no schema oficial de `SubscriptionSaveRequestCycle` e `CheckoutSessionSubscriptionCycle`).
 
 ## §3 — EscrowManager — ⏳
 

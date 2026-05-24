@@ -5,6 +5,7 @@
         WEEKLY,
         BIWEEKLY,
         MONTHLY,
+        BIMONTHLY,
         QUARTERLY,
         SEMIANNUALLY,
         YEARLY
