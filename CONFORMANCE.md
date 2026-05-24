@@ -137,7 +137,24 @@ Endpoints `/v3/myAccount/documents*` (5 endpoints). Subgrupo Account Document do
 
 **Quirk de envelope:** `/myAccount/documents` retorna envelope `{rejectReasons, data:[...]}` sem `hasMore/totalCount/limit/offset`. Mantido em `AccountDocumentResponse` para evitar deserialização incorreta via `ResponseList<T>` (B-07 já fixado em fase anterior).
 
-## §8 — InvoiceManager (pré-existente) — ⏳
+## §8 — InvoiceManager (pré-existente) — ✅
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `POST /v3/invoices` (request) | ✅ | `CreateInvoiceRequest` (required: serviceDescription, observations, value, deductions, effectiveDate, municipalServiceName, taxes; `payment`/`customer`/`installment` opcionais) | `Invoice/schedule-request.json` | `CreateRequest_*` (3 tests) | ✅ |
+| `POST /v3/invoices` (response) | ✅ | `Invoice` (id, status enum, customer, payment, taxes, etc.) | `Invoice/invoice-response.json` | `InvoiceResponse_DeserializesFromOfficialFixture`, `TaxesResponse_HasAllReformaTributariaFields` | ✅ |
+| `GET /v3/invoices` (filtros) | ✅ | `InvoiceListFilter` (effectiveDate[Ge]/[Le], payment, installment, customer, externalReference, status) | inline | `ListFilter_UsesCapitalGeAndLeForEffectiveDate`, `_SupportsCustomerAndExternalReference` | ✅ |
+| `GET /v3/invoices/{id}` | ✅ | mesmo `Invoice` | reusa | (idem) | ✅ |
+| `PUT /v3/invoices/{id}` | ✅ | `UpdateInvoiceRequest` (todos opcionais + updatePayment) | inline | `UpdateRequest_SupportsUpdatePaymentFlag` | ✅ |
+| `POST /v3/invoices/{id}/authorize` | ✅ | body vazio → `Invoice` | (cobertura unit do manager) | (cobertura existente) | ✅ |
+| `POST /v3/invoices/{id}/cancel` | ✅ | body vazio → `Invoice` | (cobertura unit do manager) | (cobertura existente) | ✅ |
+| Enum `InvoiceStatus` (6 valores) | ✅ | enum tipado | inline | `InvoiceStatus_AllSixValuesDeserialize` | ✅ |
+
+**Bugs corrigidos nesta fase (B-21):**
+- **B-21a**: `Taxes` model só tinha 7 campos (retainIss, iss, cofins, csll, inss, ir, pis). Schema `InvoiceTaxesResponseDTO` tem mais 6 (nbsCode, taxSituationCode, taxClassificationCode, operationIndicatorCode, pisCofinsRetentionType, pisCofinsTaxStatus) + 6 da Reforma Tributária (stateIbs, stateIbsValue, municipalIbs, municipalIbsValue, cbs, cbsValue) → todos esses sumiam silenciosamente. Modelo expandido para 19 campos.
+- **B-21b**: `InvoiceListFilter` usava `effectiveDate[ge]` e `[le]` lowercase. Schema oficial usa `[Ge]` e `[Le]` maiúsculos. O filtro com casing errado era silenciosamente ignorado pela API.
+- **B-21c**: `InvoiceListFilter` faltava `customer` e `externalReference`. Adicionados.
+- **B-21d**: `CreateInvoiceRequest` e `UpdateInvoiceRequest` faltavam `updatePayment: bool?`. Adicionado em ambos.
 
 ## §9 — PaymentDunningManager (pré-existente) — ⏳
 
