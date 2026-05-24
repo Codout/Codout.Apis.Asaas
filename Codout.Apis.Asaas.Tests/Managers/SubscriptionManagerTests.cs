@@ -173,6 +173,33 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
     #endregion
 
+    #region UpdateCreditCard
+
+    [Fact]
+    public async Task UpdateCreditCard_SendsPutToCreditCardRoute()
+    {
+        SetupOkResponse("{\"id\":\"sub_123\",\"value\":129.90}");
+        var request = new UpdateSubscriptionCreditCardRequest { CreditCardToken = "tok_abc" };
+
+        var result = await Manager.UpdateCreditCard("sub_123", request);
+
+        AssertRequestMethod(HttpMethod.Put);
+        AssertRequestUrl("/v3/subscriptions/sub_123/creditCard");
+    }
+
+    [Fact]
+    public async Task UpdateCreditCard_OnError_ReturnsErrorResponse()
+    {
+        SetupErrorResponse(HttpStatusCode.BadRequest);
+        var request = new UpdateSubscriptionCreditCardRequest { CreditCardToken = "tok_bad" };
+
+        var result = await Manager.UpdateCreditCard("sub_123", request);
+
+        Assert.False(result.WasSucessfull());
+    }
+
+    #endregion
+
     #region Delete
 
     [Fact]

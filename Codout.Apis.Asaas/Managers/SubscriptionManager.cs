@@ -45,6 +45,12 @@ public class SubscriptionManager(ApiSettings settings) : BaseManager(settings)
         return await DeleteAsync<DeletedSubscription>(route);
     }
 
+    public async Task<ResponseObject<Subscription>> UpdateCreditCard(string subscriptionId, UpdateSubscriptionCreditCardRequest requestObj)
+    {
+        var route = $"{SubscriptionsRoute}/{subscriptionId}/creditCard";
+        return await PutAsync<Subscription>(route, requestObj);
+    }
+
     public async Task<ResponseList<Payment>> ListPayments(string subscriptionId, int offset, int limit)
     {
         var route = $"{SubscriptionsRoute}/{subscriptionId}/payments";
