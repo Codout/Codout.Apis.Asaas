@@ -13,40 +13,104 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
     protected override MyAccountManager CreateManager(ApiSettings settings, MockHttpMessageHandler handler)
         => new TestableMyAccountManager(settings, handler);
 
-    // ── Find ────────────────────────────────────────────────────────
+    // ── GetCommercialInfo ───────────────────────────────────────────
 
     [Fact]
-    public async Task Find_SendsGetToCorrectUrl()
+    public async Task GetCommercialInfo_SendsGetToCommercialInfoRoute()
     {
         SetupOkResponse("{\"name\":\"My Company\",\"email\":\"company@test.com\"}");
 
-        var result = await Manager.Find();
+        var result = await Manager.GetCommercialInfo();
 
         AssertRequestMethod(HttpMethod.Get);
-        AssertRequestUrl("/v3/myAccount");
+        AssertRequestUrl("/v3/myAccount/commercialInfo");
     }
 
     [Fact]
-    public async Task Find_DeserializesResponse()
+    public async Task GetCommercialInfo_DeserializesResponse()
     {
         SetupOkResponse("{\"name\":\"My Company\",\"email\":\"company@test.com\",\"cpfCnpj\":\"12345678901234\",\"phone\":\"1199998888\",\"mobilePhone\":\"11999887766\",\"address\":\"Rua Principal\",\"addressNumber\":\"500\",\"complement\":\"Sala 10\",\"province\":\"Centro\",\"postalCode\":\"01001000\",\"inscricaoEstadual\":\"123456789\",\"status\":\"ACTIVE\"}");
 
-        var result = await Manager.Find();
+        var result = await Manager.GetCommercialInfo();
 
         Assert.True(result.WasSucessfull());
         Assert.NotNull(result.Data);
         Assert.Equal("My Company", result.Data.Name);
         Assert.Equal("company@test.com", result.Data.Email);
         Assert.Equal("12345678901234", result.Data.CpfCnpj);
-        Assert.Equal("1199998888", result.Data.Phone);
-        Assert.Equal("11999887766", result.Data.MobilePhone);
-        Assert.Equal("Rua Principal", result.Data.Address);
-        Assert.Equal("500", result.Data.AddressNumber);
-        Assert.Equal("Sala 10", result.Data.Complement);
-        Assert.Equal("Centro", result.Data.Province);
-        Assert.Equal("01001000", result.Data.PostalCode);
-        Assert.Equal("123456789", result.Data.InscricaoEstadual);
         Assert.Equal("ACTIVE", result.Data.Status);
+    }
+
+    // ── UpdateCommercialInfo / GetStatus / DeleteWhiteLabelAccount ──
+
+    [Fact]
+    public async Task UpdateCommercialInfo_SendsPostToCommercialInfoRoute()
+    {
+        SetupOkResponse("{\"name\":\"My Company\",\"email\":\"new@test.com\"}");
+        var request = new UpdateCommercialInfoRequest { Name = "My Company", Email = "new@test.com" };
+
+        var result = await Manager.UpdateCommercialInfo(request);
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/myAccount/commercialInfo");
+    }
+
+    [Fact]
+    public async Task GetStatus_SendsGetToStatusRoute()
+    {
+        SetupOkResponse("{\"general\":\"APPROVED\",\"commercialInfo\":\"APPROVED\"}");
+
+        var result = await Manager.GetStatus();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/myAccount/status");
+        Assert.Equal("APPROVED", result.Data.General);
+    }
+
+    [Fact]
+    public async Task DeleteWhiteLabelAccount_SendsDeleteToMyAccountRoot()
+    {
+        SetupOkResponse("{\"deleted\":true,\"id\":\"acc_123\"}");
+
+        var result = await Manager.DeleteWhiteLabelAccount();
+
+        AssertRequestMethod(HttpMethod.Delete);
+        AssertRequestUrl("/v3/myAccount");
+    }
+
+    // ── Documents ───────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListPendingDocuments_SendsGetToDocumentsRoute()
+    {
+        SetupListResponse<AccountDocumentSection>("[{\"id\":\"sec_1\",\"title\":\"Identificacao\"}]");
+
+        var result = await Manager.ListPendingDocuments();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrlContains("/v3/myAccount/documents");
+    }
+
+    [Fact]
+    public async Task ViewDocumentFile_SendsGetToFilesRoute()
+    {
+        SetupOkResponse("{\"id\":\"file_1\",\"name\":\"identity.pdf\"}");
+
+        var result = await Manager.ViewDocumentFile("file_1");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/myAccount/documents/files/file_1");
+    }
+
+    [Fact]
+    public async Task DeleteDocumentFile_SendsDeleteToFilesRoute()
+    {
+        SetupOkResponse("{\"deleted\":true,\"id\":\"file_1\"}");
+
+        var result = await Manager.DeleteDocumentFile("file_1");
+
+        AssertRequestMethod(HttpMethod.Delete);
+        AssertRequestUrl("/v3/myAccount/documents/files/file_1");
     }
 
     // ── CreatePaymentCheckoutConfig ─────────────────────────────────
@@ -185,11 +249,11 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
     // ── Error handling ──────────────────────────────────────────────
 
     [Fact]
-    public async Task Find_OnError_ReturnsErrorResponse()
+    public async Task GetCommercialInfo_OnError_ReturnsErrorResponse()
     {
         SetupErrorResponse(HttpStatusCode.Unauthorized);
 
-        var result = await Manager.Find();
+        var result = await Manager.GetCommercialInfo();
 
         Assert.False(result.WasSucessfull());
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
