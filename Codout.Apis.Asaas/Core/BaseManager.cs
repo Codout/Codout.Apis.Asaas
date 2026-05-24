@@ -143,9 +143,21 @@ namespace Codout.Apis.Asaas.Core
             return await BuildResponseObject<T>(response);
         }
 
+        private static readonly SocketsHttpHandler SharedHandler = new()
+        {
+            // Reusa conexoes TCP entre requisicoes (evita esgotamento de portas).
+            // Recicla a conexao a cada 10 min para captar mudancas de DNS.
+            PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+            PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+            MaxConnectionsPerServer = 32
+        };
+
         protected virtual HttpClient BuildHttpClient()
         {
-            HttpClient httpClient = new HttpClient();
+            // Compartilha um unico SocketsHttpHandler estatico para nao esgotar
+            // sockets nem fazer DNS lookup a cada request (boa pratica .NET).
+            // DisposeHandler = false porque o handler eh shared.
+            HttpClient httpClient = new HttpClient(SharedHandler, disposeHandler: false);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("access_token", _settings.AccessToken);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", _settings.ApplicationName);
             httpClient.BaseAddress = BuildBaseAddress();
