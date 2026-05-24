@@ -2,6 +2,7 @@
 using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Core.Response;
 using Codout.Apis.Asaas.Models.Customer;
+using Codout.Apis.Asaas.Models.Notification;
 
 namespace Codout.Apis.Asaas.Managers;
 
@@ -46,5 +47,16 @@ public class CustomerManager(ApiSettings settings) : BaseManager(settings)
         var route = $"{CustomersRoute}/{customerId}/restore";
 
         return await PostAsync<Customer>(route, new RequestParameters());
+    }
+
+    /// <summary>
+    /// GET /v3/customers/{id}/notifications — recupera notificacoes do cliente.
+    /// Envelope padrao com paginacao.
+    /// </summary>
+    public async Task<ResponseList<Notification>> GetNotifications(string customerId)
+    {
+        var route = $"{CustomersRoute}/{customerId}/notifications";
+
+        return await GetListAsync<Notification>(route, 0, 100);
     }
 }
