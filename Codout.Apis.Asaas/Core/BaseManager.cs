@@ -54,11 +54,14 @@ namespace Codout.Apis.Asaas.Core
                 if (prop.PropertyType == typeof(IAsaasFile))
                 {
                     IAsaasFile asaasFile = prop.GetValue(payload) as IAsaasFile;
+                    if (asaasFile is null) continue;
                     multipartContent.Add(BuildByteArrayContent(asaasFile), jsonPropertyName, asaasFile.FileName);
                     continue;
                 }
 
-                multipartContent.Add(new StringContent(prop.GetValue(payload).ToString()), jsonPropertyName);
+                var value = prop.GetValue(payload);
+                if (value is null) continue;
+                multipartContent.Add(new StringContent(value.ToString()), jsonPropertyName);
             }
 
             var response = await httpClient.PostAsync(BuildApiRoute(resource), multipartContent);

@@ -43,7 +43,7 @@ public class Installment
     public string CustomerId { get; set; }
 
     [JsonPropertyName("deleted")]
-    public bool Deleted { get; set; }
+    public bool? Deleted { get; set; }
 
     [JsonPropertyName("paymentLink")]
     public string PaymentLink { get; set; }

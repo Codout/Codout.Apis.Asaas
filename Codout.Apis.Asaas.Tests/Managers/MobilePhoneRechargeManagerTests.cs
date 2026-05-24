@@ -68,4 +68,17 @@ public class MobilePhoneRechargeManagerTests : ManagerTestBase<MobilePhoneRechar
         Assert.Equal("Vivo", result.Data.Name);
         Assert.Equal(3, result.Data.AvailableValues.Count);
     }
+
+    [Fact]
+    public async Task Find_DeserializesOperatorNameAndCanBeCancelled()
+    {
+        SetupOkResponse("{\"id\":\"rec_1\",\"value\":20.00,\"phoneNumber\":\"63997365512\",\"status\":\"CONFIRMED\",\"canBeCancelled\":true,\"operatorName\":\"Vivo\"}");
+
+        var result = await Manager.Find("rec_1");
+
+        Assert.True(result.WasSuccessful());
+        Assert.Equal("Vivo", result.Data.OperatorName);
+        Assert.True(result.Data.CanBeCancelled);
+        Assert.Equal(Codout.Apis.Asaas.Models.MobilePhoneRecharge.Enums.MobilePhoneRechargeStatus.CONFIRMED, result.Data.Status);
+    }
 }
