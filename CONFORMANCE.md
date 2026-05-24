@@ -222,24 +222,33 @@ Endpoints `/v3/myAccount/documents*` (5 endpoints). Subgrupo Account Document do
 
 ## §99 — Integration tests (sandbox real)
 
-Status: ⏳ pendente Fase 4
+Status: ✅ implementado (5 tests). Skip automático sem ASAAS_SANDBOX_TOKEN.
 
-Endpoints planejados:
-- `POST /v3/customers` + `GET /v3/customers/{id}` (CRUD básico)
-- `POST /v3/payments` (Boleto)
-- `POST /v3/payments/` (Cartão de crédito tokenizado)
-- `GET /v3/payments/{id}/pixQrCode` (PIX)
-- `GET /v3/payments` com `PaymentListFilter.Anticipated = true` (bool filter)
-- `GET /v3/customers` paginado (offset+limit)
-- `POST /v3/sandbox/payment/{id}/confirm` (endpoint novo)
+| Test | Endpoint(s) cobertos | Valida |
+|---|---|---|
+| `CustomerIntegrationTests.Create_Find_Update_Delete_Customer_RoundTrip` | POST/GET/PUT/DELETE `/v3/customers[/{id}]` | CRUD básico end-to-end com cleanup |
+| `CustomerIntegrationTests.List_RespectsOffsetAndLimit_AndUsesStandardEnvelope` | GET `/v3/customers` | Paginação (offset/limit), envelope padrão |
+| `PaymentIntegrationTests.CreatePayment_Boleto_ReturnsPendingPayment` | POST `/v3/payments` (BOLETO) | Schema de criação Boleto + cleanup do customer setup |
+| `PaymentIntegrationTests.CreatePayment_Pix_ReturnsPixQrCode` | POST `/v3/payments` + GET `/v3/payments/{id}/pixQrCode` | Fluxo PIX completo (cobrança → QR code) |
+| `PaymentIntegrationTests.ListPayments_WithAnticipatedFilter_SerializesBoolCorrectly` | GET `/v3/payments?anticipated=true` | **Garantia sistêmica**: bool? em filtro serializa lowercase corretamente (não 400) |
 
-Para rodar:
+**Infraestrutura:**
+- `[IntegrationFact]` (custom attribute) — skip automático se `ASAAS_SANDBOX_TOKEN` ausente, mensagem explicativa no skip reason.
+- `IntegrationTestBase` — `[Trait("Category", "Integration")]`, constrói `AsaasApi` real apontando para `AsaasEnvironment.SANDBOX`.
+- Cada test cria seus próprios recursos (suffix timestampado) e limpa no `finally` para não poluir o sandbox.
+
+**Para rodar localmente:**
 ```powershell
 $env:ASAAS_SANDBOX_TOKEN = "aact_YTU0...seu_token_sandbox..."
 dotnet test --filter "Category=Integration"
 ```
 
-Sem a variável: integration tests fazem skip automaticamente.
+**Para rodar tudo EXCETO integration (CI local):**
+```powershell
+dotnet test --filter "Category!=Integration"
+```
+
+Sem a variável: integration tests fazem skip automaticamente — `dotnet test` continua verde.
 
 ---
 
