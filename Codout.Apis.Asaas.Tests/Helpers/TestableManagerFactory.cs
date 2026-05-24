@@ -255,3 +255,13 @@ public class TestableSandboxManager(ApiSettings settings, HttpMessageHandler han
         return client;
     }
 }
+
+public class TestablePixAutomaticManager(ApiSettings settings, HttpMessageHandler handler) : PixAutomaticManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
