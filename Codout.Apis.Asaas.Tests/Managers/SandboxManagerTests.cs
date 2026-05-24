@@ -52,4 +52,22 @@ public class SandboxManagerTests : ManagerTestBase<SandboxManager>
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => prodManager.ApproveAccount());
     }
+
+    [Fact]
+    public async Task ConfirmPayment_InProduction_ThrowsInvalidOperationException()
+    {
+        var prodSettings = new ApiSettings("token", "TestApp", AsaasEnvironment.PRODUCTION);
+        var prodManager = new TestableSandboxManager(prodSettings, Handler);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => prodManager.ConfirmPayment("pay_1"));
+    }
+
+    [Fact]
+    public async Task ForceOverdue_InProduction_ThrowsInvalidOperationException()
+    {
+        var prodSettings = new ApiSettings("token", "TestApp", AsaasEnvironment.PRODUCTION);
+        var prodManager = new TestableSandboxManager(prodSettings, Handler);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => prodManager.ForceOverdue("pay_1"));
+    }
 }

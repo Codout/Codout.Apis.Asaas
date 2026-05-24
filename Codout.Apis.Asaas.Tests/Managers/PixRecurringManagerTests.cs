@@ -65,4 +65,25 @@ public class PixRecurringManagerTests : ManagerTestBase<PixRecurringManager>
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/pix/transactions/recurrings/items/item_1/cancel");
     }
+
+    [Fact]
+    public async Task Find_OnNotFound_ReturnsError()
+    {
+        SetupErrorResponse(System.Net.HttpStatusCode.NotFound);
+
+        var result = await Manager.Find("rec_unknown");
+
+        Assert.False(result.WasSuccessful());
+        Assert.NotEmpty(result.Errors);
+    }
+
+    [Fact]
+    public async Task Cancel_OnError_ReturnsErrorResponse()
+    {
+        SetupErrorResponse(System.Net.HttpStatusCode.BadRequest);
+
+        var result = await Manager.Cancel("rec_1");
+
+        Assert.False(result.WasSuccessful());
+    }
 }

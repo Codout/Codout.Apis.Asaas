@@ -81,4 +81,26 @@ public class MobilePhoneRechargeManagerTests : ManagerTestBase<MobilePhoneRechar
         Assert.True(result.Data.CanBeCancelled);
         Assert.Equal(Codout.Apis.Asaas.Models.MobilePhoneRecharge.Enums.MobilePhoneRechargeStatus.CONFIRMED, result.Data.Status);
     }
+
+    [Fact]
+    public async Task Create_OnError_ReturnsErrorResponse()
+    {
+        SetupErrorResponse(System.Net.HttpStatusCode.BadRequest);
+        var request = new CreateMobilePhoneRechargeRequest { PhoneNumber = "invalid", Value = 0m };
+
+        var result = await Manager.Create(request);
+
+        Assert.False(result.WasSuccessful());
+        Assert.NotEmpty(result.Errors);
+    }
+
+    [Fact]
+    public async Task Find_OnNotFound_ReturnsError()
+    {
+        SetupErrorResponse(System.Net.HttpStatusCode.NotFound);
+
+        var result = await Manager.Find("rec_unknown");
+
+        Assert.False(result.WasSuccessful());
+    }
 }

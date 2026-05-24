@@ -114,4 +114,32 @@ public class PixAutomaticManagerTests : ManagerTestBase<PixAutomaticManager>
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrlContains("/v3/pix/automatic/paymentInstructions");
     }
+
+    [Fact]
+    public async Task CreateAuthorization_OnError_ReturnsErrorResponse()
+    {
+        SetupErrorResponse(System.Net.HttpStatusCode.BadRequest);
+        var request = new CreatePixAutomaticAuthorizationRequest
+        {
+            Frequency = PixAutomaticRecurringFrequency.MONTHLY,
+            ContractId = "C-1",
+            StartDate = new DateTime(2026, 1, 1),
+            CustomerId = "cus_x"
+        };
+
+        var result = await Manager.CreateAuthorization(request);
+
+        Assert.False(result.WasSuccessful());
+        Assert.NotEmpty(result.Errors);
+    }
+
+    [Fact]
+    public async Task FindAuthorization_OnNotFound_ReturnsError()
+    {
+        SetupErrorResponse(System.Net.HttpStatusCode.NotFound);
+
+        var result = await Manager.FindAuthorization("auth_unknown");
+
+        Assert.False(result.WasSuccessful());
+    }
 }

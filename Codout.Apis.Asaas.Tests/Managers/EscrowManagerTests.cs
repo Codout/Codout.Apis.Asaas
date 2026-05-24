@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http;
 using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Managers;
@@ -76,5 +77,26 @@ public class EscrowManagerTests : ManagerTestBase<EscrowManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/payments/pay_1/escrow");
+    }
+
+    [Fact]
+    public async Task SaveSubaccountConfig_OnError_ReturnsErrorResponse()
+    {
+        SetupErrorResponse(HttpStatusCode.BadRequest);
+
+        var result = await Manager.SaveSubaccountConfig("acc_1", new SaveEscrowConfigRequest());
+
+        Assert.False(result.WasSuccessful());
+        Assert.NotEmpty(result.Errors);
+    }
+
+    [Fact]
+    public async Task GetPaymentEscrow_OnNotFound_ReturnsError()
+    {
+        SetupErrorResponse(HttpStatusCode.NotFound);
+
+        var result = await Manager.GetPaymentEscrow("pay_unknown");
+
+        Assert.False(result.WasSuccessful());
     }
 }
