@@ -33,7 +33,7 @@ public class PaymentManager(ApiSettings settings) : BaseManager(settings)
     {
         var route = $"{PaymentsRoute}/{paymentId}";
 
-        return await PostAsync<Payment>(route, requestObj);
+        return await PutAsync<Payment>(route, requestObj);
     }
 
     public async Task<ResponseObject<DeletedPayment>> Delete(string paymentId)

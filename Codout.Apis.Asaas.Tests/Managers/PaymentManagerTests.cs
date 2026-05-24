@@ -141,14 +141,14 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
     #region Update
 
     [Fact]
-    public async Task Update_SendsPostToCorrectUrl()
+    public async Task Update_SendsPutToCorrectUrl()
     {
         SetupOkResponse("{\"id\":\"pay_123\",\"value\":150.00}");
         var request = new UpdatePaymentRequest { Value = 150.00m };
 
         var result = await Manager.Update("pay_123", request);
 
-        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestMethod(HttpMethod.Put);
         AssertRequestUrl("/v3/payments/pay_123");
     }
 

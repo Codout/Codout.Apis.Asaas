@@ -12,12 +12,12 @@ public class NotificationManager(ApiSettings settings) : BaseManager(settings)
     public async Task<ResponseObject<Notification>> Update(string notificationId, UpdateNotificationRequest requestObj)
     {
         var route = $"{NotificationsRoute}/{notificationId}";
-        return await PostAsync<Notification>(route, requestObj);
+        return await PutAsync<Notification>(route, requestObj);
     }
 
     public async Task<ResponseObject<BatchUpdateNotificationResponse>> BatchUpdate(BatchUpdateNotificationRequest requestObj)
     {
         var route = $"{NotificationsRoute}/batch";
-        return await PostAsync<BatchUpdateNotificationResponse>(route, requestObj);
+        return await PutAsync<BatchUpdateNotificationResponse>(route, requestObj);
     }
 }

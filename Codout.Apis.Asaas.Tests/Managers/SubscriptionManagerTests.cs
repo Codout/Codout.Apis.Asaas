@@ -146,14 +146,14 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
     #region Update
 
     [Fact]
-    public async Task Update_SendsPostToCorrectUrl()
+    public async Task Update_SendsPutToCorrectUrl()
     {
         SetupOkResponse("{\"id\":\"sub_123\",\"value\":129.90}");
         var request = new UpdateSubscriptionRequest { Value = 129.90m };
 
         var result = await Manager.Update("sub_123", request);
 
-        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestMethod(HttpMethod.Put);
         AssertRequestUrl("/v3/subscriptions/sub_123");
     }
 
@@ -345,14 +345,14 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
     #region UpdateInvoiceSettings
 
     [Fact]
-    public async Task UpdateInvoiceSettings_SendsPostToCorrectUrl()
+    public async Task UpdateInvoiceSettings_SendsPutToCorrectUrl()
     {
         SetupOkResponse("{\"municipalServiceId\":\"svc_1\",\"daysBeforeDueDate\":10,\"receivedOnly\":true}");
         var request = new UpdateInvoiceSettingsRequest { DaysBeforeDueDate = 10, ReceivedOnly = true };
 
         var result = await Manager.UpdateInvoiceSettings("sub_123", request);
 
-        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestMethod(HttpMethod.Put);
         AssertRequestUrl("/v3/subscriptions/sub_123/invoiceSettings");
     }
 

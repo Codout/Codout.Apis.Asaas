@@ -141,14 +141,14 @@ public class CustomerManagerTests : ManagerTestBase<CustomerManager>
     #region Update
 
     [Fact]
-    public async Task Update_SendsPostToCorrectUrl()
+    public async Task Update_SendsPutToCorrectUrl()
     {
         SetupOkResponse("{\"id\":\"cus_123\",\"name\":\"Updated Name\"}");
         var request = new UpdateCustomerRequest { Name = "Updated Name" };
 
         var result = await Manager.Update("cus_123", request);
 
-        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestMethod(HttpMethod.Put);
         AssertRequestUrl("/v3/customers/cus_123");
     }
 

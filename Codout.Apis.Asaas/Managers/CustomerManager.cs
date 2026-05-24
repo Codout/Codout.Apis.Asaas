@@ -33,7 +33,7 @@ public class CustomerManager(ApiSettings settings) : BaseManager(settings)
     {
         var route = $"{CustomersRoute}/{customerId}";
 
-        return await PostAsync<Customer>(route, requestObj);
+        return await PutAsync<Customer>(route, requestObj);
     }
 
     public async Task<ResponseObject<DeletedCustomer>> Delete(string customerId)

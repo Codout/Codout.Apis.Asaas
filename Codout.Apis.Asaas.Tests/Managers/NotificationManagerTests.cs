@@ -16,7 +16,7 @@ public class NotificationManagerTests : ManagerTestBase<NotificationManager>
     #region Update
 
     [Fact]
-    public async Task Update_SendsPostRequest()
+    public async Task Update_SendsPutRequest()
     {
         SetupOkResponse("{\"id\":\"not_123\",\"customer\":\"cus_abc\",\"enabled\":true,\"emailEnabledForProvider\":true,\"smsEnabledForProvider\":false,\"emailEnabledForCustomer\":true,\"smsEnabledForCustomer\":false,\"phoneCallEnabledForCustomer\":false,\"whatsappEnabledForCustomer\":true,\"scheduleOffset\":5}");
 
@@ -33,7 +33,7 @@ public class NotificationManagerTests : ManagerTestBase<NotificationManager>
 
         var result = await Manager.Update("not_123", request);
 
-        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestMethod(HttpMethod.Put);
         AssertRequestUrl("/v3/notifications/not_123");
         Assert.True(result.WasSucessfull());
         Assert.NotNull(result.Data);
@@ -74,7 +74,7 @@ public class NotificationManagerTests : ManagerTestBase<NotificationManager>
     #region BatchUpdate
 
     [Fact]
-    public async Task BatchUpdate_SendsPostRequest()
+    public async Task BatchUpdate_SendsPutRequest()
     {
         SetupOkResponse("{\"notifications\":[{\"id\":\"not_1\",\"customer\":\"cus_abc\",\"enabled\":true,\"emailEnabledForProvider\":true,\"smsEnabledForProvider\":false,\"emailEnabledForCustomer\":false,\"smsEnabledForCustomer\":false,\"phoneCallEnabledForCustomer\":false,\"whatsappEnabledForCustomer\":false},{\"id\":\"not_2\",\"customer\":\"cus_abc\",\"enabled\":false,\"emailEnabledForProvider\":false,\"smsEnabledForProvider\":false,\"emailEnabledForCustomer\":false,\"smsEnabledForCustomer\":false,\"phoneCallEnabledForCustomer\":false,\"whatsappEnabledForCustomer\":false}]}");
 
@@ -99,7 +99,7 @@ public class NotificationManagerTests : ManagerTestBase<NotificationManager>
 
         var result = await Manager.BatchUpdate(request);
 
-        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestMethod(HttpMethod.Put);
         AssertRequestUrl("/v3/notifications/batch");
         Assert.True(result.WasSucessfull());
         Assert.NotNull(result.Data);
