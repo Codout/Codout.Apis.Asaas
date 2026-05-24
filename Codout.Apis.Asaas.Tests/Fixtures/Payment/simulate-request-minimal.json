@@ -1,0 +1,4 @@
+{
+  "value": 100,
+  "billingTypes": ["CREDIT_CARD", "BOLETO", "PIX"]
+}

@@ -24,7 +24,15 @@
 
 ---
 
-## §1 — PaymentManager (somente novos: limits, simulate) — ⏳
+## §1 — PaymentManager (somente novos: limits, simulate) — ✅
+
+| Endpoint | MCP consultado | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `GET /v3/payments/limits` | ✅ | `PaymentLimits` (Creation.Daily.{Limit,Used,WasReached}) | `Payment/limits-response.json` | `PaymentLimits_DeserializesFromOfficialFixture` | ✅ |
+| `POST /v3/payments/simulate` (request) | ✅ | `SimulatePaymentRequest` (value, billingTypes[], installmentCount?) | `Payment/simulate-request-minimal.json`, `Payment/simulate-request-with-installments.json` | `SimulatePaymentRequest_*` (3 tests) | ✅ |
+| `POST /v3/payments/simulate` (response) | ✅ | `SimulatedPayment` (value, creditCard?, bankSlip?, pix?) | `Payment/simulate-response.json` | `SimulatedPaymentResponse_DeserializesFromOfficialFixture` | ✅ |
+
+Erros oficiais (`{errors:[{code,description}]}`) também validados via fixture compartilhada (`error-response.json`).
 
 ## §2 — CheckoutManager — ⏳
 
