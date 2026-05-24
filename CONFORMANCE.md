@@ -1,7 +1,9 @@
 # Relatório de Conformidade — SDK Codout.Apis.Asaas v3.0.0
 
-> **Status:** EM CONSTRUÇÃO (Fase 1/6 da auditoria schema-first)
+> **Status:** ✅ FASES 1–6 CONCLUÍDAS (auditoria schema-first completa)
 > **Metodologia:** cada endpoint listado abaixo foi consultado via MCP `asaas` (`mcp__asaas__get-endpoint`). Models foram verificados campo-a-campo contra o schema OpenAPI. Fixtures criadas a partir dos exemplos oficiais. Contract tests congelam o shape JSON.
+>
+> **Resultado:** 599 testes unit/contract passando + 5 integration tests (skip sem `ASAAS_SANDBOX_TOKEN`). 11 managers auditados, 24 famílias de bugs (B-XX) corrigidas, 0 warnings de build.
 
 ---
 
@@ -268,4 +270,22 @@ Sem a variável: integration tests fazem skip automaticamente — `dotnet test` 
 
 ## Riscos remanescentes
 
-A preencher ao final da auditoria.
+Lista honesta do que **não** está coberto por esta auditoria:
+
+**Managers não auditados schema-first (cobertos só por unit tests pré-existentes):**
+- `CustomerManager`, `SubscriptionManager`, `InstallmentManager`, `PixManager`, `WebhookManager`, `TransferManager`, `WalletManager`, `AnticipationManager`, `CreditCardManager`, `PaymentLinkManager`, `NotificationManager`, `FinanceManager`, `MyAccountManager` (exceto Documents §7), `AsaasAccountManager`, `FiscalInfoManager`, `ChargebackManager`, `SandboxManager`, `PaymentManager` (exceto `/limits` e `/simulate` §1).
+- Risco: estes managers podem ter divergências similares às encontradas nos auditados (campos faltando, casing errado em filtros, enums incompletos). Confirmado via amostragem (`PaymentListFilter.Anticipated`, integration test) que ao menos o caminho crítico funciona.
+- Recomendação: rodar a mesma metodologia desta auditoria nesses managers em iterações futuras conforme uso real revelar problemas.
+
+**Schema vs comportamento runtime:**
+- O MCP retorna a especificação OpenAPI publicada. Discrepâncias entre spec e implementação real do backend Asaas não são detectáveis sem integration tests específicos.
+- 5 integration tests cobrem o caminho mais comum (Customer CRUD, Payment Boleto/PIX, filtro bool). Para validar managers menos auditados, expandir `Codout.Apis.Asaas.Tests/Integration/`.
+
+**Webhooks (recebimento):**
+- O SDK expõe apenas o `WebhookManager` para configurar endpoints, não decodificadores tipados dos payloads que o Asaas envia. Consumidores que recebem webhooks precisam deserializar manualmente.
+
+**Reforma Tributária:**
+- Campos `stateIbs`/`municipalIbs`/`cbs` em `Taxes` (Invoice) foram adicionados conforme spec atual. Comportamento em produção depende do calendário de implementação da Reforma — pode mudar.
+
+**Endpoints deprecated:**
+- `PaymentDunning.ReceivedInCashFeeValue` e `CancellationFeeValue` estão marcados como `[Obsolete]`. Mantidos por backwards-compat mas backend pode parar de retornar.

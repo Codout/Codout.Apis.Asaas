@@ -5,6 +5,104 @@ Todas as mudancas notaveis deste projeto serao documentadas neste arquivo.
 O formato e baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semantico](https://semver.org/lang/pt-BR/).
 
+## [3.1.0] - 2026-05-24 — Auditoria schema-first
+
+Rodada final de conformidade contra o MCP oficial Asaas. Para cada manager
+auditado, modelos foram verificados campo-a-campo contra OpenAPI, fixtures
+criadas a partir dos exemplos oficiais e contract tests congelam o shape JSON.
+Veja [CONFORMANCE.md](CONFORMANCE.md) para o relatorio completo endpoint-a-endpoint.
+
+### Breaking changes (modelos)
+
+**PaymentDunning:**
+- `DunningNumber: string` -> `int?` (era chute; schema integer).
+- `Status: bool` -> `bool?` em `CanBeCancelled` e `IsNecessaryResendDocumentation`
+  (schema permite null; valor false silencioso antes do fix).
+- `PaymentDunningEventHistory.Status: string` -> enum `PaymentDunningHistoryStatus`.
+- `SimulatedPaymentDunning.TypeSimulations` e
+  `PaymentDunningPaymentAvailable.TypeSimulations`: objeto unico ->
+  `List<PaymentDunningTypeSimulations>` (schema sempre foi array — antes
+  lancava `InvalidCastException` no JSON real).
+- `Simulate(request)` agora envia `payment` como QUERY param (schema), nao body.
+- `ReceivedInCashFeeValue` e `CancellationFeeValue` marcados `[Obsolete]`.
+- Adicionados: `CannotBeCancelledReason`, valor enum `DEBT_RECOVERY_ASSISTANCE`
+  (em `PaymentDunningType`, aceito pelo filter).
+
+**CreditBureauReport:**
+- `CreditBureauReport.State` e `Status` REMOVIDOS (nao existem no schema).
+- `CreateCreditBureauReportRequest.State` REMOVIDO.
+- Adicionados: `DownloadUrl`, `ReportFile` (PDF Base64 — apenas em response do POST).
+- Novo: `CreditBureauReportListFilter` com `StartDate`/`EndDate`. Overload
+  `List(offset, limit, filter)` backwards-compatible.
+
+**BillPayment:**
+- `BillPayment`: adicionados `Interest`, `Fine`, `PaymentDate`, `ExternalReference`.
+  `FailReasons: string` -> `List<string>` (schema array).
+  `CanBeCancelled`/`DueDate`/`ScheduleDate`/`PaymentDate` -> nullable.
+- `BillPaymentStatus` enum: adicionados `REFUNDED` e
+  `AWAITING_CHECKOUT_RISK_ANALYSIS_REQUEST` (5 -> 7 valores).
+- `CreateBillPaymentRequest`: adicionados `Interest`, `Fine`, `ExternalReference`.
+  `Value`/`DueDate`/`ScheduleDate`/`Discount` -> nullable.
+- `BankSlipInfo`: 5 campos com `BankCode` (chute) -> 17 campos com `Bank`,
+  `Beneficiary*`, `Min/MaxValue`, `AllowChangeValue`, `Discount/Interest/FineValue`,
+  `OriginalValue`, `TotalDiscount/AdditionalValue`, `IsOverdue`.
+
+**Invoice:**
+- `Taxes`: 7 campos -> 19 (NBS code, situacao tributaria, classificacao,
+  operacao, PIS/COFINS retention type/status + 6 campos da Reforma Tributaria:
+  `StateIbs`, `StateIbsValue`, `MunicipalIbs`, `MunicipalIbsValue`, `Cbs`, `CbsValue`).
+- `InvoiceListFilter`: `effectiveDate[ge]/[le]` -> `[Ge]/[Le]` (G/L MAIUSCULOS,
+  schema oficial). Casing errado era silenciosamente ignorado pela API.
+  Adicionados filtros `customer` e `externalReference`.
+- `CreateInvoiceRequest` e `UpdateInvoiceRequest`: adicionado `UpdatePayment: bool?`.
+
+**AccountDocument (subgrupo MyAccount):**
+- `AccountDocumentFile` REMOVIDO (Name/Url eram inventados; schema retorna
+  apenas `{id, status}`).
+- `SubmitDocument`, `ViewDocumentFile`, `UpdateDocumentFile` agora retornam
+  `AccountDocument` (antes retornavam tipo errado).
+- 4 enums tipados criados: `AccountDocumentStatus` (4), `AccountDocumentGroupStatus`
+  (5, ganha IGNORED), `AccountDocumentType` (12), `AccountDocumentResponsibleType` (13).
+  Status/Type eram `string`/`List<string>` antes.
+- `UploadAccountDocumentRequest`: `DocumentType: string` -> `Type: AccountDocumentType?`,
+  `File: IAsaasFile` -> `DocumentFile: IAsaasFile` (alinhando com nomes
+  multipart "type" e "documentFile" do schema).
+
+**MobilePhoneRecharge:**
+- `MobilePhoneProvider.AvailableValues: List<decimal>` (chute) -> `Values:
+  List<MobilePhoneProviderValue>` com `{Name, Description, Bonus, MinValue, MaxValue}`
+  conforme schema.
+
+**PixAutomatic (B-16/B-17 do REVIEW pre-existente):**
+- `PixAutomaticPaymentInstruction.Authorization` virou objeto aninhado com
+  `Id`/`EndToEndIdentifier`/`CustomerId`. Adicionados `DueDate`, `EndToEndIdentifier`,
+  `PaymentId`, `RefusalReason`. `Status` virou enum
+  `PixAutomaticPaymentInstructionStatus` (5 valores).
+- `PixAutomaticPaymentInstructionListFilter`: campos `authorization`/`status` ->
+  `authorizationId`/`customerId`/`paymentId`/`status` (typed).
+
+### Added
+
+- **CONFORMANCE.md** — relatorio endpoint-a-endpoint da auditoria com tabelas
+  por manager, bugs (B-XX) corrigidos, fixtures, contract tests.
+- **Integration tests sandbox** (`Codout.Apis.Asaas.Tests/Integration/`):
+  5 testes reais contra `api-sandbox.asaas.com`, skip automatico via
+  `[IntegrationFact]` quando `ASAAS_SANDBOX_TOKEN` ausente.
+- **Contract tests** (`Codout.Apis.Asaas.Tests/Contract/`): 95+ novos testes
+  que congelam o shape JSON de request/response com fixtures dos exemplos MCP.
+- `PixRecurringTransactionListFilter` (status/value/searchText) — feature
+  anteriormente nao exposta.
+- Bug pre-existente fixado em paralelo: `Subscription.Enums.Cycle.BIMONTHLY`
+  (estava faltando, presente em schemas de Subscription e Checkout).
+
+### Fixed (sistemicos — descobertos antes desta fase)
+
+- `RequestParameters.Add(decimal?)` agora usa `CultureInfo.InvariantCulture`
+  (pt-BR estava gerando `12,5` em vez de `12.5`).
+- `RequestParameters.Add(bool?)` serializa `true`/`false` lowercase
+  (antes `True`/`False` — Asaas ignorava silenciosamente).
+- `DateTimeExtensions.ToApiRequest` defensivamente forca `InvariantCulture`.
+
 ## [3.0.0] - 2026-05-24
 
 Major release com auditoria completa de conformidade contra a documentacao

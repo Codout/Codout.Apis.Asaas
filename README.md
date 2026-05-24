@@ -9,14 +9,18 @@
   <img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet" />
   <img src="https://img.shields.io/nuget/v/Asaas.Api?color=004880&logo=nuget" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
-  <img src="https://img.shields.io/badge/tests-492%20passing-brightgreen" />
+  <img src="https://img.shields.io/badge/tests-599%20passing%20+%205%20integration-brightgreen" />
+  <img src="https://img.shields.io/badge/schema--first-audit-blue" />
 </p>
 
-SDK .NET **no-oficial** para integrar com a plataforma de pagamentos [Asaas](https://www.asaas.com). Cobre **100% da API v3** documentada — mais de **150 endpoints** distribuidos em **27 managers**.
+SDK .NET **nao-oficial** para integrar com a plataforma de pagamentos [Asaas](https://www.asaas.com). Cobre **100% da API v3** documentada — mais de **150 endpoints** distribuidos em **27 managers**.
 
 > **Zero dependencias externas** - usa apenas `System.Text.Json` (built-in).
 
-> **v3.0.0** - major release com auditoria de conformidade completa contra a documentacao oficial via MCP. Veja `CHANGELOG.md` para os breaking changes e guia de migracao 2.x -> 3.x.
+> **v3.1.0** — auditoria schema-first contra MCP oficial (`https://docs.asaas.com/mcp`).
+> 11 managers auditados endpoint-a-endpoint, 24 famílias de bugs corrigidas,
+> contract tests validando shape JSON com fixtures dos exemplos oficiais.
+> Veja [CONFORMANCE.md](CONFORMANCE.md) e [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -391,11 +395,16 @@ dotnet build Codout.Apis.Asaas/Codout.Apis.Asaas.csproj
 
 ### Testes
 
-O projeto possui **492 testes unitarios** cobrindo todos os 27 managers, modelos, serializacao e extensions:
+O projeto possui **599 testes unit/contract** cobrindo todos os 27 managers
+(unit tests + contract tests validando shape JSON com fixtures dos exemplos
+oficiais do MCP) + **5 integration tests** opcionais contra o sandbox real.
 
 ```bash
-# Rodar todos os testes
+# Rodar todos os testes unit/contract (integration skipa sem ASAAS_SANDBOX_TOKEN)
 dotnet test Codout.Apis.Asaas.Tests/
+
+# Rodar somente unit/contract, excluindo integration
+dotnet test Codout.Apis.Asaas.Tests/ --filter "Category!=Integration"
 
 # Rodar testes de um manager especifico
 dotnet test Codout.Apis.Asaas.Tests/ --filter "FullyQualifiedName~CustomerManagerTests"
@@ -403,6 +412,22 @@ dotnet test Codout.Apis.Asaas.Tests/ --filter "FullyQualifiedName~CustomerManage
 # Com output detalhado
 dotnet test Codout.Apis.Asaas.Tests/ --verbosity normal
 ```
+
+#### Integration tests (sandbox real)
+
+Os integration tests fazem chamadas reais contra `api-sandbox.asaas.com`
+para validar o comportamento end-to-end. Por padrao **sao puladas com skip
+explicito** quando a variavel de ambiente `ASAAS_SANDBOX_TOKEN` nao esta
+definida — assim o CI local nao quebra.
+
+```powershell
+# Definir o token de sandbox e rodar:
+$env:ASAAS_SANDBOX_TOKEN = "aact_YTU0...seu_token_sandbox..."
+dotnet test Codout.Apis.Asaas.Tests/ --filter "Category=Integration"
+```
+
+Veja [CONFORMANCE.md §99](CONFORMANCE.md) para a lista de tests e o que
+cada um valida.
 
 ### Gerar pacote NuGet
 
