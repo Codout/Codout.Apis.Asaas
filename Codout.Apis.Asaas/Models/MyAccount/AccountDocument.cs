@@ -4,25 +4,35 @@ using Codout.Apis.Asaas.Core.Interfaces;
 
 namespace Codout.Apis.Asaas.Models.MyAccount;
 
-public class AccountDocumentSection
+public class AccountDocumentResponse
 {
-    public string Object { get; set; }
+    public string RejectReasons { get; set; }
+    public List<AccountDocumentGroup> Data { get; set; } = [];
+}
+
+public class AccountDocumentGroup
+{
     public string Id { get; set; }
+    public string Status { get; set; }
+    public string Type { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public string Status { get; set; }
+    public AccountDocumentResponsible Responsible { get; set; }
+    public string OnboardingUrl { get; set; }
+    public DateTime? OnboardingUrlExpirationDate { get; set; }
     public List<AccountDocument> Documents { get; set; } = [];
 }
 
 public class AccountDocument
 {
-    public string Object { get; set; }
     public string Id { get; set; }
-    public string Type { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
     public string Status { get; set; }
-    public DateTime? DateCreated { get; set; }
+}
+
+public class AccountDocumentResponsible
+{
+    public string Name { get; set; }
+    public List<string> Type { get; set; } = [];
 }
 
 public class AccountDocumentFile

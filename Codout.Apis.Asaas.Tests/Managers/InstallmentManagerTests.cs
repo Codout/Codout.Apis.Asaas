@@ -34,7 +34,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/installments");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("inst_new", result.Data.Id);
     }
 
@@ -78,7 +78,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/installments/");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.NotEmpty(result.Errors);
     }
 
@@ -115,7 +115,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         var result = await Manager.Find("inst_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("inst_123", result.Data.Id);
         Assert.Equal(500.00m, result.Data.Value);
         Assert.Equal(480.00m, result.Data.NetValue);
@@ -133,7 +133,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         var result = await Manager.Find("inst_nonexistent");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -162,7 +162,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(2, result.TotalCount);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("inst_1", result.Data[0].Id);
@@ -202,7 +202,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         var result = await Manager.Delete("inst_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("inst_123", result.Data.Id);
         Assert.True(result.Data.Deleted);
     }
@@ -229,7 +229,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         var result = await Manager.Refund("inst_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("inst_123", result.Data.Id);
         Assert.Equal(500.00m, result.Data.Value);
     }
@@ -258,7 +258,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         var result = await Manager.ListPaymentBook("inst_123", 0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(3, result.TotalCount);
         Assert.Equal(3, result.Data.Count);
         Assert.Equal("pay_1", result.Data[0].Id);
@@ -290,7 +290,7 @@ public class InstallmentManagerTests : ManagerTestBase<InstallmentManager>
 
         var result = await Manager.ListPayments("inst_123", 0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("pay_1", result.Data[0].Id);
     }

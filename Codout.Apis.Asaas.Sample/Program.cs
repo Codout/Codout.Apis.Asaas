@@ -11,7 +11,7 @@ AsaasApi asaasApi = new AsaasApi(apiSettings);
 
 ResponseObject<Customer> customerResponse = await asaasApi.Customer.Find("cus_13bFHumeyglN");
 
-if (customerResponse.WasSucessfull())
+if (customerResponse.WasSuccessful())
 {
     Customer customer = customerResponse.Data;
 

@@ -44,7 +44,7 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("4444", result.Data.Number);
         Assert.Equal("MASTERCARD", result.Data.Brand);
@@ -64,7 +64,7 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("1111", result.Data.Number);
         Assert.Equal("VISA", result.Data.Brand);
@@ -86,7 +86,7 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);
@@ -106,7 +106,7 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -124,7 +124,7 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }

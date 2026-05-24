@@ -21,7 +21,7 @@ public class ChargebackManagerTests : ManagerTestBase<ChargebackManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrlContains("/v3/chargebacks");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("chrg_1", result.Data[0].Id);
         Assert.Equal(ChargebackStatus.REQUESTED, result.Data[0].Status);
         Assert.Equal(ChargebackReason.FRAUD, result.Data[0].Reason);
@@ -36,7 +36,7 @@ public class ChargebackManagerTests : ManagerTestBase<ChargebackManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/payments/pay_1/chargeback");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("chrg_1", result.Data.Id);
         Assert.Equal(ChargebackStatus.DONE, result.Data.Status);
     }

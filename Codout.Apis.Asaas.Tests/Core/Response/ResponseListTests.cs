@@ -76,7 +76,7 @@ public class ResponseListTests
 
         var response = new ResponseList<PaymentLink>(HttpStatusCode.OK, json);
 
-        Assert.True(response.WasSucessfull());
+        Assert.True(response.WasSuccessful());
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
@@ -137,7 +137,7 @@ public class ResponseListTests
 
         var response = new ResponseList<PaymentLink>(HttpStatusCode.BadRequest, json);
 
-        Assert.False(response.WasSucessfull());
+        Assert.False(response.WasSuccessful());
     }
 
     [Fact]

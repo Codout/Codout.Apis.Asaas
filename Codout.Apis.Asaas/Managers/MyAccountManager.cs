@@ -56,15 +56,15 @@ public class MyAccountManager(ApiSettings settings) : BaseManager(settings)
         return await GetAsync<AccountNumber>(AccountNumberRoute);
     }
 
-    public async Task<ResponseList<AccountDocumentSection>> ListPendingDocuments(int offset = 0, int limit = 100)
+    public async Task<ResponseObject<AccountDocumentResponse>> ListPendingDocuments()
     {
-        return await GetListAsync<AccountDocumentSection>(DocumentsRoute, offset, limit);
+        return await GetAsync<AccountDocumentResponse>(DocumentsRoute);
     }
 
-    public async Task<ResponseObject<AccountDocumentSection>> SubmitDocument(string documentId, UploadAccountDocumentRequest requestObj)
+    public async Task<ResponseObject<AccountDocumentGroup>> SubmitDocument(string documentId, UploadAccountDocumentRequest requestObj)
     {
         var route = $"{DocumentsRoute}/{documentId}";
-        return await PostMultipartFormDataContentAsync<AccountDocumentSection>(route, requestObj);
+        return await PostMultipartFormDataContentAsync<AccountDocumentGroup>(route, requestObj);
     }
 
     public async Task<ResponseObject<AccountDocumentFile>> ViewDocumentFile(string fileId)

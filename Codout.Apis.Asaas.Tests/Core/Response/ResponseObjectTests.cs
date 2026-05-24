@@ -44,7 +44,7 @@ public class ResponseObjectTests
 
         var response = new ResponseObject<PaymentLink>(HttpStatusCode.OK, json);
 
-        Assert.True(response.WasSucessfull());
+        Assert.True(response.WasSuccessful());
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public class ResponseObjectTests
 
         var response = new ResponseObject<PaymentLink>(HttpStatusCode.BadRequest, json);
 
-        Assert.False(response.WasSucessfull());
+        Assert.False(response.WasSuccessful());
     }
 
     [Fact]
@@ -145,7 +145,7 @@ public class ResponseObjectTests
         var response = new ResponseObject<PaymentLink>(HttpStatusCode.NotFound, json);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.False(response.WasSucessfull());
+        Assert.False(response.WasSuccessful());
     }
 
     [Fact]
@@ -156,7 +156,7 @@ public class ResponseObjectTests
         var response = new ResponseObject<PaymentLink>(HttpStatusCode.InternalServerError, json);
 
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
-        Assert.False(response.WasSucessfull());
+        Assert.False(response.WasSuccessful());
     }
 
     [Fact]
@@ -166,7 +166,7 @@ public class ResponseObjectTests
 
         var response = new ResponseObject<PaymentLink>(HttpStatusCode.Unauthorized, json);
 
-        Assert.False(response.WasSucessfull());
+        Assert.False(response.WasSuccessful());
     }
 
     [Fact]
@@ -189,7 +189,7 @@ public class ResponseObjectTests
         // The JSON is valid but doesn't have "errors" property, so Errors list stays empty
         var response = new ResponseObject<PaymentLink>(HttpStatusCode.BadRequest, json);
 
-        Assert.False(response.WasSucessfull());
+        Assert.False(response.WasSuccessful());
         Assert.Empty(response.Errors);
     }
 
@@ -207,7 +207,7 @@ public class ResponseObjectTests
 
         var response = new ResponseObject<PaymentLink>(statusCode, json);
 
-        Assert.True(response.WasSucessfull());
+        Assert.True(response.WasSuccessful());
     }
 
     [Theory]
@@ -222,7 +222,7 @@ public class ResponseObjectTests
 
         var response = new ResponseObject<PaymentLink>(statusCode, json);
 
-        Assert.False(response.WasSucessfull());
+        Assert.False(response.WasSuccessful());
     }
 
     #endregion

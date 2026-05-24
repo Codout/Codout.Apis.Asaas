@@ -23,7 +23,7 @@ public class FiscalInfoManagerTests : ManagerTestBase<FiscalInfoManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/fiscalInfo");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("test@example.com", result.Data.Email);
         Assert.Equal("12345", result.Data.MunicipalInscription);
@@ -55,7 +55,7 @@ public class FiscalInfoManagerTests : ManagerTestBase<FiscalInfoManager>
         AssertRequestUrlContains("/v3/fiscalInfo/municipalOptions");
         AssertRequestUrlContains("offset=0");
         AssertRequestUrlContains("limit=100");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("mo_1", result.Data[0].Id);
         Assert.Equal("Sao Paulo", result.Data[0].Label);
@@ -90,7 +90,7 @@ public class FiscalInfoManagerTests : ManagerTestBase<FiscalInfoManager>
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrlContains("/v3/fiscalInfo/services");
         AssertRequestUrlContains("description=1.01");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Single(result.Data);
         Assert.Equal("3544", result.Data[0].Id);
         Assert.Equal("1.01 - Analise e desenvolvimento de sistemas", result.Data[0].Description);
@@ -119,7 +119,7 @@ public class FiscalInfoManagerTests : ManagerTestBase<FiscalInfoManager>
 
         var result = await Manager.Find();
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("unauthorized", result.Errors[0].Code);

@@ -36,7 +36,7 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(0, result.TotalCount);
         Assert.Empty(result.Data);
     }
@@ -73,7 +73,7 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -110,7 +110,7 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.TransferToAsaasAccount(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("trans_123", result.Data.Id);
         Assert.Equal("wal_456", result.Data.WalletId);
         Assert.Equal(500.00m, result.Data.Value);
@@ -148,7 +148,7 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.TransferToBankAccount(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("trans_789", result.Data.Id);
         Assert.Equal(1000.00m, result.Data.Value);
     }
@@ -190,7 +190,7 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.Find("trans_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("trans_123", result.Data.Id);
         Assert.Equal(1000.00m, result.Data.Value);
         Assert.Equal(TransferType.BANK_ACCOUNT, result.Data.Type);
@@ -205,7 +205,7 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.Find("trans_nonexistent");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 

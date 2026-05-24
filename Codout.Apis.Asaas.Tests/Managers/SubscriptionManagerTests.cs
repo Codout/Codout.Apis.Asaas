@@ -49,7 +49,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.Create(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("sub_123", result.Data.Id);
         Assert.Equal("cus_1", result.Data.CustomerId);
         Assert.Equal(99.90m, result.Data.Value);
@@ -64,7 +64,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -91,7 +91,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.Find("sub_456");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("sub_456", result.Data.Id);
         Assert.Equal("cus_1", result.Data.CustomerId);
         Assert.Equal(49.90m, result.Data.Value);
@@ -122,7 +122,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(2, result.TotalCount);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("sub_1", result.Data[0].Id);
@@ -165,7 +165,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.Update("sub_123", request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("sub_123", result.Data.Id);
         Assert.Equal(129.90m, result.Data.Value);
         Assert.Equal("Updated plan", result.Data.Description);
@@ -195,7 +195,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.UpdateCreditCard("sub_123", request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
     }
 
     #endregion
@@ -220,7 +220,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.Delete("sub_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("sub_123", result.Data.Id);
         Assert.True(result.Data.Deleted);
     }
@@ -249,7 +249,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.ListPayments("sub_123", 0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(2, result.TotalCount);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("pay_1", result.Data[0].Id);
@@ -279,7 +279,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.ListPaymentBook("sub_123", 0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(3, result.TotalCount);
         Assert.Equal(3, result.Data.Count);
     }
@@ -308,7 +308,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.ListInvoice("sub_123", 0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(1, result.TotalCount);
         Assert.Single(result.Data);
         Assert.Equal("inv_1", result.Data[0].Id);
@@ -359,7 +359,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.CreateInvoiceSettings("sub_123", request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("svc_1", result.Data.MunicipalServiceId);
         Assert.Equal("1234", result.Data.MunicipalServiceCode);
         Assert.Equal("Service", result.Data.MunicipalServiceName);
@@ -391,7 +391,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.UpdateInvoiceSettings("sub_123", request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(10, result.Data.DaysBeforeDueDate);
         Assert.True(result.Data.ReceivedOnly);
     }
@@ -418,7 +418,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.FindInvoiceSettings("sub_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("svc_1", result.Data.MunicipalServiceId);
         Assert.Equal(5, result.Data.DaysBeforeDueDate);
     }
@@ -445,7 +445,7 @@ public class SubscriptionManagerTests : ManagerTestBase<SubscriptionManager>
 
         var result = await Manager.DeleteInvoiceSettings("sub_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("sub_123", result.Data.Id);
         Assert.True(result.Data.Deleted);
     }

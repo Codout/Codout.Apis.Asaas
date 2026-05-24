@@ -30,7 +30,7 @@ public class CreditBureauReportManagerTests : ManagerTestBase<CreditBureauReport
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/creditBureauReport");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("cbr_123", result.Data.Id);
         Assert.Equal("cus_abc", result.Data.Customer);
@@ -74,7 +74,7 @@ public class CreditBureauReportManagerTests : ManagerTestBase<CreditBureauReport
         AssertRequestUrlContains("/v3/creditBureauReport");
         AssertRequestUrlContains("offset=0");
         AssertRequestUrlContains("limit=10");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Single(result.Data);
         Assert.Equal("cbr_1", result.Data[0].Id);
         Assert.Equal("DONE", result.Data[0].Status);
@@ -106,7 +106,7 @@ public class CreditBureauReportManagerTests : ManagerTestBase<CreditBureauReport
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/creditBureauReport/cbr_456");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("cbr_456", result.Data.Id);
         Assert.Equal("cus_def", result.Data.Customer);
         Assert.Equal("MG", result.Data.State);
@@ -124,7 +124,7 @@ public class CreditBureauReportManagerTests : ManagerTestBase<CreditBureauReport
         var request = new CreateCreditBureauReportRequest { Customer = "cus_invalid" };
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);
@@ -137,7 +137,7 @@ public class CreditBureauReportManagerTests : ManagerTestBase<CreditBureauReport
 
         var result = await Manager.Find("cbr_nonexistent");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         Assert.Single(result.Errors);
         Assert.Equal("not_found", result.Errors[0].Code);

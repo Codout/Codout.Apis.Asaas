@@ -32,7 +32,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/payments/");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
     }
 
     #endregion
@@ -70,7 +70,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.Create(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pay_123", result.Data.Id);
         Assert.Equal("cus_1", result.Data.CustomerId);
         Assert.Equal(100.00m, result.Data.Value);
@@ -84,7 +84,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -111,7 +111,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.Find("pay_456");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pay_456", result.Data.Id);
         Assert.Equal(50.00m, result.Data.Value);
         Assert.False(result.Data.Deleted);
@@ -141,7 +141,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(2, result.TotalCount);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("pay_1", result.Data[0].Id);
@@ -184,7 +184,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.Update("pay_123", request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pay_123", result.Data.Id);
         Assert.Equal(150.00m, result.Data.Value);
         Assert.Equal("Updated payment", result.Data.Description);
@@ -212,7 +212,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.Delete("pay_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pay_123", result.Data.Id);
         Assert.True(result.Data.Deleted);
     }
@@ -239,7 +239,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.Restore("pay_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pay_123", result.Data.Id);
         Assert.False(result.Data.Deleted);
     }
@@ -266,7 +266,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.Refund("pay_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pay_123", result.Data.Id);
     }
 
@@ -292,7 +292,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.ReceiveInCash("pay_123", new DateTime(2026, 3, 15), 100.00m, false);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pay_123", result.Data.Id);
     }
 
@@ -318,7 +318,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.GetBankSlipBarCode("pay_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("12345.67890", result.Data.IdentificationField);
         Assert.Equal("1234567", result.Data.NossoNumero);
         Assert.Equal("12345678901234567890123456789012345678901234", result.Data.BarCode);
@@ -346,7 +346,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.GetPixQrCode("pay_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("base64data", result.Data.EncodedImage);
         Assert.Equal("pixpayload", result.Data.Payload);
     }
@@ -373,7 +373,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         var result = await Manager.UndoReceivedInCash("pay_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pay_123", result.Data.Id);
     }
 
@@ -416,7 +416,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/payments/pay_1/billingInfo");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("1234", result.Data.CreditCard.CreditCardNumber);
     }
 
@@ -440,7 +440,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/payments/pay_1/status");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(Codout.Apis.Asaas.Models.Payment.Enums.PaymentStatus.CONFIRMED, result.Data.Status);
     }
 
@@ -458,7 +458,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/payments/simulate");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(100m, result.Data.Value);
         Assert.Equal(100m, result.Data.CreditCard.NetValue);
         Assert.Equal(2.49m, result.Data.CreditCard.FeePercentage);
@@ -473,7 +473,7 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/payments/limits");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(10, result.Data.Creation.Daily.Limit);
         Assert.Equal(5, result.Data.Creation.Daily.Used);
         Assert.False(result.Data.Creation.Daily.WasReached);

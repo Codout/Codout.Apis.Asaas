@@ -34,7 +34,7 @@ public class CustomerManagerTests : ManagerTestBase<CustomerManager>
 
         var result = await Manager.Create(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("cus_123", result.Data.Id);
         Assert.Equal("Test Customer", result.Data.Name);
         Assert.Equal("test@example.com", result.Data.Email);
@@ -49,7 +49,7 @@ public class CustomerManagerTests : ManagerTestBase<CustomerManager>
 
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -76,7 +76,7 @@ public class CustomerManagerTests : ManagerTestBase<CustomerManager>
 
         var result = await Manager.Find("cus_456");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("cus_456", result.Data.Id);
         Assert.Equal("Found Customer", result.Data.Name);
         Assert.False(result.Data.Deleted);
@@ -106,7 +106,7 @@ public class CustomerManagerTests : ManagerTestBase<CustomerManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(2, result.TotalCount);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("cus_1", result.Data[0].Id);
@@ -160,7 +160,7 @@ public class CustomerManagerTests : ManagerTestBase<CustomerManager>
 
         var result = await Manager.Update("cus_123", request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("cus_123", result.Data.Id);
         Assert.Equal("Updated Name", result.Data.Name);
         Assert.Equal("updated@example.com", result.Data.Email);
@@ -188,7 +188,7 @@ public class CustomerManagerTests : ManagerTestBase<CustomerManager>
 
         var result = await Manager.Delete("cus_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("cus_123", result.Data.Id);
         Assert.True(result.Data.Deleted);
     }
@@ -215,7 +215,7 @@ public class CustomerManagerTests : ManagerTestBase<CustomerManager>
 
         var result = await Manager.Restore("cus_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("cus_123", result.Data.Id);
         Assert.False(result.Data.Deleted);
     }

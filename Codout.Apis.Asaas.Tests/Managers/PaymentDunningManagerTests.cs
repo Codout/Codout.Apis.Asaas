@@ -69,7 +69,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.Create(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("dun_123", result.Data.Id);
         Assert.Equal("DUN001", result.Data.DunningNumber);
@@ -107,7 +107,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.Simulate(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("pay_1", result.Data.PaymentId);
         Assert.Equal(500.00m, result.Data.Value);
@@ -133,7 +133,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.Find("dun_456");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("dun_456", result.Data.Id);
         Assert.Equal(300.00m, result.Data.Value);
@@ -178,7 +178,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal(2, result.TotalCount);
@@ -193,7 +193,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.List(0, 10, null);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
     }
 
     // ── ListEventHistory ────────────────────────────────────────────
@@ -218,7 +218,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.ListEventHistory("dun_123", 0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("CREATED", result.Data[0].Status);
@@ -247,7 +247,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.ListPartialPaymentsReceived("dun_123", 0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Single(result.Data);
         Assert.Equal(150.00m, result.Data[0].Value);
@@ -276,7 +276,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.ListPaymentsAvailableForDunning(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Single(result.Data);
         Assert.Equal("pay_1", result.Data[0].PaymentId);
@@ -317,7 +317,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.Cancel("dun_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("dun_123", result.Data.Id);
         Assert.Equal(10.00m, result.Data.CancellationFeeValue);
@@ -332,7 +332,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.Find("dun_nonexistent");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);
@@ -345,7 +345,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
 
         var result = await Manager.Cancel("dun_invalid");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }

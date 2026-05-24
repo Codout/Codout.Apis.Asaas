@@ -36,7 +36,7 @@ public class WebhookManagerTests : ManagerTestBase<WebhookManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/webhooks");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("wh_new", result.Data.Id);
     }
 
@@ -109,7 +109,7 @@ public class WebhookManagerTests : ManagerTestBase<WebhookManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/webhooks/wh_42");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("wh_42", result.Data.Id);
         Assert.Equal("Found", result.Data.Name);
         Assert.Single(result.Data.Events);
@@ -130,7 +130,7 @@ public class WebhookManagerTests : ManagerTestBase<WebhookManager>
 
         AssertRequestMethod(HttpMethod.Put);
         AssertRequestUrl("/v3/webhooks/wh_42");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.False(result.Data.Enabled);
     }
 
@@ -147,7 +147,7 @@ public class WebhookManagerTests : ManagerTestBase<WebhookManager>
 
         AssertRequestMethod(HttpMethod.Delete);
         AssertRequestUrl("/v3/webhooks/wh_42");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.True(result.Data.Deleted);
     }
 
@@ -164,7 +164,7 @@ public class WebhookManagerTests : ManagerTestBase<WebhookManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/webhooks/wh_42/removeBackoff");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
     }
 
     #endregion
@@ -179,7 +179,7 @@ public class WebhookManagerTests : ManagerTestBase<WebhookManager>
 
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.NotEmpty(result.Errors);
     }
 
@@ -190,7 +190,7 @@ public class WebhookManagerTests : ManagerTestBase<WebhookManager>
 
         var result = await Manager.Find("wh_unknown");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
     }
 
     #endregion

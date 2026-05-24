@@ -34,7 +34,7 @@ public class WalletManagerTests : ManagerTestBase<WalletManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(3, result.TotalCount);
         Assert.Equal(3, result.Data.Count);
         Assert.Equal("wal_1", result.Data[0].Id);
@@ -60,7 +60,7 @@ public class WalletManagerTests : ManagerTestBase<WalletManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(0, result.TotalCount);
         Assert.Empty(result.Data);
     }
@@ -72,7 +72,7 @@ public class WalletManagerTests : ManagerTestBase<WalletManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.True(result.HasMore);
         Assert.Equal(50, result.TotalCount);
         Assert.Equal(10, result.Limit);
@@ -86,7 +86,7 @@ public class WalletManagerTests : ManagerTestBase<WalletManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }

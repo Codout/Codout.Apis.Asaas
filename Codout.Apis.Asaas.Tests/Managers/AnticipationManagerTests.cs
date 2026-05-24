@@ -50,7 +50,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.Create(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("ant_123", result.Data.Id);
         Assert.Equal("inst_1", result.Data.InstallmentId);
@@ -85,7 +85,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.Simulate(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("inst_1", result.Data.InstallmentId);
         Assert.Equal("pay_1", result.Data.PaymentId);
@@ -115,7 +115,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.Find("ant_456");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("ant_456", result.Data.Id);
         Assert.Equal(500.00m, result.Data.TotalValue);
@@ -160,7 +160,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal(2, result.TotalCount);
@@ -190,7 +190,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/anticipations/limits");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(800m, result.Data.BankSlip.Available);
         Assert.Equal(1500m, result.Data.CreditCard.Available);
     }
@@ -229,7 +229,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.Find("ant_nonexistent");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -248,7 +248,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
         };
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);

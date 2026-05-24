@@ -32,7 +32,7 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
 
         var result = await Manager.GetBalance();
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(5210.96m, result.Data.Value);
     }
@@ -44,7 +44,7 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
 
         var result = await Manager.GetBalance();
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -73,7 +73,7 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
 
         var result = await Manager.ListTransactions(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(2, result.TotalCount);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("txn_1", result.Data[0].Id);
@@ -132,7 +132,7 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
 
         var result = await Manager.GetPaymentStatistics();
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(10, result.Data.Quantity);
         Assert.Equal(1500.00m, result.Data.Value);
         Assert.Equal(1400.00m, result.Data.NetValue);
@@ -160,7 +160,7 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
 
         var result = await Manager.GetSplitStatistics();
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(500.00m, result.Data.TotalPendingValue);
         Assert.Equal(3000.00m, result.Data.TotalReceivedValue);
     }

@@ -41,7 +41,7 @@ public class AsaasAccountManagerTests : ManagerTestBase<AsaasAccountManager>
 
         var result = await Manager.Create(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("Test Company", result.Data.Name);
         Assert.Equal("test@test.com", result.Data.Email);
@@ -90,7 +90,7 @@ public class AsaasAccountManagerTests : ManagerTestBase<AsaasAccountManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal(2, result.TotalCount);
@@ -109,7 +109,7 @@ public class AsaasAccountManagerTests : ManagerTestBase<AsaasAccountManager>
 
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);
@@ -122,7 +122,7 @@ public class AsaasAccountManagerTests : ManagerTestBase<AsaasAccountManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }

@@ -33,7 +33,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
 
         var result = await Manager.GetCommercialInfo();
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("My Company", result.Data.Name);
         Assert.Equal("company@test.com", result.Data.Email);
@@ -83,12 +83,15 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
     [Fact]
     public async Task ListPendingDocuments_SendsGetToDocumentsRoute()
     {
-        SetupListResponse<AccountDocumentSection>("[{\"id\":\"sec_1\",\"title\":\"Identificacao\"}]");
+        SetupOkResponse("{\"rejectReasons\":null,\"data\":[{\"id\":\"sec_1\",\"title\":\"Identificacao\",\"status\":\"PENDING\",\"type\":\"IDENTIFICATION\",\"documents\":[]}]}");
 
         var result = await Manager.ListPendingDocuments();
 
         AssertRequestMethod(HttpMethod.Get);
-        AssertRequestUrlContains("/v3/myAccount/documents");
+        AssertRequestUrl("/v3/myAccount/documents");
+        Assert.True(result.WasSuccessful());
+        Assert.Single(result.Data.Data);
+        Assert.Equal("sec_1", result.Data.Data[0].Id);
     }
 
     [Fact]
@@ -151,7 +154,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
 
         var result = await Manager.CreatePaymentCheckoutConfig(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("#FFFFFF", result.Data.LogoBackgroundColor);
         Assert.Equal("#000000", result.Data.InfoBackgroundColor);
@@ -182,7 +185,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
 
         var result = await Manager.FindPaymentCheckoutConfig();
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("#FF0000", result.Data.LogoBackgroundColor);
         Assert.False(result.Data.Enabled);
@@ -209,7 +212,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
 
         var result = await Manager.FindFees();
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.NotNull(result.Data.Payment);
         Assert.NotNull(result.Data.Transfer);
@@ -239,7 +242,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
 
         var result = await Manager.FindAccountNumber();
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("0001", result.Data.Agency);
         Assert.Equal("123456", result.Data.Account);
@@ -255,7 +258,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
 
         var result = await Manager.GetCommercialInfo();
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);
@@ -268,7 +271,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
 
         var result = await Manager.FindFees();
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
