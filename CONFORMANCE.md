@@ -183,7 +183,20 @@ Endpoints `/v3/myAccount/documents*` (5 endpoints). Subgrupo Account Document do
 - **B-22k**: `Simulate(request)` enviava `payment` no body JSON. Schema oficial expõe como **query param** (`?payment=pay_xxx`) e exige body vazio. Manager corrigido para construir query string.
 - **B-22m**: `SimulatedPaymentDunning.TypeSimulations` e `PaymentDunningPaymentAvailable.TypeSimulations` eram objeto único. Schema retorna ARRAY. Trocados para `List<PaymentDunningTypeSimulations>`. Sem o fix, deserialização lançava `InvalidCastException` no JSON real.
 
-## §10 — CreditBureauReportManager (pré-existente) — ⏳
+## §10 — CreditBureauReportManager (pré-existente) — ✅
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `POST /v3/creditBureauReport` (request) | ✅ | `CreateCreditBureauReportRequest` (customer? + cpfCnpj? — ambos opcionais) | inline | `CreateRequest_HasOnlyCustomerAndCpfCnpj`, `_DoesNotSerializeRemovedFields` | ✅ |
+| `POST /v3/creditBureauReport` (response) | ✅ | `CreditBureauReport` (id, dateCreated, cpfCnpj, customer, downloadUrl, reportFile) — `reportFile` populado APENAS no POST | `CreditBureauReport/report-create-response.json` | `ReportResponse_PopulatesReportFile_OnCreate` | ✅ |
+| `GET /v3/creditBureauReport` | ✅ | `ResponseList<CreditBureauReport>` + `CreditBureauReportListFilter` (startDate, endDate) | `CreditBureauReport/reports-list-response.json` | `ReportsList_*`, `ListFilter_*` (2 tests) | ✅ |
+| `GET /v3/creditBureauReport/{id}` | ✅ | mesmo `CreditBureauReport` (mas `reportFile=null` aqui) | `CreditBureauReport/report-response.json` | `ReportResponse_DeserializesFromOfficialFixture_GetById`, `_NoFakeFields` | ✅ |
+
+**Bugs corrigidos nesta fase (B-23):**
+- **B-23a/b**: `CreditBureauReport` tinha `State: string` e `Status: string` — **nenhum existe no schema oficial**. Removidos. Era chute do dev original.
+- **B-23c**: `CreditBureauReport` faltava `DownloadUrl: string` e `ReportFile: string` (PDF Base64). Adicionados. Sem o fix, consumidores não tinham como baixar o relatório.
+- **B-23d**: `CreateCreditBureauReportRequest.State` foi removido (não existe no schema).
+- **B-23e**: `List(offset, limit)` não aceitava filtro. Schema expõe `startDate` e `endDate`. Criado `CreditBureauReportListFilter` e novo overload `List(offset, limit, filter)` backwards-compatible.
 
 ## §11 — BillPaymentManager (pré-existente) — ⏳
 

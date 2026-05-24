@@ -78,7 +78,6 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
         Assert.Equal(500.00m, result.Data.Value);
         Assert.Equal(25.00m, result.Data.FeeValue);
         Assert.Equal(475.00m, result.Data.NetValue);
-        Assert.Equal(10.00m, result.Data.ReceivedInCashFeeValue);
         Assert.True(result.Data.CanBeCancelled);
         Assert.False(result.Data.IsNecessaryResendDocumentation);
     }

@@ -249,9 +249,9 @@ public class SerializationTests
             "id": "cbr_123",
             "customer": "cus_abc",
             "cpfCnpj": "12345678901",
-            "state": "SP",
-            "status": "DONE",
-            "dateCreated": "2024-06-15T10:30:00"
+            "downloadUrl": "https://example/report.pdf",
+            "reportFile": null,
+            "dateCreated": "2024-06-15"
         }
         """;
 
@@ -261,9 +261,9 @@ public class SerializationTests
         Assert.Equal("cbr_123", result.Id);
         Assert.Equal("cus_abc", result.Customer);
         Assert.Equal("12345678901", result.CpfCnpj);
-        Assert.Equal("SP", result.State);
-        Assert.Equal("DONE", result.Status);
-        Assert.Equal(new DateTime(2024, 6, 15, 10, 30, 0), result.DateCreated);
+        Assert.Equal("https://example/report.pdf", result.DownloadUrl);
+        Assert.Null(result.ReportFile);
+        Assert.Equal(new DateTime(2024, 6, 15), result.DateCreated);
     }
 
     [Fact]
@@ -272,15 +272,13 @@ public class SerializationTests
         var request = new CreateCreditBureauReportRequest
         {
             Customer = "cus_test",
-            CpfCnpj = "98765432100",
-            State = "RJ"
+            CpfCnpj = "98765432100"
         };
 
         var json = JsonSerializer.Serialize(request, Options);
 
         Assert.Contains("\"customer\":\"cus_test\"", json);
         Assert.Contains("\"cpfCnpj\":\"98765432100\"", json);
-        Assert.Contains("\"state\":\"RJ\"", json);
     }
 
     #endregion

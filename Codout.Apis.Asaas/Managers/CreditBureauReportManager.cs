@@ -14,9 +14,9 @@ public class CreditBureauReportManager(ApiSettings settings) : BaseManager(setti
         return await PostAsync<CreditBureauReport>(CreditBureauReportRoute, requestObj);
     }
 
-    public async Task<ResponseList<CreditBureauReport>> List(int offset, int limit)
+    public async Task<ResponseList<CreditBureauReport>> List(int offset, int limit, CreditBureauReportListFilter filter = null)
     {
-        return await GetListAsync<CreditBureauReport>(CreditBureauReportRoute, offset, limit);
+        return await GetListAsync<CreditBureauReport>(CreditBureauReportRoute, offset, limit, filter);
     }
 
     public async Task<ResponseObject<CreditBureauReport>> Find(string creditBureauReportId)
