@@ -321,4 +321,42 @@ public class PixManagerTests : ManagerTestBase<PixManager>
     }
 
     #endregion
+
+    #region FindTransaction / DeleteStaticQrCode / GetAddressKeyTokenBucket
+
+    [Fact]
+    public async Task FindTransaction_SendsGetToTransactionRoute()
+    {
+        SetupOkResponse("{\"id\":\"pix_tx_42\",\"status\":\"DONE\"}");
+
+        var result = await Manager.FindTransaction("pix_tx_42");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/pix/transactions/pix_tx_42");
+    }
+
+    [Fact]
+    public async Task DeleteStaticQrCode_SendsDeleteToStaticQrCodeRoute()
+    {
+        SetupOkResponse("{\"deleted\":true,\"id\":\"qr_1\"}");
+
+        var result = await Manager.DeleteStaticQrCode("qr_1");
+
+        AssertRequestMethod(HttpMethod.Delete);
+        AssertRequestUrl("/v3/pix/qrCodes/static/qr_1");
+    }
+
+    [Fact]
+    public async Task GetAddressKeyTokenBucket_SendsGetToTokenBucketRoute()
+    {
+        SetupOkResponse("{\"remainingTokens\":5,\"maxTokens\":10}");
+
+        var result = await Manager.GetAddressKeyTokenBucket();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/pix/tokenBucket/addressKey");
+        Assert.Equal(5, result.Data.RemainingTokens);
+    }
+
+    #endregion
 }

@@ -16,6 +16,12 @@ public class PixManager(ApiSettings settings) : BaseManager(settings)
         return await GetListAsync<PixTransaction>(route, offset, limit);
     }
 
+    public async Task<ResponseObject<PixTransaction>> FindTransaction(string transactionId)
+    {
+        var route = $"{PixRoute}/transactions/{transactionId}";
+        return await GetAsync<PixTransaction>(route);
+    }
+
     public async Task<ResponseObject<PixTransaction>> CancelTransaction(string transactionId)
     {
         var route = $"{PixRoute}/transactions/{transactionId}/cancel";
@@ -26,6 +32,18 @@ public class PixManager(ApiSettings settings) : BaseManager(settings)
     {
         var route = $"{PixRoute}/qrCodes/static";
         return await PostAsync<PixStaticQrCode>(route, requestObj);
+    }
+
+    public async Task<ResponseObject<BaseDeleted>> DeleteStaticQrCode(string qrCodeId)
+    {
+        var route = $"{PixRoute}/qrCodes/static/{qrCodeId}";
+        return await DeleteAsync<BaseDeleted>(route);
+    }
+
+    public async Task<ResponseObject<PixAddressKeyTokenBucket>> GetAddressKeyTokenBucket()
+    {
+        var route = $"{PixRoute}/tokenBucket/addressKey";
+        return await GetAsync<PixAddressKeyTokenBucket>(route);
     }
 
     public async Task<ResponseObject<DecodedPixQrCode>> DecodeQrCode(DecodePixQrCodeRequest requestObj)
