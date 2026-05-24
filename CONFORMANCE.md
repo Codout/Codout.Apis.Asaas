@@ -75,12 +75,13 @@ Sem a variável: integration tests fazem skip automaticamente.
 
 | Padrão | Status | Onde |
 |---|---|---|
-| Query params bool serializa lowercase `true`/`false` | ⏳ | `RequestParameters.Add(bool?)` |
-| Query params decimal serializa invariant culture | ⏳ | `RequestParameters.Add(decimal?)` |
-| Query params DateTime serializa formato Asaas | ⏳ | `RequestParameters.Add(DateTime?)` |
-| Query params enum serializa nome do enum em UPPER | ⏳ | `RequestParameters.Add(Enum)` |
-| Envelope `{data:[...]}` (sem hasMore) detectado | ⏳ | grep por padrão |
-| `bool?` em campos opcionais de response | ⏳ | grep por padrão |
+| Query params bool serializa lowercase `true`/`false` | ✅ | `RequestParameters.Add(bool?)` + `RequestParametersContractTests.Bool_*` (3 tests) |
+| Query params decimal serializa invariant culture (ponto, não vírgula) | ✅ | `RequestParameters.Add(decimal?)` + `Decimal_SerializesWithDotInAllCultures` (4 culturas) |
+| Query params DateTime serializa `YYYY-MM-DD` em qualquer cultura | ✅ | `DateTimeExtensions.ToApiRequest` + `DateTime_SerializesAsIsoYyyyMmDdInAllCultures` (3 culturas) |
+| Query params enum serializa nome do enum em UPPER | ✅ | `RequestParameters.Add(Enum)` + `Enum_SerializesAsUppercaseAsaasName` |
+| Query string escapa caracteres especiais | ✅ | `Build_BuildsCorrectQueryStringWithEscaping` |
+| Envelope `{data:[...]}` (sem hasMore) — endpoints conhecidos | ✅ | `AccountDocument` (B-07 fixado), `PixRecurring.ListItems` (B-14 fixado) |
+| `bool?` em campos opcionais de response | ⏳ | grep durante Fase 5 |
 
 ---
 
