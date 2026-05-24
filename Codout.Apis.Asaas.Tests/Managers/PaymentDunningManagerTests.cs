@@ -48,7 +48,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
     [Fact]
     public async Task Create_DeserializesResponse()
     {
-        SetupOkResponse("{\"id\":\"dun_123\",\"dunningNumber\":\"DUN001\",\"status\":\"PENDING\",\"type\":\"CREDIT_BUREAU\",\"payment\":\"pay_1\",\"requestDate\":\"2024-01-10\",\"description\":\"Dunning for overdue payment\",\"value\":500.00,\"feeValue\":25.00,\"netValue\":475.00,\"receivedInCashFeeValue\":10.00,\"canBeCancelled\":true,\"isNecessaryResendDocumentation\":false}");
+        SetupOkResponse("{\"id\":\"dun_123\",\"dunningNumber\":15,\"status\":\"PENDING\",\"type\":\"CREDIT_BUREAU\",\"payment\":\"pay_1\",\"requestDate\":\"2024-01-10\",\"description\":\"Dunning for overdue payment\",\"value\":500.00,\"feeValue\":25.00,\"netValue\":475.00,\"receivedInCashFeeValue\":10.00,\"canBeCancelled\":true,\"isNecessaryResendDocumentation\":false}");
 
         var request = new CreatePaymentDunningRequest
         {
@@ -72,7 +72,7 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
         Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("dun_123", result.Data.Id);
-        Assert.Equal("DUN001", result.Data.DunningNumber);
+        Assert.Equal(15, result.Data.DunningNumber);
         Assert.Equal("pay_1", result.Data.PaymentId);
         Assert.Equal("Dunning for overdue payment", result.Data.Description);
         Assert.Equal(500.00m, result.Data.Value);
@@ -95,7 +95,8 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
         var result = await Manager.Simulate(request);
 
         AssertRequestMethod(HttpMethod.Post);
-        AssertRequestUrl("/v3/paymentDunnings/simulate");
+        AssertRequestUrlContains("/v3/paymentDunnings/simulate");
+        AssertRequestUrlContains("payment=pay_1");
     }
 
     [Fact]
@@ -214,15 +215,15 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
     [Fact]
     public async Task ListEventHistory_DeserializesResponse()
     {
-        SetupListResponse<PaymentDunningEventHistory>("[{\"status\":\"CREATED\",\"description\":\"Dunning created\",\"eventDate\":\"2024-01-10\"},{\"status\":\"SENT\",\"description\":\"Dunning sent\",\"eventDate\":\"2024-01-11\"}]", totalCount: 2);
+        SetupListResponse<PaymentDunningEventHistory>("[{\"status\":\"NEGOTIATED\",\"description\":\"Dunning negotiated\",\"eventDate\":\"2024-01-10\"},{\"status\":\"PAID\",\"description\":\"Dunning paid\",\"eventDate\":\"2024-01-11\"}]", totalCount: 2);
 
         var result = await Manager.ListEventHistory("dun_123", 0, 10);
 
         Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(2, result.Data.Count);
-        Assert.Equal("CREATED", result.Data[0].Status);
-        Assert.Equal("Dunning created", result.Data[0].Description);
+        Assert.Equal(Codout.Apis.Asaas.Models.PaymentDunning.Enums.PaymentDunningHistoryStatus.NEGOTIATED, result.Data[0].Status);
+        Assert.Equal("Dunning negotiated", result.Data[0].Description);
     }
 
     // ── ListPartialPaymentsReceived ─────────────────────────────────
@@ -320,7 +321,6 @@ public class PaymentDunningManagerTests : ManagerTestBase<PaymentDunningManager>
         Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("dun_123", result.Data.Id);
-        Assert.Equal(10.00m, result.Data.CancellationFeeValue);
     }
 
     // ── Error handling ──────────────────────────────────────────────

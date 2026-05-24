@@ -156,7 +156,32 @@ Endpoints `/v3/myAccount/documents*` (5 endpoints). Subgrupo Account Document do
 - **B-21c**: `InvoiceListFilter` faltava `customer` e `externalReference`. Adicionados.
 - **B-21d**: `CreateInvoiceRequest` e `UpdateInvoiceRequest` faltavam `updatePayment: bool?`. Adicionado em ambos.
 
-## §9 — PaymentDunningManager (pré-existente) — ⏳
+## §9 — PaymentDunningManager (pré-existente) — ✅
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `POST /v3/paymentDunnings` (multipart) | ✅ | `CreatePaymentDunningRequest` (9 campos obrigatórios + documents binários) | (cobertura unit do manager) | `CreateRequest_UsesPaymentNotPaymentId` | ✅ |
+| `POST /v3/paymentDunnings` (response) | ✅ | `PaymentDunning` (id, dunningNumber int?, status enum, type enum, payment, requestDate, value, feeValue, netValue, canBeCancelled bool?, isNecessaryResendDocumentation bool?, cannotBeCancelledReason, denialReason) | `PaymentDunning/dunning-response.json` | `DunningResponse_*` (2 tests) | ✅ |
+| `GET /v3/paymentDunnings` | ✅ | `ResponseList<PaymentDunning>` + `PaymentDunningListFilter` (status, type, payment, requestStartDate, requestEndDate) | `PaymentDunning/dunnings-list-response.json` | `DunningsList_*`, `ListFilter_*` | ✅ |
+| `GET /v3/paymentDunnings/{id}` | ✅ | mesmo `PaymentDunning` | reusa | (idem) | ✅ |
+| `POST /v3/paymentDunnings/simulate` | ✅ | **payment como QUERY param, body vazio** → `SimulatedPaymentDunning` com `TypeSimulations: List<...>` | `PaymentDunning/simulate-response.json` | `SimulateResponse_DeserializesFromOfficialFixture` | ✅ |
+| `GET /v3/paymentDunnings/{id}/history` | ✅ | `ResponseList<PaymentDunningEventHistory>` com `Status: PaymentDunningHistoryStatus` enum | `PaymentDunning/history-list-response.json` | `HistoryResponse_*`, `HistoryStatus_AllFourValuesDeserialize` | ✅ |
+| `GET /v3/paymentDunnings/{id}/partialPayments` | ✅ | `ResponseList<PaymentDunningPartialPayments>` (value, description, paymentDate) | `PaymentDunning/partial-payments-response.json` | `PartialPaymentsResponse_DeserializesFromOfficialFixture` | ✅ |
+| `GET /v3/paymentDunnings/paymentsAvailableForDunning` | ✅ | `ResponseList<PaymentDunningPaymentAvailable>` com `TypeSimulations: List<...>` | `PaymentDunning/payments-available-response.json` | `PaymentsAvailableResponse_DeserializesFromOfficialFixture` | ✅ |
+| `POST /v3/paymentDunnings/{id}/cancel` | ✅ | body vazio → `PaymentDunning` | (cobertura unit do manager) | (cobertura existente) | ✅ |
+| Enum `PaymentDunningStatus` (8 valores) | ✅ | enum tipado | inline | `DunningStatus_AllEightValuesDeserialize` | ✅ |
+| Enum `PaymentDunningType` (CREDIT_BUREAU + DEBT_RECOVERY_ASSISTANCE p/ filter) | ✅ | enum tipado | inline | `DunningType_BothValuesDeserialize` | ✅ |
+| Enum `PaymentDunningHistoryStatus` (4 valores) | ✅ | enum tipado | inline | `HistoryStatus_AllFourValuesDeserialize` | ✅ |
+
+**Bugs corrigidos nesta fase (B-22):**
+- **B-22a**: `PaymentDunning.DunningNumber` era `string`. Schema é `integer` (int32). Trocado para `int?`.
+- **B-22b**: `PaymentDunning` faltava `CannotBeCancelledReason: string`. Adicionado.
+- **B-22c/d**: `PaymentDunning.CanBeCancelled` e `IsNecessaryResendDocumentation` eram `bool` non-nullable. Schema permite null. Trocados para `bool?`. Sem o fix, omitir esses campos no JSON forçava `false` silenciosamente.
+- **B-22e**: `PaymentDunning.ReceivedInCashFeeValue` e `CancellationFeeValue` marcados como `[Obsolete]` (schema oficial marca deprecated).
+- **B-22f**: `PaymentDunningEventHistory.Status` era `string`. Schema é enum `PaymentDunningHistoryStatus` (IN_NEGOTIATION, NEGOTIATION_FAIL, NEGOTIATED, PAID). Trocado para enum tipado.
+- **B-22h**: `PaymentDunningType` enum tinha apenas `CREDIT_BUREAU`. Filter aceita também `DEBT_RECOVERY_ASSISTANCE`. Adicionado.
+- **B-22k**: `Simulate(request)` enviava `payment` no body JSON. Schema oficial expõe como **query param** (`?payment=pay_xxx`) e exige body vazio. Manager corrigido para construir query string.
+- **B-22m**: `SimulatedPaymentDunning.TypeSimulations` e `PaymentDunningPaymentAvailable.TypeSimulations` eram objeto único. Schema retorna ARRAY. Trocados para `List<PaymentDunningTypeSimulations>`. Sem o fix, deserialização lançava `InvalidCastException` no JSON real.
 
 ## §10 — CreditBureauReportManager (pré-existente) — ⏳
 
