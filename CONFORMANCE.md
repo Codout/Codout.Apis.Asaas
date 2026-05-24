@@ -198,7 +198,25 @@ Endpoints `/v3/myAccount/documents*` (5 endpoints). Subgrupo Account Document do
 - **B-23d**: `CreateCreditBureauReportRequest.State` foi removido (não existe no schema).
 - **B-23e**: `List(offset, limit)` não aceitava filtro. Schema expõe `startDate` e `endDate`. Criado `CreditBureauReportListFilter` e novo overload `List(offset, limit, filter)` backwards-compatible.
 
-## §11 — BillPaymentManager (pré-existente) — ⏳
+## §11 — BillPaymentManager (pré-existente) — ✅
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `POST /v3/bill` (request) | ✅ | `CreateBillPaymentRequest` (required: identificationField; opcionais: scheduleDate, description, discount, interest, fine, dueDate, value, externalReference) | inline | `CreateRequest_SerializesAllKeysIncludingNewOnes`, `_OptionalFieldsOmittedWhenNull` | ✅ |
+| `POST /v3/bill` (response) | ✅ | `BillPayment` (17 campos incluindo interest, fine, paymentDate, externalReference, failReasons array) | `BillPayment/bill-response.json` | `BillResponse_DeserializesFromOfficialFixture`, `_FailReasonsIsArrayOfStrings` | ✅ |
+| `GET /v3/bill` | ✅ | `ResponseList<BillPayment>` | `BillPayment/bills-list-response.json` | `BillsList_UsesStandardEnvelopeWithPagination` | ✅ |
+| `GET /v3/bill/{id}` | ✅ | mesmo `BillPayment` | reusa | (idem) | ✅ |
+| `POST /v3/bill/simulate` (request) | ✅ | `SimulateBillPaymentRequest` (identificationField OU barCode) | inline | `SimulateRequest_AcceptsIdentificationFieldOrBarCode` | ✅ |
+| `POST /v3/bill/simulate` (response) | ✅ | `SimulatedBillPayment` (minimumScheduleDate, fee, bankSlipInfo com 17 campos) | `BillPayment/simulate-response.json` | `SimulateResponse_DeserializesFromOfficialFixture` | ✅ |
+| `POST /v3/bill/{id}/cancel` | ✅ | body vazio → `BillPayment` | (cobertura unit do manager) | (cobertura existente) | ✅ |
+| Enum `BillPaymentStatus` (7 valores) | ✅ | enum tipado | inline | `BillStatus_AllSevenValuesDeserialize` | ✅ |
+
+**Bugs corrigidos nesta fase (B-24):**
+- **B-24a**: `BillPayment` faltava `Interest`, `Fine`, `PaymentDate`, `ExternalReference`. `FailReasons` era `string`; schema é `array of string` — trocado para `List<string>`.
+- **B-24b**: `BillPaymentStatus` enum tinha apenas 5 valores. Schema tem 7 (adicionados `REFUNDED` e `AWAITING_CHECKOUT_RISK_ANALYSIS_REQUEST`).
+- **B-24c**: `BillPayment.CanBeCancelled`/`DueDate`/`ScheduleDate`/`PaymentDate` agora são nullable (response pode omitir/null em status iniciais).
+- **B-24d**: `CreateBillPaymentRequest` faltava `Interest`, `Fine`, `ExternalReference`. Campos não-obrigatórios (`Value`, `DueDate`, `ScheduleDate`, `Discount`) trocados para nullable (apenas `IdentificationField` é required no schema).
+- **B-24e**: `BankSlipInfo` tinha 5 campos com `BankCode` (nome chutado). Schema tem 17 campos com `bank`. Modelo reescrito: `Bank`, `BeneficiaryCpfCnpj`, `BeneficiaryName`, `AllowChangeValue`, `MinValue`, `MaxValue`, `DiscountValue`, `InterestValue`, `FineValue`, `OriginalValue`, `TotalDiscountValue`, `TotalAdditionalValue`, `IsOverdue` — todos adicionados.
 
 ---
 

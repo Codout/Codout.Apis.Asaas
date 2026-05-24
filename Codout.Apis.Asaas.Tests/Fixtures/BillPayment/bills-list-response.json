@@ -1,0 +1,23 @@
+{
+  "object": "list",
+  "hasMore": false,
+  "totalCount": 1,
+  "limit": 10,
+  "offset": 0,
+  "data": [
+    {
+      "object": "bill",
+      "id": "f1bce822-6f37-4905-8de8-f1af9f2f4bab",
+      "status": "PENDING",
+      "value": 29,
+      "discount": 0,
+      "interest": 0,
+      "fine": 0,
+      "identificationField": "03399.77779 29900.000000 04751.101017 1 81510000002990",
+      "dueDate": "2020-01-31",
+      "scheduleDate": "2020-01-31",
+      "fee": 0,
+      "canBeCancelled": false
+    }
+  ]
+}
