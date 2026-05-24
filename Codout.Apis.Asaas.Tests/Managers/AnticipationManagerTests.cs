@@ -168,6 +168,58 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
         Assert.Equal("ant_2", result.Data[1].Id);
     }
 
+    // ── Cancel / GetLimits / Configurations ─────────────────────────
+
+    [Fact]
+    public async Task Cancel_SendsPostToCancelRoute()
+    {
+        SetupOkResponse("{\"id\":\"ant_42\",\"status\":\"CANCELLED\"}");
+
+        var result = await Manager.Cancel("ant_42");
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/anticipations/ant_42/cancel");
+    }
+
+    [Fact]
+    public async Task GetLimits_SendsGetToLimitsRoute()
+    {
+        SetupOkResponse("{\"bankSlip\":{\"total\":1000,\"available\":800,\"used\":200},\"creditCard\":{\"total\":2000,\"available\":1500,\"used\":500}}");
+
+        var result = await Manager.GetLimits();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/anticipations/limits");
+        Assert.True(result.WasSucessfull());
+        Assert.Equal(800m, result.Data.BankSlip.Available);
+        Assert.Equal(1500m, result.Data.CreditCard.Available);
+    }
+
+    [Fact]
+    public async Task GetAutomaticConfiguration_SendsGetToConfigurationsRoute()
+    {
+        SetupOkResponse("{\"bankSlipEnabled\":true,\"creditCardEnabled\":false}");
+
+        var result = await Manager.GetAutomaticConfiguration();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/anticipations/configurations");
+        Assert.True(result.Data.BankSlipEnabled);
+        Assert.False(result.Data.CreditCardEnabled);
+    }
+
+    [Fact]
+    public async Task UpdateAutomaticConfiguration_SendsPutToConfigurationsRoute()
+    {
+        SetupOkResponse("{\"bankSlipEnabled\":true,\"creditCardEnabled\":true}");
+        var request = new UpdateAutomaticAnticipationConfigRequest { BankSlipEnabled = true, CreditCardEnabled = true };
+
+        var result = await Manager.UpdateAutomaticConfiguration(request);
+
+        AssertRequestMethod(HttpMethod.Put);
+        AssertRequestUrl("/v3/anticipations/configurations");
+    }
+
     // ── Error handling ──────────────────────────────────────────────
 
     [Fact]

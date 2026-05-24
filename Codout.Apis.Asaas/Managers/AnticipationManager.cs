@@ -36,4 +36,27 @@ public class AnticipationManager(ApiSettings settings) : BaseManager(settings)
         return responseList;
     }
 
+    public async Task<ResponseObject<Anticipation>> Cancel(string anticipationId)
+    {
+        var route = $"{AnticipationsRoute}/{anticipationId}/cancel";
+        return await PostAsync<Anticipation>(route, new RequestParameters());
+    }
+
+    public async Task<ResponseObject<AnticipationLimits>> GetLimits()
+    {
+        var route = $"{AnticipationsRoute}/limits";
+        return await GetAsync<AnticipationLimits>(route);
+    }
+
+    public async Task<ResponseObject<AutomaticAnticipationConfig>> GetAutomaticConfiguration()
+    {
+        var route = $"{AnticipationsRoute}/configurations";
+        return await GetAsync<AutomaticAnticipationConfig>(route);
+    }
+
+    public async Task<ResponseObject<AutomaticAnticipationConfig>> UpdateAutomaticConfiguration(UpdateAutomaticAnticipationConfigRequest requestObj)
+    {
+        var route = $"{AnticipationsRoute}/configurations";
+        return await PutAsync<AutomaticAnticipationConfig>(route, requestObj);
+    }
 }
