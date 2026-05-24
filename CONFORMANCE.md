@@ -98,7 +98,20 @@ Erros oficiais (`{errors:[{code,description}]}`) também validados via fixture c
 - `recurrings` (transactions list) usa o envelope padrão (`hasMore`/`totalCount`/`limit`/`offset`/`data`).
 - `recurrings/{id}/items` usa envelope minimalista `{data:[...]}` sem paginação — comportamento diferente do schema padrão, mantido em `PixRecurringItemsResponse` wrapper para evitar deserialização incorreta via `ResponseList<T>` (regressão B-14 já fixada).
 
-## §6 — MobilePhoneRechargeManager — ⏳
+## §6 — MobilePhoneRechargeManager — ✅
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `POST /v3/mobilePhoneRecharges` (request) | ✅ | `CreateMobilePhoneRechargeRequest` (value+phoneNumber required) | `MobilePhoneRecharge/create-request.json` | `CreateRequest_HasRequiredFields`, `_NoFakeFields` | ✅ |
+| `POST /v3/mobilePhoneRecharges` (response) | ✅ | `MobilePhoneRecharge` (id, value, phoneNumber, status enum, canBeCancelled, operatorName) | `MobilePhoneRecharge/recharge-response.json` | `RechargeResponse_DeserializesFromOfficialFixture` | ✅ |
+| `GET /v3/mobilePhoneRecharges` | ✅ | `ResponseList<MobilePhoneRecharge>` envelope padrão | `MobilePhoneRecharge/recharges-list-response.json` | `RechargesList_UsesStandardEnvelopeWithPagination` | ✅ |
+| `GET /v3/mobilePhoneRecharges/{id}` | ✅ | mesmo `MobilePhoneRecharge` | reusa | (idem) | ✅ |
+| `POST /v3/mobilePhoneRecharges/{id}/cancel` | ✅ | body vazio → `MobilePhoneRecharge` | (cobertura unit do manager) | (cobertura existente) | ✅ |
+| `GET /v3/mobilePhoneRecharges/{phoneNumber}/provider` | ✅ | `MobilePhoneProvider` (name, values: `MobilePhoneProviderValue[]` com {name, description, bonus, minValue, maxValue}) | `MobilePhoneRecharge/provider-response.json` | `ProviderResponse_DeserializesFromOfficialFixture`, `_UsesValuesNotAvailableValues` | ✅ |
+| Enum `MobilePhoneRechargeStatus` (5 valores) | ✅ | enum tipado | inline | `RechargeStatus_AllFiveValuesDeserialize` | ✅ |
+
+**Bug crítico corrigido nesta fase:**
+- **B-19**: `MobilePhoneProvider` tinha `AvailableValues: List<decimal>` (chutado). Schema real: `values: array` de objetos `MobilePhoneProviderValue` com campos `{name, description, bonus, minValue, maxValue}`. Modelo completo reescrito + criada classe nova `MobilePhoneProviderValue` + test antigo do manager corrigido (não mais asserta `AvailableValues`).
 
 ## §7 — MyAccountManager (documents) — ⏳
 

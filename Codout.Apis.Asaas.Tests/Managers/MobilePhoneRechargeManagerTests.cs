@@ -59,14 +59,14 @@ public class MobilePhoneRechargeManagerTests : ManagerTestBase<MobilePhoneRechar
     [Fact]
     public async Task GetProvider_SendsGetToProviderRoute()
     {
-        SetupOkResponse("{\"name\":\"Vivo\",\"availableValues\":[10,20,30]}");
+        SetupOkResponse("{\"name\":\"Vivo\",\"values\":[{\"name\":\"R$ 12,00\",\"bonus\":\"5.0\",\"minValue\":1,\"maxValue\":5}]}");
 
         var result = await Manager.GetProvider("11999998888");
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/mobilePhoneRecharges/11999998888/provider");
         Assert.Equal("Vivo", result.Data.Name);
-        Assert.Equal(3, result.Data.AvailableValues.Count);
+        Assert.Single(result.Data.Values);
     }
 
     [Fact]

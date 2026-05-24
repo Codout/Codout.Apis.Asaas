@@ -1,0 +1,17 @@
+{
+  "object": "list",
+  "hasMore": false,
+  "totalCount": 1,
+  "limit": 10,
+  "offset": 0,
+  "data": [
+    {
+      "id": "37c22147-4194-11ec-8061-0242ac120002",
+      "value": 15,
+      "phoneNumber": "63997365512",
+      "status": "PENDING",
+      "canBeCancelled": true,
+      "operatorName": "Vivo"
+    }
+  ]
+}
