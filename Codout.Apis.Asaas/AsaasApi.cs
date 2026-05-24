@@ -31,6 +31,7 @@ public class AsaasApi(ApiSettings apiSettings)
     private Lazy<EscrowManager> LazyEscrow { get; } = new(() => new EscrowManager(apiSettings), true);
     private Lazy<CheckoutManager> LazyCheckout { get; } = new(() => new CheckoutManager(apiSettings), true);
     private Lazy<MobilePhoneRechargeManager> LazyMobilePhoneRecharge { get; } = new(() => new MobilePhoneRechargeManager(apiSettings), true);
+    private Lazy<SandboxManager> LazySandbox { get; } = new(() => new SandboxManager(apiSettings), true);
 
     #endregion
 
@@ -59,5 +60,6 @@ public class AsaasApi(ApiSettings apiSettings)
     public EscrowManager Escrow => LazyEscrow.Value;
     public CheckoutManager Checkout => LazyCheckout.Value;
     public MobilePhoneRechargeManager MobilePhoneRecharge => LazyMobilePhoneRecharge.Value;
+    public SandboxManager Sandbox => LazySandbox.Value;
     #endregion
 }

@@ -245,3 +245,13 @@ public class TestableMobilePhoneRechargeManager(ApiSettings settings, HttpMessag
         return client;
     }
 }
+
+public class TestableSandboxManager(ApiSettings settings, HttpMessageHandler handler) : SandboxManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
