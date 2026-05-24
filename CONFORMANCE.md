@@ -47,7 +47,18 @@ Erros oficiais (`{errors:[{code,description}]}`) também validados via fixture c
 
 **Bug pré-existente corrigido em paralelo:** `Subscription.Enums.Cycle` estava faltando o valor `BIMONTHLY` (presente no schema oficial de `SubscriptionSaveRequestCycle` e `CheckoutSessionSubscriptionCycle`).
 
-## §3 — EscrowManager — ⏳
+## §3 — EscrowManager — ✅
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `POST /v3/accounts/{id}/escrow` | ✅ | `SaveEscrowConfigRequest` / response `EscrowConfig` (daysToExpire required, enabled/isFeePayer optional) | `Escrow/config-request.json`, `config-response.json` | `SaveEscrowConfigRequest_HasCorrectFieldNames`, `_NoFakeFields` | ✅ |
+| `GET /v3/accounts/{id}/escrow` | ✅ | `EscrowConfig` (mesmo schema) | `Escrow/config-response.json` | `EscrowConfig_DeserializesFromOfficialFixture`, `_OptionalBoolsAreNullableInResponse` | ✅ |
+| `POST /v3/accounts/escrow` | ✅ | mesmo `AccountPaymentEscrowConfigDTO` | reusa | (idem) | ✅ |
+| `GET /v3/accounts/escrow` | ✅ | mesmo `AccountPaymentEscrowConfigDTO` | reusa | (idem) | ✅ |
+| `POST /v3/escrow/{id}/finish` | ✅ | body `{}` vazio → retorna `Payment` (não `Escrow`!) | (cobertura no unit test do manager) | (cobertura existente) | ✅ |
+| `GET /v3/payments/{id}/escrow` | ✅ | `Escrow` (id, status enum, expirationDate, finishDate, finishReason enum) | `Escrow/payment-escrow-response.json` | `PaymentEscrow_*`, `EscrowStatus_*`, `EscrowFinishReason_*` (4 tests) | ✅ |
+| Enum `EscrowStatus` ACTIVE/DONE | ✅ | enum tipado | inline | `EscrowStatus_BothValuesDeserialize` | ✅ |
+| Enum `EscrowFinishReason` (6 valores) | ✅ | enum tipado | inline | `EscrowFinishReason_AllSixValuesDeserialize`, `_NullWhenStatusActive` | ✅ |
 
 ## §4 — PixAutomaticManager — ⏳
 
