@@ -50,5 +50,9 @@ v3.0.0 (major release, breaking changes):
       <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 
+    <ItemGroup>
+      <InternalsVisibleTo Include="Codout.Apis.Asaas.Tests" />
+    </ItemGroup>
+
 </Project>
 

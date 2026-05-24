@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Models.PaymentLink;
 using Codout.Apis.Asaas.Models.PaymentLink.Enums;
 using Codout.Apis.Asaas.Models.Common;
@@ -16,20 +16,9 @@ namespace Codout.Apis.Asaas.Tests.Serialization;
 
 public class SerializationTests
 {
-    // Replicate the SDK's JSON configuration for testing
-    private static readonly JsonSerializerOptions Options = CreateOptions();
-
-    private static JsonSerializerOptions CreateOptions()
-    {
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            PropertyNameCaseInsensitive = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-        options.Converters.Add(new JsonStringEnumConverter());
-        return options;
-    }
+    // Usa as opcoes reais do SDK (com SafeEnumConverterFactory + FlexibleDateTimeConverter)
+    // para os testes exercitarem o mesmo comportamento que produccao.
+    private static readonly JsonSerializerOptions Options = JsonSerializerConfiguration.Options;
 
     #region PaymentLink Models
 
