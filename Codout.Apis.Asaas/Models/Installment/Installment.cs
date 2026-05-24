@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json.Serialization;
 using Codout.Apis.Asaas.Models.Common.Enums;
 
@@ -6,6 +6,9 @@ namespace Codout.Apis.Asaas.Models.Installment;
 
 public class Installment
 {
+    [JsonPropertyName("object")]
+    public string Object { get; set; }
+
     [JsonPropertyName("id")]
     public string Id { get; set; }
 
@@ -33,6 +36,9 @@ public class Installment
     [JsonPropertyName("expirationDay")]
     public int ExpirationDay { get; set; }
 
+    [JsonPropertyName("dateCreated")]
+    public DateTime? DateCreated { get; set; }
+
     [JsonPropertyName("customer")]
     public string CustomerId { get; set; }
 
@@ -41,6 +47,9 @@ public class Installment
 
     [JsonPropertyName("paymentLink")]
     public string PaymentLink { get; set; }
+
+    [JsonPropertyName("checkoutSession")]
+    public string CheckoutSession { get; set; }
 
     [JsonPropertyName("transactionReceiptUrl")]
     public string TransactionReceiptUrl { get; set; }
