@@ -225,3 +225,13 @@ public class TestableEscrowManager(ApiSettings settings, HttpMessageHandler hand
         return client;
     }
 }
+
+public class TestableCheckoutManager(ApiSettings settings, HttpMessageHandler handler) : CheckoutManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}

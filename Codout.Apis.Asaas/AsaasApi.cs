@@ -29,6 +29,7 @@ public class AsaasApi(ApiSettings apiSettings)
     private Lazy<PixManager> LazyPix { get; } = new(() => new PixManager(apiSettings), true);
     private Lazy<ChargebackManager> LazyChargeback { get; } = new(() => new ChargebackManager(apiSettings), true);
     private Lazy<EscrowManager> LazyEscrow { get; } = new(() => new EscrowManager(apiSettings), true);
+    private Lazy<CheckoutManager> LazyCheckout { get; } = new(() => new CheckoutManager(apiSettings), true);
 
     #endregion
 
@@ -55,5 +56,6 @@ public class AsaasApi(ApiSettings apiSettings)
     public PixManager Pix => LazyPix.Value;
     public ChargebackManager Chargeback => LazyChargeback.Value;
     public EscrowManager Escrow => LazyEscrow.Value;
+    public CheckoutManager Checkout => LazyCheckout.Value;
     #endregion
 }
