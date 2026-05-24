@@ -9,11 +9,10 @@ namespace Codout.Apis.Asaas.Managers;
 public class SandboxManager(ApiSettings settings) : BaseManager(settings)
 {
     private const string SandboxRoute = "/sandbox";
-    private readonly ApiSettings _settings = settings;
 
     private void EnsureSandbox()
     {
-        if (_settings.AsaasEnvironment.IsProduction())
+        if (Settings.AsaasEnvironment.IsProduction())
         {
             throw new InvalidOperationException(
                 "SandboxManager so pode ser usado em AsaasEnvironment.SANDBOX. " +

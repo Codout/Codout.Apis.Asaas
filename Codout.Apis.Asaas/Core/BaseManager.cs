@@ -20,11 +20,11 @@ namespace Codout.Apis.Asaas.Core
         private const string ProductionUrl = "https://api.asaas.com";
         private const string SandboxUrl = "https://api-sandbox.asaas.com";
 
-        private readonly ApiSettings _settings;
+        protected readonly ApiSettings Settings;
 
         protected BaseManager(ApiSettings settings)
         {
-            _settings = settings;
+            Settings = settings;
         }
 
         protected async Task<ResponseObject<T>> PostMultipartFormDataContentAsync<T>(string resource, object payload)
@@ -161,10 +161,10 @@ namespace Codout.Apis.Asaas.Core
             // sockets nem fazer DNS lookup a cada request (boa pratica .NET).
             // DisposeHandler = false porque o handler eh shared.
             HttpClient httpClient = new HttpClient(SharedHandler, disposeHandler: false);
-            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("access_token", _settings.AccessToken);
-            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", _settings.ApplicationName);
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("access_token", Settings.AccessToken);
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Settings.ApplicationName);
             httpClient.BaseAddress = BuildBaseAddress();
-            httpClient.Timeout = _settings.TimeOut;
+            httpClient.Timeout = Settings.TimeOut;
 
             return httpClient;
         }
@@ -176,12 +176,12 @@ namespace Codout.Apis.Asaas.Core
 
         private Uri BuildBaseAddress()
         {
-            if (_settings.AsaasEnvironment.IsProduction())
+            if (Settings.AsaasEnvironment.IsProduction())
             {
                 return new Uri(ProductionUrl);
             }
 
-            if (_settings.AsaasEnvironment.IsSandbox())
+            if (Settings.AsaasEnvironment.IsSandbox())
             {
                 return new Uri(SandboxUrl);
             }

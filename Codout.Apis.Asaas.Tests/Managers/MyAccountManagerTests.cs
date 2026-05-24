@@ -4,6 +4,7 @@ using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Managers;
 using Codout.Apis.Asaas.Models.Common;
 using Codout.Apis.Asaas.Models.MyAccount;
+using Codout.Apis.Asaas.Models.MyAccount.Enums;
 using Codout.Apis.Asaas.Tests.Helpers;
 
 namespace Codout.Apis.Asaas.Tests.Managers;
@@ -58,13 +59,15 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
     [Fact]
     public async Task GetStatus_SendsGetToStatusRoute()
     {
-        SetupOkResponse("{\"general\":\"APPROVED\",\"commercialInfo\":\"APPROVED\"}");
+        SetupOkResponse("{\"general\":\"APPROVED\",\"commercialInfo\":\"APPROVED\",\"bankAccountInfo\":\"PENDING\",\"documentation\":\"AWAITING_APPROVAL\"}");
 
         var result = await Manager.GetStatus();
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/myAccount/status");
-        Assert.Equal("APPROVED", result.Data.General);
+        Assert.Equal(AccountApprovalStatus.APPROVED, result.Data.General);
+        Assert.Equal(AccountApprovalStatus.PENDING, result.Data.BankAccountInfo);
+        Assert.Equal(AccountApprovalStatus.AWAITING_APPROVAL, result.Data.Documentation);
     }
 
     [Fact]
