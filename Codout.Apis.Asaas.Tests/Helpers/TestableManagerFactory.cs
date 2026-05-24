@@ -205,3 +205,13 @@ public class TestablePixManager(ApiSettings settings, HttpMessageHandler handler
         return client;
     }
 }
+
+public class TestableChargebackManager(ApiSettings settings, HttpMessageHandler handler) : ChargebackManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
