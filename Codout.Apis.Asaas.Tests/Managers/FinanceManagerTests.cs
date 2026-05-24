@@ -12,36 +12,37 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
     protected override FinanceManager CreateManager(ApiSettings settings, MockHttpMessageHandler handler)
         => new TestableFinanceManager(settings, handler);
 
-    #region Balance
+    #region GetBalance
 
     [Fact]
-    public async Task Balance_SendsGetToCorrectUrl()
+    public async Task GetBalance_SendsGetToCorrectUrl()
     {
-        SetupOkResponse("12345.67");
+        SetupOkResponse("{\"balance\":12345.67}");
 
-        var result = await Manager.Balance();
+        var result = await Manager.GetBalance();
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/finance/balance");
     }
 
     [Fact]
-    public async Task Balance_DeserializesResponseCorrectly()
+    public async Task GetBalance_DeserializesObjectResponseCorrectly()
     {
-        SetupOkResponse("12345.67");
+        SetupOkResponse("{\"balance\":5210.96}");
 
-        var result = await Manager.Balance();
+        var result = await Manager.GetBalance();
 
         Assert.True(result.WasSucessfull());
-        Assert.Equal(12345.67m, result.Data);
+        Assert.NotNull(result.Data);
+        Assert.Equal(5210.96m, result.Data.Value);
     }
 
     [Fact]
-    public async Task Balance_WhenApiReturnsError_ReturnsErrorResponse()
+    public async Task GetBalance_WhenApiReturnsError_ReturnsErrorResponse()
     {
         SetupErrorResponse(HttpStatusCode.Unauthorized);
 
-        var result = await Manager.Balance();
+        var result = await Manager.GetBalance();
 
         Assert.False(result.WasSucessfull());
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
