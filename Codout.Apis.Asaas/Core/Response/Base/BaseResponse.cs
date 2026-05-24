@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using Codout.Apis.Asaas.Core.Extension;
@@ -22,7 +23,7 @@ public abstract class BaseResponse
 
     private void BuildErrors()
     {
-        if (WasSucessfull() || string.IsNullOrEmpty(AsaasResponse))
+        if (WasSuccessful() || string.IsNullOrEmpty(AsaasResponse))
             return;
 
         try
@@ -51,5 +52,8 @@ public abstract class BaseResponse
         }
     }
 
-    public bool WasSucessfull() => StatusCode.IsSuccessStatusCode();
+    public bool WasSuccessful() => StatusCode.IsSuccessStatusCode();
+
+    [Obsolete("Typo na grafia original. Use WasSuccessful() em vez disso. Sera removido em versao futura.")]
+    public bool WasSucessfull() => WasSuccessful();
 }
