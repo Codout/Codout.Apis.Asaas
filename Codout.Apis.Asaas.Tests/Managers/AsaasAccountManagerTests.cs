@@ -126,4 +126,76 @@ public class AsaasAccountManagerTests : ManagerTestBase<AsaasAccountManager>
         Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
+
+    // ── Find / ResendActivationLink ─────────────────────────────────
+
+    [Fact]
+    public async Task Find_SendsGetToAccountsId()
+    {
+        SetupOkResponse("{\"id\":\"acc_1\",\"name\":\"Sub\"}");
+
+        var result = await Manager.Find("acc_1");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/accounts/acc_1");
+    }
+
+    [Fact]
+    public async Task ResendActivationLink_SendsPostToResendRoute()
+    {
+        SetupOkResponse("{\"id\":\"acc_1\",\"name\":\"Sub\"}");
+
+        var result = await Manager.ResendActivationLink("acc_1");
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/accounts/acc_1/resendActivationLink");
+    }
+
+    // ── AccessTokens ────────────────────────────────────────────────
+
+    [Fact]
+    public async Task CreateAccessToken_SendsPostToAccessTokensRoute()
+    {
+        SetupOkResponse("{\"id\":\"tok_1\",\"name\":\"key01\"}");
+        var request = new CreateAccessTokenRequest { Name = "key01" };
+
+        var result = await Manager.CreateAccessToken("acc_1", request);
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/accounts/acc_1/accessTokens");
+    }
+
+    [Fact]
+    public async Task ListAccessTokens_SendsGetToAccessTokensRoute()
+    {
+        SetupListResponse<AccessToken>("[{\"id\":\"tok_1\",\"name\":\"key01\"}]");
+
+        var result = await Manager.ListAccessTokens("acc_1", 0, 10);
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrlContains("/v3/accounts/acc_1/accessTokens");
+    }
+
+    [Fact]
+    public async Task UpdateAccessToken_SendsPutToAccessTokenIdRoute()
+    {
+        SetupOkResponse("{\"id\":\"tok_1\",\"enabled\":false}");
+        var request = new UpdateAccessTokenRequest { Enabled = false };
+
+        var result = await Manager.UpdateAccessToken("acc_1", "tok_1", request);
+
+        AssertRequestMethod(HttpMethod.Put);
+        AssertRequestUrl("/v3/accounts/acc_1/accessTokens/tok_1");
+    }
+
+    [Fact]
+    public async Task DeleteAccessToken_SendsDeleteToAccessTokenIdRoute()
+    {
+        SetupOkResponse("{\"deleted\":true,\"id\":\"tok_1\"}");
+
+        var result = await Manager.DeleteAccessToken("acc_1", "tok_1");
+
+        AssertRequestMethod(HttpMethod.Delete);
+        AssertRequestUrl("/v3/accounts/acc_1/accessTokens/tok_1");
+    }
 }
