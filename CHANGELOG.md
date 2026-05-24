@@ -5,6 +5,166 @@ Todas as mudancas notaveis deste projeto serao documentadas neste arquivo.
 O formato e baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semantico](https://semver.org/lang/pt-BR/).
 
+## [3.0.0] - 2026-05-24
+
+Major release com auditoria completa de conformidade contra a documentacao
+oficial do Asaas (via MCP `https://docs.asaas.com/mcp`). Veja `AUDIT.md` e
+`IMPLEMENTATION_PLAN.md` para o relatorio detalhado.
+
+Cobertura do SDK passou de ~45% (70 endpoints) para 100% (~156 endpoints
+documentados). Suite de testes passou de 400 para ~500 testes.
+
+### Breaking changes
+
+**HTTP method:**
+- `CustomerManager.Update`, `PaymentManager.Update`, `SubscriptionManager.Update`,
+  `SubscriptionManager.UpdateInvoiceSettings`, `NotificationManager.Update`,
+  `NotificationManager.BatchUpdate` agora enviam **PUT** (antes era POST, sem efeito).
+
+**Renomeacoes / mudancas de rota:**
+- `CustomerFiscalInfoManager` -> `FiscalInfoManager`; classes renomeadas
+  (`CustomerFiscalInfo` -> `FiscalInfo`, `CreateCustomerFiscalInfoRequest` ->
+  `CreateFiscalInfoRequest`). Rota corrigida: `/v3/customerFiscalInfo` -> `/v3/fiscalInfo`.
+  Acesso facade: `asaas.CustomerFiscalInfo` -> `asaas.FiscalInfo`.
+- `InvoiceManager.ListMunicipalServices` removido e movido para
+  `FiscalInfoManager.ListServices` (rota correta `/v3/fiscalInfo/services`).
+- `FinanceManager.Balance()` (retornando `decimal`) renomeado para
+  `GetBalance()` retornando `ResponseObject<Balance>` (a API retorna objeto).
+- `MyAccountManager.Find()` removido (apontava para rota errada). Substituido por
+  `GetCommercialInfo()` (rota `/v3/myAccount/commercialInfo`).
+- `TransferManager.Execute(...)` removido (overload ambiguo). Substituido por
+  `TransferToBankAccount(...)` (POST `/v3/transfers`) e `TransferToAsaasAccount(...)`
+  (POST `/v3/transfers/`, com barra final = endpoint separado).
+- `WebhookManager` totalmente reescrito de "webhook unico por tipo" (rotas
+  `/v3/webhook`, `/v3/webhook/invoice`, `/v3/webhook/mobilePhoneRecharge` que ja
+  nao existem) para CRUD por id em `/v3/webhooks/{id}`. Veja secao de migracao
+  no final.
+- `MunicipalService.Iss` renomeado para `IssTax` (nome correto na API).
+
+**Remocoes:**
+- `AnticipationManager.SignAgreement` e `SignAnticipationAgreementRequest`
+  removidos: o endpoint `/v3/anticipations/agreement/sign` nao existe na API.
+
+**Modelos:**
+- `Customer.Deleted`, `Customer.NotificationDisabled`, `Payment.Deleted`,
+  `Payment.PostalService`, `Payment.Anticipated` convertidos para `bool?`.
+- `WebhookRequest` removido (substituido por `CreateWebhookRequest` /
+  `UpdateWebhookRequest`).
+
+### Bugs corrigidos
+
+- 7 bugs bloqueantes que faziam chamadas reais falharem (PUT->POST,
+  rotas incorretas, shape de resposta errado, endpoint inexistente,
+  manager sem metodo de criacao).
+- Sockets esgotando em apps de alto trafego: `SocketsHttpHandler` agora
+  e compartilhado entre todas as instancias de manager.
+
+### Novos managers (Sprint 4 + 5)
+
+- **ChargebackManager** - 3 endpoints (`/v3/chargebacks/*`)
+- **EscrowManager** - 6 endpoints (Conta de Garantia)
+- **CheckoutManager** - 2 endpoints (`/v3/checkouts/*`)
+- **MobilePhoneRechargeManager** - 5 endpoints (`/v3/mobilePhoneRecharges/*`)
+- **SandboxManager** - 3 helpers de teste (`/v3/sandbox/*`, lanca excecao em producao)
+- **PixAutomaticManager** - 6 endpoints (`/v3/pix/automatic/*`)
+- **PixRecurringManager** - 5 endpoints (`/v3/pix/transactions/recurrings/*`)
+
+### Novos endpoints em managers existentes
+
+- **PaymentManager** (+18 endpoints): documentos (5), simulate, limits,
+  billingInfo, viewingInfo, status, refunds, bankSlip/refund,
+  captureAuthorizedPayment, payWithCreditCard, createWithCreditCard,
+  splits queries paid/received (4).
+- **SubscriptionManager** (+1): UpdateCreditCard.
+- **InstallmentManager** (+5): Create, CreateWithCreditCard, ListPayments,
+  CancelPendingPayments, UpdateSplits.
+- **PixManager** (+3): FindTransaction, DeleteStaticQrCode, GetAddressKeyTokenBucket.
+- **AnticipationManager** (+4): Cancel, GetLimits, GetAutomaticConfiguration,
+  UpdateAutomaticConfiguration.
+- **CreditCardManager** (+2): SavePreAuthorizationConfig, GetPreAuthorizationConfig.
+- **TransferManager** (+1): Cancel.
+- **MyAccountManager** (+8): GetCommercialInfo, UpdateCommercialInfo,
+  GetStatus, DeleteWhiteLabelAccount, ListPendingDocuments, SubmitDocument,
+  ViewDocumentFile, UpdateDocumentFile, DeleteDocumentFile.
+- **AsaasAccountManager** (+6): Find, ResendActivationLink, CreateAccessToken,
+  ListAccessTokens, UpdateAccessToken, DeleteAccessToken.
+- **FiscalInfoManager** (+1): ListServices.
+
+### Adicionado em modelos
+
+- `Customer`: Object, CityName, StateInscription, Company, GroupName,
+  ForeignCustomer.
+- `Payment`: Object, PixTransaction, PixQrCodeId, CheckoutSession,
+  PaymentLinkId, InstallmentNumber, CreditDate, EstimatedCreditDate,
+  TransactionReceiptUrl, NossoNumero, Anticipable, CanBePaidAfterDueDate,
+  DaysAfterDueDateToRegistrationCancellation.
+- `CreatePaymentRequest`: Callback, PixAutomaticAuthorizationId,
+  DaysAfterDueDateToRegistrationCancellation.
+- `PaymentStatus`: valor REFUND_IN_PROGRESS.
+- `CreateCustomerRequest` / `UpdateCustomerRequest`: Company, ForeignCustomer
+  (e GroupName no Update).
+- Enums `WebhookEvent` (~100 valores) e `WebhookSendType`.
+- Enums `ChargebackStatus`, `ChargebackReason` (32 valores), `ChargebackDisputeStatus`.
+
+### Outras melhorias
+
+- `BaseResponse.WasSucessfull()` corrigido para `WasSuccessful()`. Versao com
+  typo mantida como `[Obsolete]` alias temporario.
+- `BaseManager` agora usa `SocketsHttpHandler` estatico compartilhado entre
+  todas as instancias para nao esgotar sockets em apps de alto trafego.
+
+### Guia de migracao 2.x -> 3.x
+
+```csharp
+// PUT agora e usado automaticamente nos Updates - nenhuma mudanca de codigo necessaria
+await asaas.Customer.Update("cus_123", req);  // antes: POST, agora: PUT
+
+// FiscalInfo
+asaas.CustomerFiscalInfo.X    -> asaas.FiscalInfo.X
+new CustomerFiscalInfo()      -> new FiscalInfo()
+new CreateCustomerFiscalInfoRequest() -> new CreateFiscalInfoRequest()
+
+// Invoice.ListMunicipalServices movido para FiscalInfo.ListServices
+await asaas.Invoice.ListMunicipalServices("IT");
+// agora:
+await asaas.FiscalInfo.ListServices("IT");
+
+// Finance balance shape mudou
+decimal saldo = (await asaas.Finance.Balance()).Data;
+// agora:
+decimal saldo = (await asaas.Finance.GetBalance()).Data.Value;
+
+// Transfer
+await asaas.Transfer.Execute(asaasRequest);  // ambiguo
+// agora:
+await asaas.Transfer.TransferToAsaasAccount(asaasRequest);
+await asaas.Transfer.TransferToBankAccount(bankRequest);
+
+// MyAccount.Find -> GetCommercialInfo
+var info = (await asaas.MyAccount.Find()).Data;
+// agora:
+var info = (await asaas.MyAccount.GetCommercialInfo()).Data;
+
+// Webhook completamente novo
+// Antes (nao funcionava mais em nenhuma versao da API):
+await asaas.Webhook.CreateOrUpdatePaymentWebhook(new WebhookRequest { ... });
+// Agora:
+await asaas.Webhook.Create(new CreateWebhookRequest
+{
+    Name = "Meu webhook",
+    Url = "https://example.com/hook",
+    Email = "ops@example.com",
+    Enabled = true,
+    ApiVersion = 3,
+    AuthToken = "whsec_min32chars......",
+    SendType = WebhookSendType.SEQUENTIALLY,
+    Events = [WebhookEvent.PAYMENT_CONFIRMED, WebhookEvent.PAYMENT_RECEIVED]
+});
+
+// AnticipationManager.SignAgreement removido - se voce usava esse metodo,
+// agora o termo de antecipacao e assinado direto no painel web do Asaas.
+```
+
 ## [2.0.2] - 2026-04-27
 
 ### Adicionado

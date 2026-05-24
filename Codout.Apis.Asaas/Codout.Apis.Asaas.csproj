@@ -6,7 +6,7 @@
 
         <!-- NuGet Package -->
         <PackageId>Asaas.Api</PackageId>
-        <Version>2.0.2</Version>
+        <Version>3.0.0</Version>
         <Authors>Clovis Coli Jr</Authors>
         <Company>Codout</Company>
         <Description>SDK .NET no-oficial para integracao com a API v3 do Asaas (asaas.com). Suporta cobrancas (Boleto, Pix, Cartao), assinaturas, transferencias, links de pagamento, notas fiscais, antecipacoes, negativacoes e muito mais. Zero dependencias externas.</Description>
@@ -18,9 +18,13 @@
         <RepositoryUrl>https://github.com/codout/Codout.Apis.Asaas</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>
-v2.0.2:
-- Add: CreditCardToken em CreateSubscriptionRequest — paridade com CreatePaymentRequest, permite criar assinaturas com cartao tokenizado sem reutilizar dados sensiveis
-- Veja CHANGELOG.md para historico completo
+v3.0.0 (major release, breaking changes):
+- Auditoria de conformidade contra a documentacao oficial do Asaas (via MCP)
+- 7 bugs bloqueantes corrigidos: PUT em Updates, rota /fiscalInfo, Balance shape, etc.
+- WebhookManager reescrito para CRUD em /v3/webhooks/{id}
+- 7 novos managers: Chargeback, Escrow, Checkout, MobilePhoneRecharge, Sandbox, PixAutomatic, PixRecurring
+- ~50 endpoints novos em managers existentes (Payment, MyAccount, AsaasAccount, Pix, ...)
+- Veja CHANGELOG.md para a lista completa de breaking changes e guia de migracao
         </PackageReleaseNotes>
         <Copyright>Copyright (c) Clovis Coli Jr</Copyright>
 
