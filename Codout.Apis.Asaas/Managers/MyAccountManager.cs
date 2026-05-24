@@ -61,22 +61,22 @@ public class MyAccountManager(ApiSettings settings) : BaseManager(settings)
         return await GetAsync<AccountDocumentResponse>(DocumentsRoute);
     }
 
-    public async Task<ResponseObject<AccountDocumentGroup>> SubmitDocument(string documentId, UploadAccountDocumentRequest requestObj)
+    public async Task<ResponseObject<AccountDocument>> SubmitDocument(string documentId, UploadAccountDocumentRequest requestObj)
     {
         var route = $"{DocumentsRoute}/{documentId}";
-        return await PostMultipartFormDataContentAsync<AccountDocumentGroup>(route, requestObj);
+        return await PostMultipartFormDataContentAsync<AccountDocument>(route, requestObj);
     }
 
-    public async Task<ResponseObject<AccountDocumentFile>> ViewDocumentFile(string fileId)
+    public async Task<ResponseObject<AccountDocument>> ViewDocumentFile(string fileId)
     {
         var route = $"{DocumentsRoute}/files/{fileId}";
-        return await GetAsync<AccountDocumentFile>(route);
+        return await GetAsync<AccountDocument>(route);
     }
 
-    public async Task<ResponseObject<AccountDocumentFile>> UpdateDocumentFile(string fileId, UploadAccountDocumentRequest requestObj)
+    public async Task<ResponseObject<AccountDocument>> UpdateDocumentFile(string fileId, UploadAccountDocumentRequest requestObj)
     {
         var route = $"{DocumentsRoute}/files/{fileId}";
-        return await PostMultipartFormDataContentAsync<AccountDocumentFile>(route, requestObj);
+        return await PostMultipartFormDataContentAsync<AccountDocument>(route, requestObj);
     }
 
     public async Task<ResponseObject<BaseDeleted>> DeleteDocumentFile(string fileId)

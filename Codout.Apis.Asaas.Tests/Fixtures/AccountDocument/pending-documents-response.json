@@ -1,0 +1,24 @@
+{
+  "rejectReasons": null,
+  "data": [
+    {
+      "id": "172ed152-4fa4-43ad-9b69-39c323e9526c",
+      "status": "NOT_SENT",
+      "type": "MINUTES_OF_CONSTITUTION",
+      "title": "Minutes of election of the last board",
+      "description": "No description",
+      "responsible": {
+        "name": "John Doe",
+        "type": ["ASSOCIATION"]
+      },
+      "onboardingUrl": "https://example.com/cadastro.io/8ad196d6cbfcc5d05bfabcbb5c730f6a",
+      "onboardingUrlExpirationDate": "2025-03-04 00:00:00",
+      "documents": [
+        {
+          "id": "8d257732-2220-11ec-b695-b6af4a64184d",
+          "status": "PENDING"
+        }
+      ]
+    }
+  ]
+}

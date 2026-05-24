@@ -113,7 +113,29 @@ Erros oficiais (`{errors:[{code,description}]}`) também validados via fixture c
 **Bug crítico corrigido nesta fase:**
 - **B-19**: `MobilePhoneProvider` tinha `AvailableValues: List<decimal>` (chutado). Schema real: `values: array` de objetos `MobilePhoneProviderValue` com campos `{name, description, bonus, minValue, maxValue}`. Modelo completo reescrito + criada classe nova `MobilePhoneProviderValue` + test antigo do manager corrigido (não mais asserta `AvailableValues`).
 
-## §7 — MyAccountManager (documents) — ⏳
+## §7 — MyAccountManager (documents) — ✅
+
+Endpoints `/v3/myAccount/documents*` (5 endpoints). Subgrupo Account Document do MyAccountManager.
+
+| Endpoint | MCP | Model | Fixture | Contract test | Status |
+|---|---|---|---|---|---|
+| `GET /v3/myAccount/documents` | ✅ | `AccountDocumentResponse` (envelope `{rejectReasons, data:[]}` sem paginação) | `AccountDocument/pending-documents-response.json` | `PendingDocumentsResponse_DeserializesFromOfficialFixture`, `_UsesMinimalEnvelopeWithoutPagination` | ✅ |
+| `POST /v3/myAccount/documents/{id}` (multipart) | ✅ | request `UploadAccountDocumentRequest` (DocumentFile + Type enum) → response `AccountDocument` | `AccountDocument/document-response.json` | `UploadRequest_HasCorrectMultipartFieldNames` | ✅ |
+| `GET /v3/myAccount/documents/files/{id}` | ✅ | `AccountDocument` (id, status enum) | reusa | `DocumentResponse_HasOnlyIdAndStatus` | ✅ |
+| `POST /v3/myAccount/documents/files/{id}` (multipart update) | ✅ | request `UploadAccountDocumentRequest` (DocumentFile) → response `AccountDocument` | reusa | (idem) | ✅ |
+| `DELETE /v3/myAccount/documents/files/{id}` | ✅ | `BaseDeleted` ({deleted, id}) | `AccountDocument/delete-response.json` | (cobertura unit do manager) | ✅ |
+| Enum `AccountDocumentStatus` (4 valores) | ✅ | enum tipado | inline | `DocumentStatus_AllFourValuesDeserialize` | ✅ |
+| Enum `AccountDocumentGroupStatus` (5 valores) | ✅ | enum tipado (Group ganha IGNORED) | inline | `DocumentGroupStatus_AllFiveValuesDeserialize` | ✅ |
+| Enum `AccountDocumentType` (12 valores) | ✅ | enum tipado | inline | `DocumentType_AllTwelveValuesDeserialize` | ✅ |
+| Enum `AccountDocumentResponsibleType` (13 valores) | ✅ | enum tipado | inline | `ResponsibleType_AllThirteenValuesDeserialize` | ✅ |
+
+**Bugs críticos corrigidos nesta fase (B-20):**
+- **B-20a/b/c/d**: `AccountDocument.Status`, `AccountDocumentGroup.Status`, `AccountDocumentGroup.Type`, `AccountDocumentResponsible.Type` eram `string`/`List<string>`. Trocados por enums tipados.
+- **B-20f**: `AccountDocumentFile` tinha campos fictícios `Name` e `Url`. Schema real retorna apenas `{id, status}`. Classe removida; endpoints passam a retornar o mesmo `AccountDocument`.
+- **B-20g**: `SubmitDocument` retornava `AccountDocumentGroup`. Schema oficial retorna `AccountDocumentGetResponseDTO` (apenas `{id, status}`). Tipo de retorno do manager mudado para `AccountDocument`.
+- **B-20h**: `UploadAccountDocumentRequest` tinha `DocumentType: string` e `File: IAsaasFile`. Schema espera multipart fields `type` e `documentFile`. Renomeado para `Type: AccountDocumentType?` e `DocumentFile: IAsaasFile`, alinhando os nomes após o `FirstCharToLower` do `PostMultipartFormDataContentAsync`.
+
+**Quirk de envelope:** `/myAccount/documents` retorna envelope `{rejectReasons, data:[...]}` sem `hasMore/totalCount/limit/offset`. Mantido em `AccountDocumentResponse` para evitar deserialização incorreta via `ResponseList<T>` (B-07 já fixado em fase anterior).
 
 ## §8 — InvoiceManager (pré-existente) — ⏳
 

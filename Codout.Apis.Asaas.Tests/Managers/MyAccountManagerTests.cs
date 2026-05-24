@@ -100,7 +100,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
     [Fact]
     public async Task ViewDocumentFile_SendsGetToFilesRoute()
     {
-        SetupOkResponse("{\"id\":\"file_1\",\"name\":\"identity.pdf\"}");
+        SetupOkResponse("{\"id\":\"file_1\",\"status\":\"APPROVED\"}");
 
         var result = await Manager.ViewDocumentFile("file_1");
 
