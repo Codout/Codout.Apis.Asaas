@@ -552,4 +552,52 @@ public class PaymentManagerTests : ManagerTestBase<PaymentManager>
     }
 
     #endregion
+
+    #region Splits Queries
+
+    [Fact]
+    public async Task ListPaidSplits_SendsGetToPaidSplitsRoute()
+    {
+        SetupListResponse<PaymentSplitView>("[{\"id\":\"sp_1\",\"walletId\":\"w_1\"}]");
+
+        var result = await Manager.ListPaidSplits(0, 10);
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrlContains("/v3/payments/splits/paid");
+    }
+
+    [Fact]
+    public async Task FindPaidSplit_SendsGetToPaidSplitIdRoute()
+    {
+        SetupOkResponse("{\"id\":\"sp_1\"}");
+
+        var result = await Manager.FindPaidSplit("sp_1");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/payments/splits/paid/sp_1");
+    }
+
+    [Fact]
+    public async Task ListReceivedSplits_SendsGetToReceivedSplitsRoute()
+    {
+        SetupListResponse<PaymentSplitView>("[{\"id\":\"sp_1\"}]");
+
+        var result = await Manager.ListReceivedSplits(0, 10);
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrlContains("/v3/payments/splits/received");
+    }
+
+    [Fact]
+    public async Task FindReceivedSplit_SendsGetToReceivedSplitIdRoute()
+    {
+        SetupOkResponse("{\"id\":\"sp_1\"}");
+
+        var result = await Manager.FindReceivedSplit("sp_1");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/payments/splits/received/sp_1");
+    }
+
+    #endregion
 }

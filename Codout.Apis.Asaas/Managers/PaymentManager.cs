@@ -178,4 +178,28 @@ public class PaymentManager(ApiSettings settings) : BaseManager(settings)
         var route = $"{PaymentsRoute}/{paymentId}/documents/{documentId}";
         return await DeleteAsync<BaseDeleted>(route);
     }
+
+    public async Task<ResponseList<PaymentSplitView>> ListPaidSplits(int offset, int limit)
+    {
+        var route = $"{PaymentsRoute}/splits/paid";
+        return await GetListAsync<PaymentSplitView>(route, offset, limit);
+    }
+
+    public async Task<ResponseObject<PaymentSplitView>> FindPaidSplit(string splitId)
+    {
+        var route = $"{PaymentsRoute}/splits/paid/{splitId}";
+        return await GetAsync<PaymentSplitView>(route);
+    }
+
+    public async Task<ResponseList<PaymentSplitView>> ListReceivedSplits(int offset, int limit)
+    {
+        var route = $"{PaymentsRoute}/splits/received";
+        return await GetListAsync<PaymentSplitView>(route, offset, limit);
+    }
+
+    public async Task<ResponseObject<PaymentSplitView>> FindReceivedSplit(string splitId)
+    {
+        var route = $"{PaymentsRoute}/splits/received/{splitId}";
+        return await GetAsync<PaymentSplitView>(route);
+    }
 }
