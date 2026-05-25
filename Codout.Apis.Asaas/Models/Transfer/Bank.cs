@@ -1,6 +1,8 @@
-﻿namespace Codout.Apis.Asaas.Models.Transfer
+namespace Codout.Apis.Asaas.Models.Transfer;
+
+public class Bank
 {
-    public class Bank {
-        public string Code { get; set; }
-    }
+    public string Ispb { get; set; }
+    public string Code { get; set; }
+    public string Name { get; set; }
 }
