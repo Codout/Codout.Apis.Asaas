@@ -11,7 +11,7 @@ public class Payment
 {
     public string Id { get; set; }
 
-    public DateTime DateCreated { get; set; }
+    public DateTime? DateCreated { get; set; }
 
     [JsonPropertyName("customer")]
     public string CustomerId { get; set; }
@@ -22,7 +22,7 @@ public class Payment
     [JsonPropertyName("installment")]
     public string InstallmentId { get; set; }
 
-    public DateTime DueDate { get; set; }
+    public DateTime? DueDate { get; set; }
 
     public decimal Value { get; set; }
 
@@ -42,7 +42,7 @@ public class Payment
 
     public string ExternalReference { get; set; }
 
-    public DateTime OriginalDueDate { get; set; }
+    public DateTime? OriginalDueDate { get; set; }
 
     public decimal? OriginalValue { get; set; }
 
