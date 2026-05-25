@@ -10,10 +10,10 @@ public class PixManager(ApiSettings settings) : BaseManager(settings)
 {
     private const string PixRoute = "/pix";
 
-    public async Task<ResponseList<PixTransaction>> ListTransactions(int offset, int limit)
+    public async Task<ResponseList<PixTransaction>> ListTransactions(int offset, int limit, PixTransactionListFilter filter = null)
     {
         var route = $"{PixRoute}/transactions";
-        return await GetListAsync<PixTransaction>(route, offset, limit);
+        return await GetListAsync<PixTransaction>(route, offset, limit, filter);
     }
 
     public async Task<ResponseObject<PixTransaction>> FindTransaction(string transactionId)

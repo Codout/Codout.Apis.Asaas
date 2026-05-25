@@ -1,0 +1,51 @@
+name: Integration (sandbox)
+
+# Roda os integration tests reais contra api-sandbox.asaas.com.
+# Requer secret ASAAS_SANDBOX_TOKEN configurado no repositorio
+# (Settings -> Secrets and variables -> Actions).
+#
+# Triggers:
+#   - manual (workflow_dispatch): permite rodar sob demanda
+#   - schedule (nightly): valida o SDK contra mudancas no sandbox
+#
+# Nao bloqueia PRs comuns (rodar em job separado).
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Diariamente as 04:00 UTC (01:00 BRT)
+    - cron: '0 4 * * *'
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore library
+        run: dotnet restore Codout.Apis.Asaas/Codout.Apis.Asaas.csproj
+
+      - name: Restore tests
+        run: dotnet restore Codout.Apis.Asaas.Tests/Codout.Apis.Asaas.Tests.csproj
+
+      - name: Build library
+        run: dotnet build Codout.Apis.Asaas/Codout.Apis.Asaas.csproj --configuration Release --no-restore
+
+      - name: Integration tests (sandbox)
+        env:
+          ASAAS_SANDBOX_TOKEN: ${{ secrets.ASAAS_SANDBOX_TOKEN }}
+        run: |
+          if [ -z "$ASAAS_SANDBOX_TOKEN" ]; then
+            echo "::warning::ASAAS_SANDBOX_TOKEN secret nao configurado. Integration tests serao todos skipados."
+          fi
+          dotnet test Codout.Apis.Asaas.Tests/Codout.Apis.Asaas.Tests.csproj \
+            --configuration Release \
+            --logger "console;verbosity=normal" \
+            --filter "Category=Integration"
