@@ -56,7 +56,7 @@ public class SerializationTests
         Assert.Equal(BillingType.CREDIT_CARD, result.BillingType);
         Assert.Equal(ChargeType.RECURRENT, result.ChargeType);
         Assert.Equal(10, result.DueDateLimitDays);
-        Assert.Equal("MONTHLY", result.SubscriptionCycle);
+        Assert.Equal(Codout.Apis.Asaas.Models.Subscription.Enums.Cycle.MONTHLY, result.SubscriptionCycle);
         Assert.Equal(1, result.MaxInstallmentCount);
         Assert.True(result.NotificationEnabled);
         Assert.NotNull(result.EndDate);
