@@ -1,0 +1,13 @@
+{
+  "id": "bbf67496-1379-4b6d-a348-fd5fa229f1c",
+  "name": "Name Example",
+  "url": "https://www.example.com/webhook/asaas",
+  "email": "john.doe@asaas.com.br",
+  "enabled": true,
+  "interrupted": false,
+  "apiVersion": 3,
+  "hasAuthToken": true,
+  "sendType": "SEQUENTIALLY",
+  "penalizedRequestsCount": 0,
+  "events": ["PAYMENT_RECEIVED", "PAYMENT_CONFIRMED"]
+}
