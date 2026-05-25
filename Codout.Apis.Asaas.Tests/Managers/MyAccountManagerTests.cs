@@ -30,7 +30,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
     [Fact]
     public async Task GetCommercialInfo_DeserializesResponse()
     {
-        SetupOkResponse("{\"name\":\"My Company\",\"email\":\"company@test.com\",\"cpfCnpj\":\"12345678901234\",\"phone\":\"1199998888\",\"mobilePhone\":\"11999887766\",\"address\":\"Rua Principal\",\"addressNumber\":\"500\",\"complement\":\"Sala 10\",\"province\":\"Centro\",\"postalCode\":\"01001000\",\"inscricaoEstadual\":\"123456789\",\"status\":\"ACTIVE\"}");
+        SetupOkResponse("{\"name\":\"My Company\",\"email\":\"company@test.com\",\"cpfCnpj\":\"12345678901234\",\"phone\":\"1199998888\",\"mobilePhone\":\"11999887766\",\"address\":\"Rua Principal\",\"addressNumber\":\"500\",\"complement\":\"Sala 10\",\"province\":\"Centro\",\"postalCode\":\"01001000\",\"status\":\"APPROVED\"}");
 
         var result = await Manager.GetCommercialInfo();
 
@@ -39,7 +39,7 @@ public class MyAccountManagerTests : ManagerTestBase<MyAccountManager>
         Assert.Equal("My Company", result.Data.Name);
         Assert.Equal("company@test.com", result.Data.Email);
         Assert.Equal("12345678901234", result.Data.CpfCnpj);
-        Assert.Equal("ACTIVE", result.Data.Status);
+        Assert.Equal(Codout.Apis.Asaas.Models.MyAccount.Enums.AccountInfoStatus.APPROVED, result.Data.Status);
     }
 
     // ── UpdateCommercialInfo / GetStatus / DeleteWhiteLabelAccount ──
