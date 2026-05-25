@@ -156,13 +156,14 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
     [Fact]
     public async Task GetSplitStatistics_DeserializesResponseCorrectly()
     {
-        SetupOkResponse("{\"totalPendingValue\":500.00,\"totalReceivedValue\":3000.00}");
+        // B-37a: schema usa {income, value}, nao {totalPendingValue, totalReceivedValue}
+        SetupOkResponse("{\"income\":500.00,\"value\":3000.00}");
 
         var result = await Manager.GetSplitStatistics();
 
         Assert.True(result.WasSuccessful());
-        Assert.Equal(500.00m, result.Data.TotalPendingValue);
-        Assert.Equal(3000.00m, result.Data.TotalReceivedValue);
+        Assert.Equal(500.00m, result.Data.Income);
+        Assert.Equal(3000.00m, result.Data.Value);
     }
 
     #endregion
