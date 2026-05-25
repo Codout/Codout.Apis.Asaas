@@ -5,6 +5,147 @@ Todas as mudancas notaveis deste projeto serao documentadas neste arquivo.
 O formato e baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semantico](https://semver.org/lang/pt-BR/).
 
+## [3.2.0] - 2026-05-24 — Auditoria schema-first **completa** (27/27 managers)
+
+Segunda rodada da auditoria, agora cobrindo os 16 managers restantes que tinham
+ficado de fora da v3.1.0: Customer, Payment (resto), Subscription, Pix, Transfer,
+Anticipation, Installment, Webhook, Wallet, Notification, CreditCard, PaymentLink,
+Finance, MyAccount (resto), AsaasAccount, FiscalInfo, Chargeback, Sandbox.
+
+Veja [CONFORMANCE.md](CONFORMANCE.md) §12–§29 para o relatório endpoint-a-endpoint
+e §50 para o consolidado de padrões de bug por categoria.
+
+### Breaking changes (modelos)
+
+**Pix (CRÍTICO):**
+- `PixTransactionStatus` enum tinha 5 valores INVENTADOS (PENDING, DONE, CANCELLED,
+  SCHEDULED, FAILED). Schema real: 11 valores. PENDING e FAILED **não existem**.
+  Sem o fix, deserializar JSON real do sandbox lançava exception em qualquer
+  transacao em estado de espera (AWAITING_*, REQUESTED, REFUSED).
+- `PixTransaction` reescrito (7 → 25 campos). Renomeados: `TransactionDate` →
+  `EffectiveDate`, `ScheduleDate` → `ScheduledDate`.
+- `PixAddressKey.Status` string → enum `PixAddressKeyStatus` (6 valores).
+  Adicionados QrCode (nested), CanBeDeleted, CannotBeDeletedReason.
+- Novos enums: `PixTransactionType` (5), `PixTransactionOriginType` (6),
+  `PixTransactionFinality` (2), `PixAddressKeyStatus` (6).
+- Novo filtro: `PixTransactionListFilter` (status, type, endToEndIdentifier).
+
+**Customer:**
+- `Customer.DateCreated` → DateTime?
+- `Create/UpdateCustomerRequest.NotificationDisabled` → bool?
+  (antes forçava false em todo update parcial).
+- Novo: `CustomerManager.GetNotifications(customerId)` (endpoint estava faltando).
+
+**Payment:**
+- `Payment.DateCreated`, `DueDate`, `OriginalDueDate` → DateTime?
+- `PaymentListFilter`: 9 filtros novos (customerGroupName, invoiceStatus,
+  estimatedCreditDate, pixQrCodeId, anticipable, user, checkoutSession,
+  dateCreated[ge]/[le], estimatedCreditDate[ge]/[le]).
+
+**Subscription:**
+- `SubscriptionStatus` enum: adicionado `INACTIVE` (3 valores).
+- `Subscription.DateCreated`, `NextDueDate` → DateTime?
+- Adicionados: Object, PaymentLinkId, CheckoutSession, Split (array).
+- `SubscriptionListFilter`: 6 campos novos (customerGroupName, status enum,
+  deletedOnly, externalReference, order, sort).
+
+**Transfer:**
+- `AsaasAccountTransferStatus` enum: 3 → 5 valores (adicionados BANK_PROCESSING,
+  FAILED).
+- `BaseTransfer.DateCreated` → DateTime?, `Authorized` → bool?
+- Novo enum: `TransferOperationType` (PIX/TED/INTERNAL).
+- `BaseTransfer` adicionados: Object, NetValue (movido), EndToEndIdentifier,
+  FailReason, ExternalReference, Description, Recurring.
+- `TransferListFilter`: dateCreated[ge]/[le], transferDate[ge]/[le].
+- `Bank` model: adicionados Ispb + Name. `BankAccount`: adicionados AgencyDigit,
+  PixAddressKey, Ispb.
+
+**Anticipation:**
+- `Anticipation.AnticipationDate`, `DueDate`, `RequestDate` → DateTime?, +Object.
+
+**Installment:**
+- `Installment.ExpirationDay` → int?
+- Adicionados: CreditCard (nested), Refunds (array de InstallmentRefund).
+
+**Notification:**
+- Novo enum `NotificationEvent` (6 valores). Antes não existia.
+- Notification + UpdateNotificationRequest: todos os 7 bools → bool?
+- Notification adicionados: Object, Event (enum), Deleted.
+
+**CreditCard:**
+- `Common.CreditCard.Brand` string → enum `CreditCardBrand` (13 valores).
+- `PreAuthorizationConfig` reescrito: tinha {Enabled, AutomaticCaptureDelay}
+  INVENTADOS. Schema: {DaysToExpire}. Idem `SavePreAuthorizationConfigRequest`.
+
+**PaymentLink:**
+- `PaymentLink.SubscriptionCycle` string → `Cycle` enum (7 valores).
+- Adicionados: ViewCount, IsAddressRequired, ExternalReference.
+- Value, Active, NotificationEnabled, Deleted, DueDateLimitDays,
+  MaxInstallmentCount → nullable.
+
+**Finance:**
+- `SplitStatistics` reescrito: tinha {TotalPendingValue, TotalReceivedValue}
+  INVENTADOS. Schema: {income, value}.
+- Novo filter: `PaymentStatisticsFilter` (11 campos). GetPaymentStatistics
+  agora aceita filtros opcionais.
+
+**MyAccount:**
+- `MyAccount.Status` string → enum `AccountInfoStatus` (4 valores).
+- Adicionados: CompanyName, IncomeValue, TradingName, Site,
+  AvailableCompanyNames (array), CommercialInfoExpiration (nested).
+- `InscricaoEstadual` marcado [Obsolete] (não existe no schema).
+
+**AsaasAccount:**
+- `Account.City` string → long? (schema: integer city id).
+- Adicionados: Object, Id, BirthDate, TradingName, Site, AccountNumber (nested),
+  CommercialInfoExpiration (nested).
+- `ApiKey` marcado [Obsolete] (não existe no schema).
+
+**FiscalInfo:**
+- `RpsNumber`, `LoteNumber` string → int? (schema: integer).
+- Adicionados: NbsCode, PasswordSent, AccessTokenSent, CertificateSent,
+  NationalPortalTaxCalculationRegime, Object.
+- `StateInscription`, `AccessToken` marcados [Obsolete] (não existem no schema).
+- SimplesNacional, CulturalProjectsPromoter → bool?
+
+**Chargeback:**
+- Adicionado `ChargebackCreditCard` (nested: number + brand enum).
+- `Reason` → nullable.
+
+**Wallet:**
+- Adicionado: Object.
+
+### Added
+
+- 16 novos enums tipados (PixTransactionStatus, PixTransactionType,
+  PixTransactionOriginType, PixTransactionFinality, PixAddressKeyStatus,
+  SubscriptionStatus expandido, NotificationEvent, CreditCardBrand,
+  TransferOperationType, AsaasAccountTransferStatus expandido,
+  AccountInfoStatus, BillPaymentStatus expandido em fase anterior, etc).
+- Novos models: PixTransactionExternalAccount, PixOriginalTransaction,
+  PixTransactionQrCode, PixAddressKeyQrCode, PixTransactionListFilter,
+  ChargebackCreditCard, CommercialInfoExpiration, AccountNumber (já existia),
+  InstallmentRefund, PaymentStatisticsFilter.
+- 10 novos integration tests cobrindo Subscription, Pix, Transfer,
+  Anticipation, Finance (15 tests no total).
+- CI workflow [`integration-sandbox.yml`](.github/workflows/integration-sandbox.yml):
+  workflow_dispatch (manual) + nightly schedule, com secret ASAAS_SANDBOX_TOKEN.
+- CI workflow [`ci.yml`](.github/workflows/ci.yml) atualizado para filtrar
+  `Category!=Integration` (não quebra sem token).
+- CONFORMANCE.md §12–§29 (16 novos managers), §50 (cross-pattern bug list).
+
+### Fixed
+
+- 18 famílias de bugs (B-25 a B-42). Veja CONFORMANCE.md §50 para consolidação
+  por padrão.
+
+### Métricas
+
+- Testes: 599 → **664 unit/contract** (+65) + **15 integration** skip-by-default.
+- Managers auditados: 11 → **27** (100%).
+- Bugs cumulativos: 24 → **42 famílias** (B-19 a B-42).
+- Build warnings: 0.
+
 ## [3.1.0] - 2026-05-24 — Auditoria schema-first
 
 Rodada final de conformidade contra o MCP oficial Asaas. Para cada manager

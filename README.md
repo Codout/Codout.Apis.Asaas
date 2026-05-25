@@ -9,18 +9,19 @@
   <img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet" />
   <img src="https://img.shields.io/nuget/v/Asaas.Api?color=004880&logo=nuget" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
-  <img src="https://img.shields.io/badge/tests-599%20passing%20+%205%20integration-brightgreen" />
-  <img src="https://img.shields.io/badge/schema--first-audit-blue" />
+  <img src="https://img.shields.io/badge/tests-664%20passing%20+%2015%20integration-brightgreen" />
+  <img src="https://img.shields.io/badge/schema--first-27%2F27-blue" />
 </p>
 
 SDK .NET **nao-oficial** para integrar com a plataforma de pagamentos [Asaas](https://www.asaas.com). Cobre **100% da API v3** documentada — mais de **150 endpoints** distribuidos em **27 managers**.
 
 > **Zero dependencias externas** - usa apenas `System.Text.Json` (built-in).
 
-> **v3.1.0** — auditoria schema-first contra MCP oficial (`https://docs.asaas.com/mcp`).
-> 11 managers auditados endpoint-a-endpoint, 24 famílias de bugs corrigidas,
-> contract tests validando shape JSON com fixtures dos exemplos oficiais.
-> Veja [CONFORMANCE.md](CONFORMANCE.md) e [CHANGELOG.md](CHANGELOG.md).
+> **v3.2.0** — auditoria schema-first **completa** contra MCP oficial (`https://docs.asaas.com/mcp`).
+> **27/27 managers** auditados endpoint-a-endpoint, **42 famílias de bugs** corrigidas,
+> contract tests validando shape JSON com fixtures dos exemplos oficiais,
+> integration tests sandbox com workflow CI dedicado.
+> Veja [CONFORMANCE.md](CONFORMANCE.md) §50 para o consolidado de padrões.
 
 ---
 
@@ -395,9 +396,9 @@ dotnet build Codout.Apis.Asaas/Codout.Apis.Asaas.csproj
 
 ### Testes
 
-O projeto possui **599 testes unit/contract** cobrindo todos os 27 managers
+O projeto possui **664 testes unit/contract** cobrindo todos os 27 managers
 (unit tests + contract tests validando shape JSON com fixtures dos exemplos
-oficiais do MCP) + **5 integration tests** opcionais contra o sandbox real.
+oficiais do MCP) + **15 integration tests** opcionais contra o sandbox real.
 
 ```bash
 # Rodar todos os testes unit/contract (integration skipa sem ASAAS_SANDBOX_TOKEN)
