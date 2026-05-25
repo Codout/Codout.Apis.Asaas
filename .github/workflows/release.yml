@@ -48,8 +48,8 @@ jobs:
       - name: Build
         run: dotnet build Codout.Apis.Asaas/Codout.Apis.Asaas.csproj --configuration Release --no-restore
 
-      - name: Test
-        run: dotnet test Codout.Apis.Asaas.Tests/Codout.Apis.Asaas.Tests.csproj --configuration Release
+      - name: Test (unit + contract — integration valida em workflow separado)
+        run: dotnet test Codout.Apis.Asaas.Tests/Codout.Apis.Asaas.Tests.csproj --configuration Release --filter "Category!=Integration"
 
       - name: Pack
         run: dotnet pack Codout.Apis.Asaas/Codout.Apis.Asaas.csproj --configuration Release --no-build --output ./artifacts

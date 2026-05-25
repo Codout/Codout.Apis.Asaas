@@ -6,7 +6,7 @@
 
         <!-- NuGet Package -->
         <PackageId>Asaas.Api</PackageId>
-        <Version>3.0.0</Version>
+        <Version>3.2.0</Version>
         <Authors>Clovis Coli Jr</Authors>
         <Company>Codout</Company>
         <Description>SDK .NET no-oficial para integracao com a API v3 do Asaas (asaas.com). Suporta cobrancas (Boleto, Pix, Cartao), assinaturas, transferencias, links de pagamento, notas fiscais, antecipacoes, negativacoes e muito mais. Zero dependencias externas.</Description>
@@ -18,13 +18,14 @@
         <RepositoryUrl>https://github.com/codout/Codout.Apis.Asaas</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>
-v3.0.0 (major release, breaking changes):
-- Auditoria de conformidade contra a documentacao oficial do Asaas (via MCP)
-- 7 bugs bloqueantes corrigidos: PUT em Updates, rota /fiscalInfo, Balance shape, etc.
-- WebhookManager reescrito para CRUD em /v3/webhooks/{id}
-- 7 novos managers: Chargeback, Escrow, Checkout, MobilePhoneRecharge, Sandbox, PixAutomatic, PixRecurring
-- ~50 endpoints novos em managers existentes (Payment, MyAccount, AsaasAccount, Pix, ...)
-- Veja CHANGELOG.md para a lista completa de breaking changes e guia de migracao
+v3.2.0 — Auditoria schema-first COMPLETA contra MCP oficial:
+- 27/27 managers auditados endpoint-a-endpoint
+- 42 famílias de bugs corrigidos (B-19 a B-42), incluindo enums inventados,
+  campos faltando, casing errado em filtros, body vs query, nullables incorretos
+- 664 testes unit/contract + 15 integration tests validados contra sandbox real
+- Workflow CI dedicado para integration tests (manual + nightly)
+- Veja CONFORMANCE.md §50 para consolidado de padrões e CHANGELOG.md para
+  lista completa de breaking changes.
         </PackageReleaseNotes>
         <Copyright>Copyright (c) Clovis Coli Jr</Copyright>
 
