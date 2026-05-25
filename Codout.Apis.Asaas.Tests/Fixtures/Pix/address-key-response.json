@@ -1,0 +1,13 @@
+{
+  "id": "a33047b1-fb19-4b68-9373-a7ba8a8162aa",
+  "key": "b6295ee1-f054-47d1-9e90-ee57b74f60d9",
+  "type": "EVP",
+  "status": "ACTIVE",
+  "dateCreated": "2022-02-07 17:17:48",
+  "canBeDeleted": true,
+  "cannotBeDeletedReason": null,
+  "qrCode": {
+    "encodedImage": "QRCODE IMAGE IN BASE64",
+    "payload": "00020126580014br.gov.bcb.pix0136a9fe43bc-164d-44d1-91c2-2f9b4d6956e95204000053039865802BR5925Joao da Silva6009Joinville62290525JOAOSILVA00000055ASA6304E62B"
+  }
+}

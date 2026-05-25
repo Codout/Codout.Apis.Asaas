@@ -1,11 +1,16 @@
-namespace Codout.Apis.Asaas.Models.Pix.Enums
+namespace Codout.Apis.Asaas.Models.Pix.Enums;
+
+public enum PixTransactionStatus
 {
-    public enum PixTransactionStatus
-    {
-        PENDING,
-        DONE,
-        CANCELLED,
-        SCHEDULED,
-        FAILED
-    }
+    AWAITING_BALANCE_VALIDATION,
+    AWAITING_INSTANT_PAYMENT_ACCOUNT_BALANCE,
+    AWAITING_CRITICAL_ACTION_AUTHORIZATION,
+    AWAITING_CHECKOUT_RISK_ANALYSIS_REQUEST,
+    AWAITING_CASH_IN_RISK_ANALYSIS_REQUEST,
+    SCHEDULED,
+    AWAITING_REQUEST,
+    REQUESTED,
+    DONE,
+    REFUSED,
+    CANCELLED
 }

@@ -93,12 +93,12 @@ public class ResponseListTests
     [Fact]
     public void Constructor_WithOkStatus_DeserializesEnumsInList()
     {
-        var json = BuildListJson("[{\"id\":\"tx_1\",\"status\":\"PENDING\",\"value\":100},{\"id\":\"tx_2\",\"status\":\"DONE\",\"value\":200}]", totalCount: 2);
+        var json = BuildListJson("[{\"id\":\"tx_1\",\"status\":\"SCHEDULED\",\"value\":100},{\"id\":\"tx_2\",\"status\":\"DONE\",\"value\":200}]", totalCount: 2);
 
         var response = new ResponseList<PixTransaction>(HttpStatusCode.OK, json);
 
         Assert.Equal(2, response.Data.Count);
-        Assert.Equal(PixTransactionStatus.PENDING, response.Data[0].Status);
+        Assert.Equal(PixTransactionStatus.SCHEDULED, response.Data[0].Status);
         Assert.Equal(PixTransactionStatus.DONE, response.Data[1].Status);
     }
 

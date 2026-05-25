@@ -367,8 +367,8 @@ public class SerializationTests
             "status": "DONE",
             "value": 250.75,
             "description": "Pix payment received",
-            "transactionDate": "2024-07-01T14:30:00",
-            "scheduleDate": null
+            "effectiveDate": "2024-07-01T14:30:00",
+            "scheduledDate": null
         }
         """;
 
@@ -380,18 +380,18 @@ public class SerializationTests
         Assert.Equal(PixTransactionStatus.DONE, result.Status);
         Assert.Equal(250.75m, result.Value);
         Assert.Equal("Pix payment received", result.Description);
-        Assert.NotNull(result.TransactionDate);
-        Assert.Null(result.ScheduleDate);
+        Assert.NotNull(result.EffectiveDate);
+        Assert.Null(result.ScheduledDate);
     }
 
     [Fact]
     public void PixTransaction_AllStatuses()
     {
-        var statuses = new[] { "PENDING", "DONE", "CANCELLED", "SCHEDULED", "FAILED" };
+        var statuses = new[] { "AWAITING_REQUEST", "DONE", "CANCELLED", "SCHEDULED", "REFUSED" };
         var expectedEnums = new[]
         {
-            PixTransactionStatus.PENDING, PixTransactionStatus.DONE, PixTransactionStatus.CANCELLED,
-            PixTransactionStatus.SCHEDULED, PixTransactionStatus.FAILED
+            PixTransactionStatus.AWAITING_REQUEST, PixTransactionStatus.DONE, PixTransactionStatus.CANCELLED,
+            PixTransactionStatus.SCHEDULED, PixTransactionStatus.REFUSED
         };
 
         for (int i = 0; i < statuses.Length; i++)
@@ -529,7 +529,7 @@ public class SerializationTests
         Assert.Equal("key_001", result.Id);
         Assert.Equal("12345678901", result.Key);
         Assert.Equal(PixAddressKeyType.CPF, result.Type);
-        Assert.Equal("ACTIVE", result.Status);
+        Assert.Equal(Codout.Apis.Asaas.Models.Pix.Enums.PixAddressKeyStatus.ACTIVE, result.Status);
         Assert.Equal(new DateTime(2024, 3, 1, 10, 0, 0), result.DateCreated);
     }
 

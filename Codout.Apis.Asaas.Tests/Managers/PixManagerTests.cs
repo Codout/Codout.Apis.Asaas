@@ -207,7 +207,7 @@ public class PixManagerTests : ManagerTestBase<PixManager>
         Assert.Equal("key_123", result.Data.Id);
         Assert.Equal("12345678901", result.Data.Key);
         Assert.Equal(PixAddressKeyType.CPF, result.Data.Type);
-        Assert.Equal("ACTIVE", result.Data.Status);
+        Assert.Equal(Codout.Apis.Asaas.Models.Pix.Enums.PixAddressKeyStatus.ACTIVE, result.Data.Status);
     }
 
     [Fact]
