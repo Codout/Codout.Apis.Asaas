@@ -3,7 +3,7 @@
 > **Status:** ✅ AUDITORIA COMPLETA — 27/27 MANAGERS SCHEMA-FIRST
 > **Metodologia:** cada endpoint listado abaixo foi consultado via MCP `asaas` (`mcp__asaas__get-endpoint`). Models foram verificados campo-a-campo contra o schema OpenAPI. Fixtures criadas a partir dos exemplos oficiais. Contract tests congelam o shape JSON.
 >
-> **Resultado:** **664 testes unit/contract** passando + **15 integration tests** (skip automático sem `ASAAS_SANDBOX_TOKEN`).
+> **Resultado:** **664 testes unit/contract** passando + **15 integration tests passando contra sandbox real** ([run #26378491985](https://github.com/Codout/Codout.Apis.Asaas/actions/runs/26378491985), 2026-05-25, 6.7s).
 > **27/27 managers** auditados, **42 famílias de bugs (B-19 a B-42)** corrigidas no total, **0 warnings** de build.
 >
 > **CI:**
@@ -582,11 +582,11 @@ Nenhum. Todos os 27 managers passaram por auditoria schema-first.
 
 ### ⚠️ ACEITÁVEIS COM RESSALVA
 
-**1. Integration tests nunca rodaram contra sandbox real nesta sessão.**
-- Status: 15 tests escritos, validados via skip automático. Infra de CI configurada para nightly run.
-- Risco: alguma assinatura de método pode estar ligeiramente diferente do que o sandbox aceita; algum CPF de teste pode ser rejeitado; algum fix B-XX pode comportar-se diferente no runtime real.
-- Mitigação: workflow `integration-sandbox.yml` rodará nightly. Primeiras 1–2 execuções vão revelar e estabilizar.
-- **Próximo passo para fechar:** push da branch `audit/asaas-api-conformance` + configurar `ASAAS_SANDBOX_TOKEN` em GitHub Secrets + disparar workflow "Integration (sandbox)" em Actions → Run workflow. Atualizar este documento com link do run.
+**~~1. Integration tests nunca rodaram contra sandbox real nesta sessão.~~ ✅ RESOLVIDO**
+- Primeira execução real: [run #26378491985](https://github.com/Codout/Codout.Apis.Asaas/actions/runs/26378491985) em 2026-05-25.
+- Resultado: **15/15 testes passaram** em 6.7s contra `api-sandbox.asaas.com`.
+- Validou em runtime real: B-26d (bool filter lowercase), B-27a (SubscriptionStatus.INACTIVE), B-28a (PixTransactionStatus enum 11 valores), B-29h (TransferListFilter date range casing), B-37a (SplitStatistics shape income/value), B-37b (PaymentStatisticsFilter), entre outros.
+- Nightly run configurado em `integration-sandbox.yml` continua valendo para regressões futuras.
 
 **2. Algumas fixtures foram escritas manualmente a partir dos exemplos MCP (não auto-geradas).**
 - Risco: se eu copiei mal um exemplo (ex: esqueci um campo que aparece em outros casos), o contract test passa mas o modelo continua incompleto.
