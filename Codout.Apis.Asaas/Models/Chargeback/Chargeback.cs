@@ -19,13 +19,15 @@ public class Chargeback
 
     public ChargebackStatus Status { get; set; }
 
-    public ChargebackReason Reason { get; set; }
+    public ChargebackReason? Reason { get; set; }
 
     public DateTime? DisputeStartDate { get; set; }
 
     public decimal Value { get; set; }
 
     public DateTime? PaymentDate { get; set; }
+
+    public ChargebackCreditCard CreditCard { get; set; }
 
     public ChargebackDisputeStatus? DisputeStatus { get; set; }
 
