@@ -36,7 +36,7 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(0, result.TotalCount);
         Assert.Empty(result.Data);
     }
@@ -73,17 +73,17 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
 
     #endregion
 
-    #region Execute (AsaasAccountTransfer)
+    #region TransferToAsaasAccount
 
     [Fact]
-    public async Task ExecuteAsaasAccountTransfer_SendsPostToCorrectUrl()
+    public async Task TransferToAsaasAccount_SendsPostToTransfersRootWithTrailingSlash()
     {
         SetupOkResponse("{\"id\":\"trans_123\",\"walletId\":\"wal_456\",\"value\":500.00,\"type\":\"ASAAS_ACCOUNT\",\"status\":\"PENDING\"}");
         var request = new AsaasAccountTransferRequest
@@ -92,14 +92,14 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
             Value = 500.00m
         };
 
-        var result = await Manager.Execute(request);
+        var result = await Manager.TransferToAsaasAccount(request);
 
         AssertRequestMethod(HttpMethod.Post);
-        AssertRequestUrl("/v3/transfers");
+        AssertRequestUrl("/v3/transfers/");
     }
 
     [Fact]
-    public async Task ExecuteAsaasAccountTransfer_DeserializesResponseCorrectly()
+    public async Task TransferToAsaasAccount_DeserializesResponseCorrectly()
     {
         SetupOkResponse("{\"id\":\"trans_123\",\"walletId\":\"wal_456\",\"value\":500.00,\"type\":\"ASAAS_ACCOUNT\",\"status\":\"PENDING\",\"authorized\":true}");
         var request = new AsaasAccountTransferRequest
@@ -108,9 +108,9 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
             Value = 500.00m
         };
 
-        var result = await Manager.Execute(request);
+        var result = await Manager.TransferToAsaasAccount(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("trans_123", result.Data.Id);
         Assert.Equal("wal_456", result.Data.WalletId);
         Assert.Equal(500.00m, result.Data.Value);
@@ -118,10 +118,10 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
     #endregion
 
-    #region Execute (BankAccountTransfer)
+    #region TransferToBankAccount
 
     [Fact]
-    public async Task ExecuteBankAccountTransfer_SendsPostToCorrectUrl()
+    public async Task TransferToBankAccount_SendsPostToTransfersRoot()
     {
         SetupOkResponse("{\"id\":\"trans_789\",\"value\":1000.00,\"type\":\"BANK_ACCOUNT\",\"status\":\"PENDING\"}");
         var request = new BankAccountTransferRequest
@@ -130,14 +130,14 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
             BankAccount = new BankAccount()
         };
 
-        var result = await Manager.Execute(request);
+        var result = await Manager.TransferToBankAccount(request);
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/transfers");
     }
 
     [Fact]
-    public async Task ExecuteBankAccountTransfer_DeserializesResponseCorrectly()
+    public async Task TransferToBankAccount_DeserializesResponseCorrectly()
     {
         SetupOkResponse("{\"id\":\"trans_789\",\"value\":1000.00,\"netValue\":995.00,\"type\":\"BANK_ACCOUNT\",\"status\":\"PENDING\"}");
         var request = new BankAccountTransferRequest
@@ -146,11 +146,26 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
             BankAccount = new BankAccount()
         };
 
-        var result = await Manager.Execute(request);
+        var result = await Manager.TransferToBankAccount(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("trans_789", result.Data.Id);
         Assert.Equal(1000.00m, result.Data.Value);
+    }
+
+    #endregion
+
+    #region Cancel
+
+    [Fact]
+    public async Task Cancel_SendsDeleteToCancelRoute()
+    {
+        SetupErrorResponse(HttpStatusCode.NotFound);
+
+        var result = await Manager.Cancel("trans_123");
+
+        AssertRequestMethod(HttpMethod.Delete);
+        AssertRequestUrl("/v3/transfers/trans_123/cancel");
     }
 
     #endregion
@@ -175,7 +190,7 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.Find("trans_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("trans_123", result.Data.Id);
         Assert.Equal(1000.00m, result.Data.Value);
         Assert.Equal(TransferType.BANK_ACCOUNT, result.Data.Type);
@@ -190,7 +205,7 @@ public class TransferManagerTests : ManagerTestBase<TransferManager>
 
         var result = await Manager.Find("trans_nonexistent");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 

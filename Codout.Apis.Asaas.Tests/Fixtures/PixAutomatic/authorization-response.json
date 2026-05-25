@@ -1,0 +1,23 @@
+{
+  "id": "a33047b1-fb19-4b68-9373-a7ba8a8162aa",
+  "minLimitValue": 50,
+  "cancellationDate": null,
+  "cancellationReason": null,
+  "contractId": "XXXYYYY1234",
+  "customerId": "cus_000005735721",
+  "description": "Music and Movie Streaming Services",
+  "finishDate": "2024-12-31",
+  "frequency": "MONTHLY",
+  "endToEndIdentifier": "RR1234567820240115abcdefghijk",
+  "startDate": "2024-01-01",
+  "status": "ACTIVE",
+  "value": 100,
+  "payload": null,
+  "encodedImage": null,
+  "immediateQrCode": {
+    "conciliationIdentifier": "E12345678202401011234567890123456",
+    "expirationDate": "2024-01-01 12:00:00"
+  },
+  "originType": "IMMEDIATE_PAYMENT_AND_RECURRING_QR_CODE",
+  "subscriptionId": "sub_000005735721"
+}

@@ -1,6 +1,7 @@
-﻿namespace Codout.Apis.Asaas.Models.Wallet
+namespace Codout.Apis.Asaas.Models.Wallet;
+
+public class Wallet
 {
-    public class Wallet {
-        public string Id { get; set; }
-    }
+    public string Object { get; set; }
+    public string Id { get; set; }
 }

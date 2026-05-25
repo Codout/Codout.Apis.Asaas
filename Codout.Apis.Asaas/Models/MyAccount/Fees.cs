@@ -22,7 +22,7 @@ public class BankSlip
 {
     public decimal? DefaultValue { get; set; }
     public decimal? DiscountValue { get; set; }
-    public string? ExpirationDate { get; set; }
+    public string ExpirationDate { get; set; }
     public int? DaysToReceive { get; set; }
     public decimal? MonthlyFeePercentage { get; set; }
 }
@@ -44,7 +44,7 @@ public class CreditCard
     public decimal? DiscountUpToSixInstallmentsPercentage { get; set; }
     public decimal? DiscountUpToTwelveInstallmentsPercentage { get; set; }
     public decimal? DiscountUpToTwentyOneInstallmentsPercentage { get; set; }
-    public string? DiscountExpiration { get; set; }
+    public string DiscountExpiration { get; set; }
     public int? DaysToReceive { get; set; }
     public decimal? DetachedMonthlyFeeValue { get; set; }
     public decimal? InstallmentMonthlyFeeValue { get; set; }

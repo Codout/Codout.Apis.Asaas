@@ -50,7 +50,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.Create(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("ant_123", result.Data.Id);
         Assert.Equal("inst_1", result.Data.InstallmentId);
@@ -85,7 +85,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.Simulate(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("inst_1", result.Data.InstallmentId);
         Assert.Equal("pay_1", result.Data.PaymentId);
@@ -115,7 +115,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.Find("ant_456");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("ant_456", result.Data.Id);
         Assert.Equal(500.00m, result.Data.TotalValue);
@@ -160,7 +160,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal(2, result.TotalCount);
@@ -168,33 +168,56 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
         Assert.Equal("ant_2", result.Data[1].Id);
     }
 
-    // ── SignAgreement ───────────────────────────────────────────────
+    // ── Cancel / GetLimits / Configurations ─────────────────────────
 
     [Fact]
-    public async Task SignAgreement_SendsPostToCorrectUrl()
+    public async Task Cancel_SendsPostToCancelRoute()
     {
-        SetupOkResponse("{\"id\":\"ant_789\",\"status\":\"CREDITED\"}");
+        SetupOkResponse("{\"id\":\"ant_42\",\"status\":\"CANCELLED\"}");
 
-        var request = new SignAnticipationAgreementRequest { Agreed = true };
-
-        var result = await Manager.SignAgreement(request);
+        var result = await Manager.Cancel("ant_42");
 
         AssertRequestMethod(HttpMethod.Post);
-        AssertRequestUrl("/v3/anticipations/agreement/sign");
+        AssertRequestUrl("/v3/anticipations/ant_42/cancel");
     }
 
     [Fact]
-    public async Task SignAgreement_DeserializesResponse()
+    public async Task GetLimits_SendsGetToLimitsRoute()
     {
-        SetupOkResponse("{\"id\":\"ant_789\",\"status\":\"CREDITED\",\"totalValue\":300.00}");
+        SetupOkResponse("{\"bankSlip\":{\"total\":1000,\"available\":800,\"used\":200},\"creditCard\":{\"total\":2000,\"available\":1500,\"used\":500}}");
 
-        var request = new SignAnticipationAgreementRequest { Agreed = true };
+        var result = await Manager.GetLimits();
 
-        var result = await Manager.SignAgreement(request);
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/anticipations/limits");
+        Assert.True(result.WasSuccessful());
+        Assert.Equal(800m, result.Data.BankSlip.Available);
+        Assert.Equal(1500m, result.Data.CreditCard.Available);
+    }
 
-        Assert.True(result.WasSucessfull());
-        Assert.NotNull(result.Data);
-        Assert.Equal("ant_789", result.Data.Id);
+    [Fact]
+    public async Task GetAutomaticConfiguration_SendsGetToConfigurationsRoute()
+    {
+        SetupOkResponse("{\"bankSlipEnabled\":true,\"creditCardEnabled\":false}");
+
+        var result = await Manager.GetAutomaticConfiguration();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/anticipations/configurations");
+        Assert.True(result.Data.BankSlipEnabled);
+        Assert.False(result.Data.CreditCardEnabled);
+    }
+
+    [Fact]
+    public async Task UpdateAutomaticConfiguration_SendsPutToConfigurationsRoute()
+    {
+        SetupOkResponse("{\"bankSlipEnabled\":true,\"creditCardEnabled\":true}");
+        var request = new UpdateAutomaticAnticipationConfigRequest { BankSlipEnabled = true, CreditCardEnabled = true };
+
+        var result = await Manager.UpdateAutomaticConfiguration(request);
+
+        AssertRequestMethod(HttpMethod.Put);
+        AssertRequestUrl("/v3/anticipations/configurations");
     }
 
     // ── Error handling ──────────────────────────────────────────────
@@ -206,7 +229,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
 
         var result = await Manager.Find("ant_nonexistent");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -225,7 +248,7 @@ public class AnticipationManagerTests : ManagerTestBase<AnticipationManager>
         };
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);

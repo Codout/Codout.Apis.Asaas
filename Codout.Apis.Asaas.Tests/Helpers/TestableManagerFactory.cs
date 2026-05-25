@@ -186,7 +186,7 @@ public class TestableCreditBureauReportManager(ApiSettings settings, HttpMessage
     }
 }
 
-public class TestableCustomerFiscalInfoManager(ApiSettings settings, HttpMessageHandler handler) : CustomerFiscalInfoManager(settings)
+public class TestableFiscalInfoManager(ApiSettings settings, HttpMessageHandler handler) : FiscalInfoManager(settings)
 {
     protected override HttpClient BuildHttpClient()
     {
@@ -197,6 +197,76 @@ public class TestableCustomerFiscalInfoManager(ApiSettings settings, HttpMessage
 }
 
 public class TestablePixManager(ApiSettings settings, HttpMessageHandler handler) : PixManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
+
+public class TestableChargebackManager(ApiSettings settings, HttpMessageHandler handler) : ChargebackManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
+
+public class TestableEscrowManager(ApiSettings settings, HttpMessageHandler handler) : EscrowManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
+
+public class TestableCheckoutManager(ApiSettings settings, HttpMessageHandler handler) : CheckoutManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
+
+public class TestableMobilePhoneRechargeManager(ApiSettings settings, HttpMessageHandler handler) : MobilePhoneRechargeManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
+
+public class TestableSandboxManager(ApiSettings settings, HttpMessageHandler handler) : SandboxManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
+
+public class TestablePixAutomaticManager(ApiSettings settings, HttpMessageHandler handler) : PixAutomaticManager(settings)
+{
+    protected override HttpClient BuildHttpClient()
+    {
+        var client = new HttpClient(handler);
+        client.BaseAddress = new System.Uri("https://api-sandbox.asaas.com");
+        return client;
+    }
+}
+
+public class TestablePixRecurringManager(ApiSettings settings, HttpMessageHandler handler) : PixRecurringManager(settings)
 {
     protected override HttpClient BuildHttpClient()
     {

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Core.Response;
 using Codout.Apis.Asaas.Models.Installment;
@@ -9,6 +9,16 @@ namespace Codout.Apis.Asaas.Managers;
 public class InstallmentManager(ApiSettings settings) : BaseManager(settings)
 {
     private const string InstallmentsRoute = "/installments";
+
+    public async Task<ResponseObject<Installment>> Create(CreateInstallmentRequest requestObj)
+    {
+        return await PostAsync<Installment>(InstallmentsRoute, requestObj);
+    }
+
+    public async Task<ResponseObject<Installment>> CreateWithCreditCard(CreateInstallmentWithCreditCardRequest requestObj)
+    {
+        return await PostAsync<Installment>($"{InstallmentsRoute}/", requestObj);
+    }
 
     public async Task<ResponseObject<Installment>> Find(string installmentId)
     {
@@ -39,5 +49,25 @@ public class InstallmentManager(ApiSettings settings) : BaseManager(settings)
     {
         var route = $"{InstallmentsRoute}/{installmentId}/paymentBook";
         return await GetListAsync<Payment>(route, offset, limit);
+    }
+
+    public async Task<ResponseList<Payment>> ListPayments(string installmentId, int offset, int limit)
+    {
+        var route = $"{InstallmentsRoute}/{installmentId}/payments";
+        return await GetListAsync<Payment>(route, offset, limit);
+    }
+
+    public async Task<ResponseObject<DeletedInstallment>> CancelPendingPayments(string installmentId)
+    {
+        var route = $"{InstallmentsRoute}/{installmentId}/payments";
+
+        return await DeleteAsync<DeletedInstallment>(route);
+    }
+
+    public async Task<ResponseObject<Installment>> UpdateSplits(string installmentId, UpdateInstallmentSplitsRequest requestObj)
+    {
+        var route = $"{InstallmentsRoute}/{installmentId}/splits";
+
+        return await PutAsync<Installment>(route, requestObj);
     }
 }

@@ -1,0 +1,20 @@
+{
+  "payment": "pay_637959110194",
+  "customer": "cus_000000002750",
+  "serviceDescription": "Invoice 101940",
+  "observations": "Monthly for June work.",
+  "value": 300,
+  "deductions": 10,
+  "effectiveDate": "2024-08-20",
+  "municipalServiceName": "Systems analysis and development",
+  "municipalServiceCode": "1.01",
+  "taxes": {
+    "retainIss": true,
+    "iss": 2,
+    "pis": 0.65,
+    "cofins": 3,
+    "csll": 9,
+    "inss": 11,
+    "ir": 1.5
+  }
+}

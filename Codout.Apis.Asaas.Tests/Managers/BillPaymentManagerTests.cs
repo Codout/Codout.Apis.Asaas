@@ -46,7 +46,7 @@ public class BillPaymentManagerTests : ManagerTestBase<BillPaymentManager>
 
         var result = await Manager.Create(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("bill_123", result.Data.Id);
         Assert.Equal(100.00m, result.Data.Value);
@@ -86,7 +86,7 @@ public class BillPaymentManagerTests : ManagerTestBase<BillPaymentManager>
 
         var result = await Manager.Simulate(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(2.50m, result.Data.Fee);
         Assert.NotNull(result.Data.BankSlipInfo);
@@ -112,7 +112,7 @@ public class BillPaymentManagerTests : ManagerTestBase<BillPaymentManager>
 
         var result = await Manager.Find("bill_456");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("bill_456", result.Data.Id);
         Assert.Equal(250.00m, result.Data.Value);
@@ -155,7 +155,7 @@ public class BillPaymentManagerTests : ManagerTestBase<BillPaymentManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(3, result.Data.Count);
         Assert.Equal(3, result.TotalCount);
@@ -186,7 +186,7 @@ public class BillPaymentManagerTests : ManagerTestBase<BillPaymentManager>
 
         var result = await Manager.Cancel("bill_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("bill_123", result.Data.Id);
         Assert.False(result.Data.CanBeCancelled);
@@ -203,7 +203,7 @@ public class BillPaymentManagerTests : ManagerTestBase<BillPaymentManager>
 
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);
@@ -217,7 +217,7 @@ public class BillPaymentManagerTests : ManagerTestBase<BillPaymentManager>
 
         var result = await Manager.Find("bill_nonexistent");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -229,7 +229,7 @@ public class BillPaymentManagerTests : ManagerTestBase<BillPaymentManager>
 
         var result = await Manager.Cancel("bill_already_paid");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.UnprocessableEntity, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }

@@ -12,38 +12,39 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
     protected override FinanceManager CreateManager(ApiSettings settings, MockHttpMessageHandler handler)
         => new TestableFinanceManager(settings, handler);
 
-    #region Balance
+    #region GetBalance
 
     [Fact]
-    public async Task Balance_SendsGetToCorrectUrl()
+    public async Task GetBalance_SendsGetToCorrectUrl()
     {
-        SetupOkResponse("12345.67");
+        SetupOkResponse("{\"balance\":12345.67}");
 
-        var result = await Manager.Balance();
+        var result = await Manager.GetBalance();
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/finance/balance");
     }
 
     [Fact]
-    public async Task Balance_DeserializesResponseCorrectly()
+    public async Task GetBalance_DeserializesObjectResponseCorrectly()
     {
-        SetupOkResponse("12345.67");
+        SetupOkResponse("{\"balance\":5210.96}");
 
-        var result = await Manager.Balance();
+        var result = await Manager.GetBalance();
 
-        Assert.True(result.WasSucessfull());
-        Assert.Equal(12345.67m, result.Data);
+        Assert.True(result.WasSuccessful());
+        Assert.NotNull(result.Data);
+        Assert.Equal(5210.96m, result.Data.Value);
     }
 
     [Fact]
-    public async Task Balance_WhenApiReturnsError_ReturnsErrorResponse()
+    public async Task GetBalance_WhenApiReturnsError_ReturnsErrorResponse()
     {
         SetupErrorResponse(HttpStatusCode.Unauthorized);
 
-        var result = await Manager.Balance();
+        var result = await Manager.GetBalance();
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -72,7 +73,7 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
 
         var result = await Manager.ListTransactions(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(2, result.TotalCount);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal("txn_1", result.Data[0].Id);
@@ -131,7 +132,7 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
 
         var result = await Manager.GetPaymentStatistics();
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal(10, result.Data.Quantity);
         Assert.Equal(1500.00m, result.Data.Value);
         Assert.Equal(1400.00m, result.Data.NetValue);
@@ -155,13 +156,14 @@ public class FinanceManagerTests : ManagerTestBase<FinanceManager>
     [Fact]
     public async Task GetSplitStatistics_DeserializesResponseCorrectly()
     {
-        SetupOkResponse("{\"totalPendingValue\":500.00,\"totalReceivedValue\":3000.00}");
+        // B-37a: schema usa {income, value}, nao {totalPendingValue, totalReceivedValue}
+        SetupOkResponse("{\"income\":500.00,\"value\":3000.00}");
 
         var result = await Manager.GetSplitStatistics();
 
-        Assert.True(result.WasSucessfull());
-        Assert.Equal(500.00m, result.Data.TotalPendingValue);
-        Assert.Equal(3000.00m, result.Data.TotalReceivedValue);
+        Assert.True(result.WasSuccessful());
+        Assert.Equal(500.00m, result.Data.Income);
+        Assert.Equal(3000.00m, result.Data.Value);
     }
 
     #endregion

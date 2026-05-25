@@ -24,7 +24,7 @@
 
         public string ExternalReference { get; set; }
 
-        public bool NotificationDisabled { get; set; }
+        public bool? NotificationDisabled { get; set; }
 
         public string AdditionalEmails { get; set; }
 
@@ -35,5 +35,9 @@
         public string Observations { get; set; }
 
         public string GroupName { get; set; }
+
+        public string Company { get; set; }
+
+        public bool? ForeignCustomer { get; set; }
     }
 }

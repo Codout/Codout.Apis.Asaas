@@ -1,0 +1,12 @@
+{
+  "name": "John Doe",
+  "cpfCnpj": "24971563792",
+  "email": "john.doe@asaas.com.br",
+  "mobilePhone": "4799376637",
+  "address": "Av. Paulista",
+  "addressNumber": "150",
+  "complement": "Sala 201",
+  "province": "Centro",
+  "postalCode": "01310-000",
+  "externalReference": "12987382"
+}

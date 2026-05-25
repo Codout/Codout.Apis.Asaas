@@ -1,0 +1,16 @@
+{
+  "id": "71ae9d73-468f-4d04-8b87-a541128f9c46",
+  "status": "PENDING",
+  "scheduledDate": "2024-10-23",
+  "canBeCancelled": true,
+  "recurrenceNumber": 1,
+  "quantity": 2,
+  "value": 0.02,
+  "refusalReasonDescription": null,
+  "externalAccount": {
+    "name": "John Doe",
+    "financialInstitutionName": "Example bank S.A",
+    "cpfCnpj": "***.456.789-**",
+    "pixKey": "***.456.789-**"
+  }
+}

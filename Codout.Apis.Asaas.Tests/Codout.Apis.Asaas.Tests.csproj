@@ -23,4 +23,12 @@
     <ProjectReference Include="..\Codout.Apis.Asaas\Codout.Apis.Asaas.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Fixtures JSON extraidas da documentacao oficial Asaas; copiadas para o
+         diretorio de saida para serem lidas pelos contract tests em runtime. -->
+    <None Update="Fixtures\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

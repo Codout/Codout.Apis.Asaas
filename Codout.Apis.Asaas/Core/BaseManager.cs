@@ -20,11 +20,11 @@ namespace Codout.Apis.Asaas.Core
         private const string ProductionUrl = "https://api.asaas.com";
         private const string SandboxUrl = "https://api-sandbox.asaas.com";
 
-        private readonly ApiSettings _settings;
+        protected readonly ApiSettings Settings;
 
         protected BaseManager(ApiSettings settings)
         {
-            _settings = settings;
+            Settings = settings;
         }
 
         protected async Task<ResponseObject<T>> PostMultipartFormDataContentAsync<T>(string resource, object payload)
@@ -54,11 +54,14 @@ namespace Codout.Apis.Asaas.Core
                 if (prop.PropertyType == typeof(IAsaasFile))
                 {
                     IAsaasFile asaasFile = prop.GetValue(payload) as IAsaasFile;
+                    if (asaasFile is null) continue;
                     multipartContent.Add(BuildByteArrayContent(asaasFile), jsonPropertyName, asaasFile.FileName);
                     continue;
                 }
 
-                multipartContent.Add(new StringContent(prop.GetValue(payload).ToString()), jsonPropertyName);
+                var value = prop.GetValue(payload);
+                if (value is null) continue;
+                multipartContent.Add(new StringContent(value.ToString()), jsonPropertyName);
             }
 
             var response = await httpClient.PostAsync(BuildApiRoute(resource), multipartContent);
@@ -143,13 +146,25 @@ namespace Codout.Apis.Asaas.Core
             return await BuildResponseObject<T>(response);
         }
 
+        private static readonly SocketsHttpHandler SharedHandler = new()
+        {
+            // Reusa conexoes TCP entre requisicoes (evita esgotamento de portas).
+            // Recicla a conexao a cada 10 min para captar mudancas de DNS.
+            PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+            PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+            MaxConnectionsPerServer = 32
+        };
+
         protected virtual HttpClient BuildHttpClient()
         {
-            HttpClient httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("access_token", _settings.AccessToken);
-            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", _settings.ApplicationName);
+            // Compartilha um unico SocketsHttpHandler estatico para nao esgotar
+            // sockets nem fazer DNS lookup a cada request (boa pratica .NET).
+            // DisposeHandler = false porque o handler eh shared.
+            HttpClient httpClient = new HttpClient(SharedHandler, disposeHandler: false);
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("access_token", Settings.AccessToken);
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Settings.ApplicationName);
             httpClient.BaseAddress = BuildBaseAddress();
-            httpClient.Timeout = _settings.TimeOut;
+            httpClient.Timeout = Settings.TimeOut;
 
             return httpClient;
         }
@@ -161,12 +176,12 @@ namespace Codout.Apis.Asaas.Core
 
         private Uri BuildBaseAddress()
         {
-            if (_settings.AsaasEnvironment.IsProduction())
+            if (Settings.AsaasEnvironment.IsProduction())
             {
                 return new Uri(ProductionUrl);
             }
 
-            if (_settings.AsaasEnvironment.IsSandbox())
+            if (Settings.AsaasEnvironment.IsSandbox())
             {
                 return new Uri(SandboxUrl);
             }

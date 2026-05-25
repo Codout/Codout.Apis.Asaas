@@ -1,0 +1,18 @@
+{
+  "id": "ce35702d-0d9f-475a-ba46-e251ad265c91",
+  "dunningNumber": 15,
+  "status": "PENDING",
+  "type": "CREDIT_BUREAU",
+  "requestDate": "2020-05-26",
+  "description": "Duas mesas com 8 cadeiras solicitadas via encomenda no dia 01/05/2018",
+  "value": 80,
+  "feeValue": 8,
+  "netValue": 72,
+  "receivedInCashFeeValue": 0,
+  "denialReason": null,
+  "cancellationFeeValue": 0,
+  "canBeCancelled": true,
+  "cannotBeCancelledReason": null,
+  "isNecessaryResendDocumentation": false,
+  "payment": "pay_080225913252"
+}

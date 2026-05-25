@@ -1,0 +1,14 @@
+{
+  "object": "list",
+  "hasMore": false,
+  "totalCount": 1,
+  "limit": 10,
+  "offset": 0,
+  "data": [
+    {
+      "status": "NEGOTIATED",
+      "description": "Negativação negociada com o cliente. O pagamento será iniciado.",
+      "eventDate": "2019-02-20"
+    }
+  ]
+}

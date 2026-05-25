@@ -1,0 +1,21 @@
+{
+  "object": "list",
+  "hasMore": false,
+  "totalCount": 1,
+  "limit": 10,
+  "offset": 0,
+  "data": [
+    {
+      "id": "ce35702d-0d9f-475a-ba46-e251ad265c91",
+      "dunningNumber": 15,
+      "status": "PENDING",
+      "type": "CREDIT_BUREAU",
+      "requestDate": "2020-05-26",
+      "value": 80,
+      "feeValue": 8,
+      "netValue": 72,
+      "canBeCancelled": true,
+      "payment": "pay_080225913252"
+    }
+  ]
+}

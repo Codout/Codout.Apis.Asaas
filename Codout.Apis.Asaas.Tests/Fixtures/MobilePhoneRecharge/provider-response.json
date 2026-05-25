@@ -1,0 +1,17 @@
+{
+  "name": "Vivo",
+  "values": [
+    {
+      "name": "R$ 12,00",
+      "bonus": "5.0",
+      "minValue": 1,
+      "maxValue": 5
+    },
+    {
+      "name": "R$ 30,00",
+      "bonus": "3.0",
+      "minValue": 20,
+      "maxValue": 50
+    }
+  ]
+}

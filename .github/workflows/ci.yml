@@ -28,5 +28,5 @@ jobs:
       - name: Build library
         run: dotnet build Codout.Apis.Asaas/Codout.Apis.Asaas.csproj --configuration Release --no-restore
 
-      - name: Test
-        run: dotnet test Codout.Apis.Asaas.Tests/Codout.Apis.Asaas.Tests.csproj --configuration Release --logger "console;verbosity=normal"
+      - name: Test (unit + contract — integration are auto-skipped without ASAAS_SANDBOX_TOKEN)
+        run: dotnet test Codout.Apis.Asaas.Tests/Codout.Apis.Asaas.Tests.csproj --configuration Release --logger "console;verbosity=normal" --filter "Category!=Integration"

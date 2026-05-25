@@ -6,9 +6,12 @@ namespace Codout.Apis.Asaas.Models.Customer;
 
 public class Customer
 {
+    [JsonPropertyName("object")]
+    public string Object { get; set; }
+
     public string Id { get; set; }
 
-    public DateTime DateCreated { get; set; }
+    public DateTime? DateCreated { get; set; }
 
     public string Name { get; set; }
 
@@ -32,22 +35,32 @@ public class Customer
 
     public string ExternalReference { get; set; }
 
-    public bool NotificationDisabled { get; set; }
+    public bool? NotificationDisabled { get; set; }
 
     public string AdditionalEmails { get; set; }
 
     public string MunicipalInscription { get; set; }
 
+    public string StateInscription { get; set; }
+
     public PersonType? PersonType { get; set; }
 
-    public bool Deleted { get; set; }
+    public bool? Deleted { get; set; }
 
     [JsonPropertyName("city")]
     public long? CityId { get; set; }
+
+    public string CityName { get; set; }
 
     public string State { get; set; }
 
     public string Country { get; set; }
 
     public string Observations { get; set; }
+
+    public string Company { get; set; }
+
+    public string GroupName { get; set; }
+
+    public bool? ForeignCustomer { get; set; }
 }

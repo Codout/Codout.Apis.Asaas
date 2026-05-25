@@ -1,0 +1,21 @@
+{
+  "object": "list",
+  "hasMore": false,
+  "totalCount": 1,
+  "limit": 10,
+  "offset": 0,
+  "data": [
+    {
+      "object": "payment",
+      "id": "pay_080225913252",
+      "dateCreated": "2017-03-10",
+      "customer": "cus_G7Dvo4iphUNk",
+      "value": 129.9,
+      "netValue": 124.9,
+      "billingType": "BOLETO",
+      "status": "PENDING",
+      "dueDate": "2017-06-10",
+      "deleted": false
+    }
+  ]
+}

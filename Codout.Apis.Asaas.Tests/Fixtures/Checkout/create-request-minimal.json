@@ -1,0 +1,16 @@
+{
+  "billingTypes": ["CREDIT_CARD"],
+  "chargeTypes": ["DETACHED"],
+  "callback": {
+    "successUrl": "https://example.com/asaas/checkout/success",
+    "cancelUrl": "https://example.com/asaas/checkout/cancel"
+  },
+  "items": [
+    {
+      "imageBase64": "IMAGE IN BASE64",
+      "name": "Roupas",
+      "quantity": 2,
+      "value": 100
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "object": "subscription",
+  "id": "sub_VXJBYgP2u0eO",
+  "dateCreated": "2017-03-17",
+  "customer": "cus_0T1mdomVMi39",
+  "paymentLink": null,
+  "billingType": "BOLETO",
+  "cycle": "MONTHLY",
+  "value": 19.9,
+  "nextDueDate": "2017-06-15",
+  "endDate": "2018-06-15",
+  "description": "Pro Plan Subscription",
+  "status": "ACTIVE",
+  "deleted": false,
+  "maxPayments": 12,
+  "externalReference": null,
+  "checkoutSession": "356eb0c4-9eb7-4b7f-b2be-d9479af1d29f",
+  "split": []
+}

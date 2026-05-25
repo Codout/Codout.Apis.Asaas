@@ -35,6 +35,12 @@ namespace Codout.Apis.Asaas.Models.Payment
 
         public bool PostalService { get; set; }
 
+        public int? DaysAfterDueDateToRegistrationCancellation { get; set; }
+
+        public PaymentCallback Callback { get; set; }
+
+        public string PixAutomaticAuthorizationId { get; set; }
+
         public CreditCardRequest CreditCard { get; set; }
 
         public CreditCardHolderInfoRequest CreditCardHolderInfo { get; set; }
@@ -43,6 +49,6 @@ namespace Codout.Apis.Asaas.Models.Payment
 
         public List<Split> Split { get; set; } = [];
 
-        public string? CreditCardToken { get; set; }
+        public string CreditCardToken { get; set; }
     }
 }

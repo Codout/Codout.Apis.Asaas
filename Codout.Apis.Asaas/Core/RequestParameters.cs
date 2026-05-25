@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Codout.Apis.Asaas.Core.Extension;
 using Codout.Apis.Asaas.Core.Utils;
@@ -58,7 +59,10 @@ namespace Codout.Apis.Asaas.Core
         {
             if (value != null)
             {
-                Add(key, value.ToString());
+                // bool.ToString() retorna "True"/"False" (PascalCase), mas a API Asaas
+                // espera "true"/"false" lowercase (padrao JSON/HTTP). Sem o ToLower
+                // o filtro e silenciosamente ignorado pela API.
+                Add(key, value.Value ? "true" : "false");
                 return;
             }
 
@@ -69,7 +73,9 @@ namespace Codout.Apis.Asaas.Core
         {
             if (value != null)
             {
-                Add(key, value.ToString());
+                // decimal.ToString() usa cultura corrente: em pt-BR vira "12,5"
+                // (virgula) ao inves de "12.5" (ponto). API Asaas (JSON) exige ponto.
+                Add(key, value.Value.ToString(CultureInfo.InvariantCulture));
                 return;
             }
 

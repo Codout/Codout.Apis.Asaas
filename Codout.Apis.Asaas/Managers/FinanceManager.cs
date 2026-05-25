@@ -10,11 +10,11 @@ public class FinanceManager(ApiSettings settings) : BaseManager(settings)
     private const string FinanceRoute = "/finance";
     private const string FinanceTransactionsRoute = "/financialTransactions";
 
-    public async Task<ResponseObject<decimal>> Balance()
+    public async Task<ResponseObject<Balance>> GetBalance()
     {
         var route = $"{FinanceRoute}/balance";
 
-        return await GetAsync<decimal>(route);
+        return await GetAsync<Balance>(route);
     }
 
     public async Task<ResponseList<FinancialTransaction>> ListTransactions(int offset, int limit, FinancialTransactionListFilter filter = null)
@@ -25,9 +25,10 @@ public class FinanceManager(ApiSettings settings) : BaseManager(settings)
         return await GetListAsync<FinancialTransaction>(FinanceTransactionsRoute, offset, limit, queryMap);
     }
 
-    public async Task<ResponseObject<PaymentStatistics>> GetPaymentStatistics()
+    public async Task<ResponseObject<PaymentStatistics>> GetPaymentStatistics(PaymentStatisticsFilter filter = null)
     {
-        var route = $"{FinanceRoute}/payment/statistics";
+        var query = filter?.Build() ?? string.Empty;
+        var route = $"{FinanceRoute}/payment/statistics{query}";
         return await GetAsync<PaymentStatistics>(route);
     }
 

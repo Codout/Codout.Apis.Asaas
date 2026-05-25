@@ -1,0 +1,26 @@
+{
+  "object": "list",
+  "hasMore": false,
+  "totalCount": 1,
+  "limit": 10,
+  "offset": 0,
+  "data": [
+    {
+      "id": "35363f6e-93e2-11ec-b9d9-96f4053b1bd4",
+      "status": "PENDING",
+      "origin": "PIX",
+      "value": 0.02,
+      "frequency": "WEEKLY",
+      "quantity": 2,
+      "startDate": "2024-09-18",
+      "finishDate": "2024-09-25",
+      "canBeCancelled": true,
+      "externalAccount": {
+        "name": "John Doe",
+        "financialInstitutionName": "Example bank S.A",
+        "cpfCnpj": "***.456.789-**",
+        "pixKey": "***.456.789-**"
+      }
+    }
+  ]
+}

@@ -16,7 +16,7 @@ public class AsaasApi(ApiSettings apiSettings)
     private Lazy<WalletManager> LazyWallet { get; } = new(() => new WalletManager(apiSettings), true);
     private Lazy<WebhookManager> LazyWebhook { get; } = new(() => new WebhookManager(apiSettings), true);
     private Lazy<AsaasAccountManager> LazyAsaasAccount { get; } = new(() => new AsaasAccountManager(apiSettings), true);
-    private Lazy<AnticipationManager> LazyReceivableAnticipation { get; } = new(() => new AnticipationManager(apiSettings), true);
+    private Lazy<AnticipationManager> LazyAnticipation { get; } = new(() => new AnticipationManager(apiSettings), true);
     private Lazy<MyAccountManager> LazyMyAccount { get; } = new(() => new MyAccountManager(apiSettings), true);
     private Lazy<InvoiceManager> LazyInvoice { get; } = new(() => new InvoiceManager(apiSettings), true);
     private Lazy<PaymentDunningManager> LazyPaymentDunning { get; } = new(() => new PaymentDunningManager(apiSettings), true);
@@ -25,8 +25,15 @@ public class AsaasApi(ApiSettings apiSettings)
     private Lazy<PaymentLinkManager> LazyPaymentLink { get; } = new(() => new PaymentLinkManager(apiSettings), true);
     private Lazy<NotificationManager> LazyNotification { get; } = new(() => new NotificationManager(apiSettings), true);
     private Lazy<CreditBureauReportManager> LazyCreditBureauReport { get; } = new(() => new CreditBureauReportManager(apiSettings), true);
-    private Lazy<CustomerFiscalInfoManager> LazyCustomerFiscalInfo { get; } = new(() => new CustomerFiscalInfoManager(apiSettings), true);
+    private Lazy<FiscalInfoManager> LazyFiscalInfo { get; } = new(() => new FiscalInfoManager(apiSettings), true);
     private Lazy<PixManager> LazyPix { get; } = new(() => new PixManager(apiSettings), true);
+    private Lazy<ChargebackManager> LazyChargeback { get; } = new(() => new ChargebackManager(apiSettings), true);
+    private Lazy<EscrowManager> LazyEscrow { get; } = new(() => new EscrowManager(apiSettings), true);
+    private Lazy<CheckoutManager> LazyCheckout { get; } = new(() => new CheckoutManager(apiSettings), true);
+    private Lazy<MobilePhoneRechargeManager> LazyMobilePhoneRecharge { get; } = new(() => new MobilePhoneRechargeManager(apiSettings), true);
+    private Lazy<SandboxManager> LazySandbox { get; } = new(() => new SandboxManager(apiSettings), true);
+    private Lazy<PixAutomaticManager> LazyPixAutomatic { get; } = new(() => new PixAutomaticManager(apiSettings), true);
+    private Lazy<PixRecurringManager> LazyPixRecurring { get; } = new(() => new PixRecurringManager(apiSettings), true);
 
     #endregion
 
@@ -40,7 +47,7 @@ public class AsaasApi(ApiSettings apiSettings)
     public WalletManager Wallet => LazyWallet.Value;
     public WebhookManager Webhook => LazyWebhook.Value;
     public AsaasAccountManager AsaasAccount => LazyAsaasAccount.Value;
-    public AnticipationManager ReceivableAnticipation => LazyReceivableAnticipation.Value;
+    public AnticipationManager Anticipation => LazyAnticipation.Value;
     public MyAccountManager MyAccount => LazyMyAccount.Value;
     public InvoiceManager Invoice => LazyInvoice.Value;
     public PaymentDunningManager PaymentDunning => LazyPaymentDunning.Value;
@@ -49,7 +56,14 @@ public class AsaasApi(ApiSettings apiSettings)
     public PaymentLinkManager PaymentLink => LazyPaymentLink.Value;
     public NotificationManager Notification => LazyNotification.Value;
     public CreditBureauReportManager CreditBureauReport => LazyCreditBureauReport.Value;
-    public CustomerFiscalInfoManager CustomerFiscalInfo => LazyCustomerFiscalInfo.Value;
+    public FiscalInfoManager FiscalInfo => LazyFiscalInfo.Value;
     public PixManager Pix => LazyPix.Value;
+    public ChargebackManager Chargeback => LazyChargeback.Value;
+    public EscrowManager Escrow => LazyEscrow.Value;
+    public CheckoutManager Checkout => LazyCheckout.Value;
+    public MobilePhoneRechargeManager MobilePhoneRecharge => LazyMobilePhoneRecharge.Value;
+    public SandboxManager Sandbox => LazySandbox.Value;
+    public PixAutomaticManager PixAutomatic => LazyPixAutomatic.Value;
+    public PixRecurringManager PixRecurring => LazyPixRecurring.Value;
     #endregion
 }

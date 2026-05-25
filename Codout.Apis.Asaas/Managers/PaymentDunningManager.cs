@@ -18,9 +18,14 @@ public class PaymentDunningManager(ApiSettings settings) : BaseManager(settings)
 
     public async Task<ResponseObject<SimulatedPaymentDunning>> Simulate(SimulatePaymentDunningRequest requestObj)
     {
-        var route = $"{PaymentDunningRoute}/simulate";
+        // Schema oficial expoe "payment" como QUERY param, body vazio.
+        // Mandar PaymentId no body funciona em alguns endpoints por leniencia,
+        // mas o contrato documentado exige query string.
+        var query = new RequestParameters();
+        query.Add("payment", requestObj?.PaymentId);
+        var route = $"{PaymentDunningRoute}/simulate{query.Build()}";
 
-        return await PostAsync<SimulatedPaymentDunning>(route, requestObj);
+        return await PostAsync<SimulatedPaymentDunning>(route, new RequestParameters());
     }
 
     public async Task<ResponseObject<PaymentDunning>> Find(string paymentDunningId)

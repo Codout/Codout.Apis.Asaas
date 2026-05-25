@@ -1,0 +1,18 @@
+{
+  "object": "installment",
+  "id": "2765d086-c7c5-5cca-898a-4262d212587c",
+  "value": 360,
+  "netValue": 312.12,
+  "paymentValue": 30,
+  "installmentCount": 12,
+  "billingType": "CREDIT_CARD",
+  "paymentDate": null,
+  "description": "Order 056984",
+  "expirationDay": 31,
+  "dateCreated": "2021-01-19",
+  "customer": "cus_000000001645",
+  "paymentLink": "997152082166122",
+  "checkoutSession": "5a3e564f-81cd-4f4e-9c8e-af43f9ac4287",
+  "deleted": false,
+  "refunds": []
+}

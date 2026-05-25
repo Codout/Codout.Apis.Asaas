@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Codout.Apis.Asaas.Core;
 using Codout.Apis.Asaas.Core.Response;
+using Codout.Apis.Asaas.Models.Common.Base;
 using Codout.Apis.Asaas.Models.MyAccount;
 
 namespace Codout.Apis.Asaas.Managers;
@@ -8,13 +9,31 @@ namespace Codout.Apis.Asaas.Managers;
 public class MyAccountManager(ApiSettings settings) : BaseManager(settings)
 {
     private const string MyAccountRoute = "/myAccount";
+    private const string CommercialInfoRoute = MyAccountRoute + "/commercialInfo";
     private const string PaymentCheckoutConfigRoute = MyAccountRoute + "/paymentCheckoutConfig";
     private const string FeesRoute = MyAccountRoute + "/fees";
     private const string AccountNumberRoute = MyAccountRoute + "/accountNumber";
+    private const string StatusRoute = MyAccountRoute + "/status";
+    private const string DocumentsRoute = MyAccountRoute + "/documents";
 
-    public async Task<ResponseObject<MyAccount>> Find()
+    public async Task<ResponseObject<MyAccount>> GetCommercialInfo()
     {
-        return await GetAsync<MyAccount>(MyAccountRoute);
+        return await GetAsync<MyAccount>(CommercialInfoRoute);
+    }
+
+    public async Task<ResponseObject<MyAccount>> UpdateCommercialInfo(UpdateCommercialInfoRequest requestObj)
+    {
+        return await PostAsync<MyAccount>(CommercialInfoRoute, requestObj);
+    }
+
+    public async Task<ResponseObject<AccountStatus>> GetStatus()
+    {
+        return await GetAsync<AccountStatus>(StatusRoute);
+    }
+
+    public async Task<ResponseObject<BaseDeleted>> DeleteWhiteLabelAccount()
+    {
+        return await DeleteAsync<BaseDeleted>(MyAccountRoute);
     }
 
     public async Task<ResponseObject<PaymentCheckoutConfig>> CreatePaymentCheckoutConfig(CreatePaymentCheckoutConfigRequest requestObj)
@@ -35,5 +54,34 @@ public class MyAccountManager(ApiSettings settings) : BaseManager(settings)
     public async Task<ResponseObject<AccountNumber>> FindAccountNumber()
     {
         return await GetAsync<AccountNumber>(AccountNumberRoute);
+    }
+
+    public async Task<ResponseObject<AccountDocumentResponse>> ListPendingDocuments()
+    {
+        return await GetAsync<AccountDocumentResponse>(DocumentsRoute);
+    }
+
+    public async Task<ResponseObject<AccountDocument>> SubmitDocument(string documentId, UploadAccountDocumentRequest requestObj)
+    {
+        var route = $"{DocumentsRoute}/{documentId}";
+        return await PostMultipartFormDataContentAsync<AccountDocument>(route, requestObj);
+    }
+
+    public async Task<ResponseObject<AccountDocument>> ViewDocumentFile(string fileId)
+    {
+        var route = $"{DocumentsRoute}/files/{fileId}";
+        return await GetAsync<AccountDocument>(route);
+    }
+
+    public async Task<ResponseObject<AccountDocument>> UpdateDocumentFile(string fileId, UploadAccountDocumentRequest requestObj)
+    {
+        var route = $"{DocumentsRoute}/files/{fileId}";
+        return await PostMultipartFormDataContentAsync<AccountDocument>(route, requestObj);
+    }
+
+    public async Task<ResponseObject<BaseDeleted>> DeleteDocumentFile(string fileId)
+    {
+        var route = $"{DocumentsRoute}/files/{fileId}";
+        return await DeleteAsync<BaseDeleted>(route);
     }
 }

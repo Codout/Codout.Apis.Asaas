@@ -1,13 +1,13 @@
-﻿using System;
+using System;
+using Codout.Apis.Asaas.Models.PaymentDunning.Enums;
 
-namespace Codout.Apis.Asaas.Models.PaymentDunning
+namespace Codout.Apis.Asaas.Models.PaymentDunning;
+
+public class PaymentDunningEventHistory
 {
-    public class PaymentDunningEventHistory
-    {
-        public string Status { get; set; }
+    public PaymentDunningHistoryStatus Status { get; set; }
 
-        public string Description { get; set; }
+    public string Description { get; set; }
 
-        public DateTime EventDate { get; set; }
-    }
+    public DateTime EventDate { get; set; }
 }

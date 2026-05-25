@@ -5,7 +5,7 @@ using Codout.Apis.Asaas.Models.PaymentLink.Enums;
 using Codout.Apis.Asaas.Models.Common.Enums;
 using Codout.Apis.Asaas.Models.Pix;
 using Codout.Apis.Asaas.Models.Pix.Enums;
-using Codout.Apis.Asaas.Models.CustomerFiscalInfo;
+using Codout.Apis.Asaas.Models.FiscalInfo;
 
 namespace Codout.Apis.Asaas.Tests.Core.Response;
 
@@ -76,7 +76,7 @@ public class ResponseListTests
 
         var response = new ResponseList<PaymentLink>(HttpStatusCode.OK, json);
 
-        Assert.True(response.WasSucessfull());
+        Assert.True(response.WasSuccessful());
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
@@ -93,12 +93,12 @@ public class ResponseListTests
     [Fact]
     public void Constructor_WithOkStatus_DeserializesEnumsInList()
     {
-        var json = BuildListJson("[{\"id\":\"tx_1\",\"status\":\"PENDING\",\"value\":100},{\"id\":\"tx_2\",\"status\":\"DONE\",\"value\":200}]", totalCount: 2);
+        var json = BuildListJson("[{\"id\":\"tx_1\",\"status\":\"SCHEDULED\",\"value\":100},{\"id\":\"tx_2\",\"status\":\"DONE\",\"value\":200}]", totalCount: 2);
 
         var response = new ResponseList<PixTransaction>(HttpStatusCode.OK, json);
 
         Assert.Equal(2, response.Data.Count);
-        Assert.Equal(PixTransactionStatus.PENDING, response.Data[0].Status);
+        Assert.Equal(PixTransactionStatus.SCHEDULED, response.Data[0].Status);
         Assert.Equal(PixTransactionStatus.DONE, response.Data[1].Status);
     }
 
@@ -137,7 +137,7 @@ public class ResponseListTests
 
         var response = new ResponseList<PaymentLink>(HttpStatusCode.BadRequest, json);
 
-        Assert.False(response.WasSucessfull());
+        Assert.False(response.WasSuccessful());
     }
 
     [Fact]

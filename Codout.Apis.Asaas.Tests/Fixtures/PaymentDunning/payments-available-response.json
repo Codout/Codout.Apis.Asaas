@@ -1,0 +1,26 @@
+{
+  "object": "list",
+  "hasMore": false,
+  "totalCount": 1,
+  "limit": 10,
+  "offset": 0,
+  "data": [
+    {
+      "payment": "pay_856437540297",
+      "customer": "cus_000000001663",
+      "value": 250,
+      "status": "PENDING",
+      "billingType": "BOLETO",
+      "dueDate": "2020-05-18",
+      "typeSimulations": [
+        {
+          "type": "CREDIT_BUREAU",
+          "isAllowed": true,
+          "feeValue": 0,
+          "netValue": 0,
+          "startDate": "2020-05-18"
+        }
+      ]
+    }
+  ]
+}

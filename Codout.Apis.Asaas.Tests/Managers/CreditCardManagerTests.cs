@@ -44,10 +44,10 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("4444", result.Data.Number);
-        Assert.Equal("MASTERCARD", result.Data.Brand);
+        Assert.Equal(Codout.Apis.Asaas.Models.Common.Enums.CreditCardBrand.MASTERCARD, result.Data.Brand);
         Assert.Equal("tok_xyz789", result.Data.Token);
     }
 
@@ -64,10 +64,10 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("1111", result.Data.Number);
-        Assert.Equal("VISA", result.Data.Brand);
+        Assert.Equal(Codout.Apis.Asaas.Models.Common.Enums.CreditCardBrand.VISA, result.Data.Brand);
         Assert.Equal("tok_full_test", result.Data.Token);
     }
 
@@ -86,7 +86,7 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);
@@ -106,7 +106,7 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -124,8 +124,35 @@ public class CreditCardManagerTests : ManagerTestBase<CreditCardManager>
 
         var result = await Manager.TokenizeCreditCard(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
         Assert.NotEmpty(result.Errors);
+    }
+
+    // ── PreAuthorization Config ─────────────────────────────────────
+
+    [Fact]
+    public async Task SavePreAuthorizationConfig_SendsPostToConfigRoute()
+    {
+        SetupOkResponse("{\"daysToExpire\":5}");
+        var request = new SavePreAuthorizationConfigRequest { DaysToExpire = 5 };
+
+        var result = await Manager.SavePreAuthorizationConfig(request);
+
+        AssertRequestMethod(HttpMethod.Post);
+        AssertRequestUrl("/v3/creditCard/preAuthorization/config");
+        Assert.Equal(5, result.Data.DaysToExpire);
+    }
+
+    [Fact]
+    public async Task GetPreAuthorizationConfig_SendsGetToConfigRoute()
+    {
+        SetupOkResponse("{\"daysToExpire\":7}");
+
+        var result = await Manager.GetPreAuthorizationConfig();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/creditCard/preAuthorization/config");
+        Assert.Equal(7, result.Data.DaysToExpire);
     }
 }

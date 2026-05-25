@@ -11,7 +11,7 @@
         SCHEDULED
     }
 
-    public static class ReceivableAnticipationStatusExtension
+    public static class AnticipationStatusExtension
     {
         public static bool IsPending(this AnticipationStatus receivableAnticipationStatus)
         {

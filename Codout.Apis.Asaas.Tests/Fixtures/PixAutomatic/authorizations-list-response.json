@@ -1,0 +1,19 @@
+{
+  "object": "list",
+  "hasMore": false,
+  "totalCount": 1,
+  "limit": 10,
+  "offset": 0,
+  "data": [
+    {
+      "id": "a33047b1-fb19-4b68-9373-a7ba8a8162aa",
+      "contractId": "XXXYYYY1234",
+      "customerId": "cus_000005735721",
+      "frequency": "MONTHLY",
+      "status": "ACTIVE",
+      "value": 100,
+      "startDate": "2024-01-01",
+      "finishDate": "2024-12-31"
+    }
+  ]
+}

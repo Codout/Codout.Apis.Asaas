@@ -14,4 +14,14 @@ public class CreditCardManager(ApiSettings settings) : BaseManager(settings)
     {
         return await PostAsync<CreditCard>($"{PaymentsRoute}/tokenizeCreditCard", requestObj);
     }
+
+    public async Task<ResponseObject<PreAuthorizationConfig>> SavePreAuthorizationConfig(SavePreAuthorizationConfigRequest requestObj)
+    {
+        return await PostAsync<PreAuthorizationConfig>($"{PaymentsRoute}/preAuthorization/config", requestObj);
+    }
+
+    public async Task<ResponseObject<PreAuthorizationConfig>> GetPreAuthorizationConfig()
+    {
+        return await GetAsync<PreAuthorizationConfig>($"{PaymentsRoute}/preAuthorization/config");
+    }
 }

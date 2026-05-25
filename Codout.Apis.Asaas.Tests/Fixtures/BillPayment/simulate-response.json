@@ -1,0 +1,23 @@
+{
+  "minimumScheduleDate": "2021-11-22",
+  "fee": 0,
+  "bankSlipInfo": {
+    "identificationField": "03399201595100529040147600301023888440000421177",
+    "value": 4211.77,
+    "dueDate": "2021-12-24",
+    "companyName": null,
+    "bank": "033",
+    "beneficiaryCpfCnpj": "19.540.550/0001-21",
+    "beneficiaryName": "ASAAS GESTAO FINANCEIRA S.A.",
+    "allowChangeValue": false,
+    "minValue": 4211.77,
+    "maxValue": 4211.77,
+    "discountValue": 0,
+    "interestValue": 0,
+    "fineValue": 0,
+    "originalValue": 4211.77,
+    "totalDiscountValue": 0,
+    "totalAdditionalValue": 0,
+    "isOverdue": false
+  }
+}

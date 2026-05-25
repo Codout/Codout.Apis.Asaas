@@ -35,7 +35,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/paymentLinks");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("pl_123", result.Data.Id);
         Assert.Equal("Test Link", result.Data.Name);
@@ -83,7 +83,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
         AssertRequestUrlContains("/v3/paymentLinks");
         AssertRequestUrlContains("offset=0");
         AssertRequestUrlContains("limit=10");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Single(result.Data);
         Assert.Equal("pl_1", result.Data[0].Id);
     }
@@ -114,7 +114,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/paymentLinks/pl_456");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pl_456", result.Data.Id);
         Assert.Equal("Found Link", result.Data.Name);
         Assert.True(result.Data.Active);
@@ -139,7 +139,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
 
         AssertRequestMethod(HttpMethod.Put);
         AssertRequestUrl("/v3/paymentLinks/pl_789");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pl_789", result.Data.Id);
         Assert.Equal("Updated Link", result.Data.Name);
     }
@@ -174,7 +174,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/paymentLinks/pl_restored/restore");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.False(result.Data.Deleted);
     }
 
@@ -191,7 +191,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrlContains("/v3/paymentLinks/pl_123/images");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Single(result.Data);
         Assert.Equal("img_1", result.Data[0].Id);
         Assert.True(result.Data[0].Main);
@@ -227,7 +227,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/paymentLinks/pl_123/images/img_find");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("img_find", result.Data.Id);
         Assert.False(result.Data.Main);
     }
@@ -245,7 +245,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/paymentLinks/pl_123/images/img_main/setAsMain");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.True(result.Data.Main);
     }
 
@@ -260,7 +260,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
 
         var result = await Manager.Find("invalid_id");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);
@@ -275,7 +275,7 @@ public class PaymentLinkManagerTests : ManagerTestBase<PaymentLinkManager>
         var request = new CreatePaymentLinkRequest { Name = "Test" };
         var result = await Manager.Create(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         Assert.Single(result.Errors);
     }

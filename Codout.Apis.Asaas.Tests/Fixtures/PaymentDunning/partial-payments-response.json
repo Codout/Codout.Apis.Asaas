@@ -1,0 +1,14 @@
+{
+  "object": "list",
+  "hasMore": false,
+  "totalCount": 1,
+  "limit": 10,
+  "offset": 0,
+  "data": [
+    {
+      "value": 800,
+      "description": "A quitação desta cobrança foi efetuada pelo cliente.",
+      "paymentDate": "2020-02-10"
+    }
+  ]
+}

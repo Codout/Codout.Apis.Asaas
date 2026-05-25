@@ -41,7 +41,7 @@ public class InvoiceManagerTests : ManagerTestBase<InvoiceManager>
 
         var result = await Manager.Schedule(request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("inv_123", result.Data.Id);
         Assert.Equal("cust_1", result.Data.CustomerId);
@@ -87,7 +87,7 @@ public class InvoiceManagerTests : ManagerTestBase<InvoiceManager>
 
         var result = await Manager.Update("inv_123", request);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("inv_123", result.Data.Id);
         Assert.Equal("Updated consulting", result.Data.ServiceDescription);
@@ -114,7 +114,7 @@ public class InvoiceManagerTests : ManagerTestBase<InvoiceManager>
 
         var result = await Manager.Find("inv_456");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("inv_456", result.Data.Id);
         Assert.Equal(2000.00m, result.Data.Value);
@@ -158,7 +158,7 @@ public class InvoiceManagerTests : ManagerTestBase<InvoiceManager>
 
         var result = await Manager.List(0, 10);
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal(2, result.Data.Count);
         Assert.Equal(2, result.TotalCount);
@@ -199,7 +199,7 @@ public class InvoiceManagerTests : ManagerTestBase<InvoiceManager>
 
         var result = await Manager.Authorize("inv_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("inv_123", result.Data.Id);
     }
@@ -224,39 +224,9 @@ public class InvoiceManagerTests : ManagerTestBase<InvoiceManager>
 
         var result = await Manager.Cancel("inv_123");
 
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.NotNull(result.Data);
         Assert.Equal("inv_123", result.Data.Id);
-    }
-
-    // ── ListMunicipalServices ───────────────────────────────────────
-
-    [Fact]
-    public async Task ListMunicipalServices_SendsGetToCorrectUrl()
-    {
-        SetupListResponse<MunicipalService>("[]", totalCount: 0);
-
-        var result = await Manager.ListMunicipalServices("IT");
-
-        AssertRequestMethod(HttpMethod.Get);
-        AssertRequestUrlContains("/v3/invoices/municipalServices");
-        AssertRequestUrlContains("description=IT");
-    }
-
-    [Fact]
-    public async Task ListMunicipalServices_DeserializesResponse()
-    {
-        SetupListResponse<MunicipalService>("[{\"id\":\"ms_1\",\"description\":\"IT Service\",\"iss\":5.0},{\"id\":\"ms_2\",\"description\":\"IT Consulting\",\"iss\":3.0}]", totalCount: 2);
-
-        var result = await Manager.ListMunicipalServices("IT");
-
-        Assert.True(result.WasSucessfull());
-        Assert.NotNull(result.Data);
-        Assert.Equal(2, result.Data.Count);
-        Assert.Equal("ms_1", result.Data[0].Id);
-        Assert.Equal("IT Service", result.Data[0].Description);
-        Assert.Equal(5.0m, result.Data[0].Iss);
-        Assert.Equal("ms_2", result.Data[1].Id);
     }
 
     // ── Error handling ──────────────────────────────────────────────
@@ -269,7 +239,7 @@ public class InvoiceManagerTests : ManagerTestBase<InvoiceManager>
         var request = new CreateInvoiceRequest { PaymentId = "pay_invalid" };
         var result = await Manager.Schedule(request);
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
         Assert.Equal("invalid", result.Errors[0].Code);
@@ -282,7 +252,7 @@ public class InvoiceManagerTests : ManagerTestBase<InvoiceManager>
 
         var result = await Manager.Find("inv_nonexistent");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }

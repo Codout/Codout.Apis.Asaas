@@ -35,7 +35,7 @@ public class SubscriptionManager(ApiSettings settings) : BaseManager(settings)
     public async Task<ResponseObject<Subscription>> Update(string subscriptionId, UpdateSubscriptionRequest requestObj)
     {
         var route = $"{SubscriptionsRoute}/{subscriptionId}";
-        return await PostAsync<Subscription>(route, requestObj);
+        return await PutAsync<Subscription>(route, requestObj);
     }
 
     public async Task<ResponseObject<DeletedSubscription>> Delete(string subscriptionId)
@@ -43,6 +43,12 @@ public class SubscriptionManager(ApiSettings settings) : BaseManager(settings)
         var route = $"{SubscriptionsRoute}/{subscriptionId}";
 
         return await DeleteAsync<DeletedSubscription>(route);
+    }
+
+    public async Task<ResponseObject<Subscription>> UpdateCreditCard(string subscriptionId, UpdateSubscriptionCreditCardRequest requestObj)
+    {
+        var route = $"{SubscriptionsRoute}/{subscriptionId}/creditCard";
+        return await PutAsync<Subscription>(route, requestObj);
     }
 
     public async Task<ResponseList<Payment>> ListPayments(string subscriptionId, int offset, int limit)
@@ -79,7 +85,7 @@ public class SubscriptionManager(ApiSettings settings) : BaseManager(settings)
     public async Task<ResponseObject<SubscriptionInvoiceSettings>> UpdateInvoiceSettings(string subscriptionId, UpdateInvoiceSettingsRequest requestObj)
     {
         var route = $"{SubscriptionsRoute}/{subscriptionId}/invoiceSettings";
-        return await PostAsync<SubscriptionInvoiceSettings>(route, requestObj);
+        return await PutAsync<SubscriptionInvoiceSettings>(route, requestObj);
     }
 
     public async Task<ResponseObject<SubscriptionInvoiceSettings>> FindInvoiceSettings(string subscriptionId)

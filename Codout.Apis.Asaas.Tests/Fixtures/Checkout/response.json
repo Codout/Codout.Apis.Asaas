@@ -1,0 +1,43 @@
+{
+  "id": "131ca662-56c8-4479-b5b3-fd61a413fce7",
+  "link": "https://sandbox.asaas.com/checkoutSession/show/131ca662-56c8-4479-b5b3-fd61a413fce7",
+  "status": "ACTIVE",
+  "billingTypes": ["CREDIT_CARD"],
+  "chargeTypes": ["RECURRENT"],
+  "minutesToExpire": 100,
+  "externalReference": "dcf4dff9-b080-425c-b234-765f2ffac0ae",
+  "callback": {
+    "successUrl": "https://example.com/asaas/checkout/success",
+    "cancelUrl": "https://example.com/asaas/checkout/cancel",
+    "expiredUrl": "https://example.com/asaas/checkout/expired"
+  },
+  "items": [
+    {
+      "externalReference": "776106a1-d578-4143-936a-d07549b0cc79",
+      "description": "Camisetas",
+      "imageBase64": "IMAGE IN BASE64",
+      "name": "Roupas",
+      "quantity": 2,
+      "value": 100
+    }
+  ],
+  "customerData": {
+    "name": "John Doe",
+    "cpfCnpj": "24971563792",
+    "email": "john.doe@asaas.com.br",
+    "phone": "4738010919",
+    "address": "Av. Paulista",
+    "addressNumber": 150,
+    "complement": "Sala 201",
+    "province": "Centro",
+    "postalCode": "01310-000",
+    "city": 12987382
+  },
+  "subscription": {
+    "cycle": "MONTHLY",
+    "endDate": "2025-01-01",
+    "nextDueDate": "2025-01-01"
+  },
+  "installment": null,
+  "split": []
+}

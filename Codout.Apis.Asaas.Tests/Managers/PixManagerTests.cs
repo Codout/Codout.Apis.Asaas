@@ -26,7 +26,7 @@ public class PixManagerTests : ManagerTestBase<PixManager>
         AssertRequestUrlContains("/v3/pix/transactions");
         AssertRequestUrlContains("offset=0");
         AssertRequestUrlContains("limit=10");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Single(result.Data);
         Assert.Equal("pix_tx_1", result.Data[0].Id);
         Assert.Equal("pay_123", result.Data[0].Payment);
@@ -61,7 +61,7 @@ public class PixManagerTests : ManagerTestBase<PixManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/pix/transactions/pix_tx_cancel/cancel");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pix_tx_cancel", result.Data.Id);
         Assert.Equal(PixTransactionStatus.CANCELLED, result.Data.Status);
     }
@@ -86,7 +86,7 @@ public class PixManagerTests : ManagerTestBase<PixManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/pix/qrCodes/static");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("qr_123", result.Data.Id);
         Assert.Equal("base64data", result.Data.EncodedImage);
         Assert.Equal("00020126...", result.Data.Payload);
@@ -131,7 +131,7 @@ public class PixManagerTests : ManagerTestBase<PixManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/pix/qrCodes/decode");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("00020126...", result.Data.Payload);
         Assert.Equal("STATIC", result.Data.Type);
         Assert.Equal("E123", result.Data.EndToEndIdentifier);
@@ -159,7 +159,7 @@ public class PixManagerTests : ManagerTestBase<PixManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/pix/qrCodes/pay");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("pix_pay_123", result.Data.Id);
         Assert.Equal(75.00m, result.Data.Value);
         Assert.Equal("QR payment", result.Data.Description);
@@ -203,11 +203,11 @@ public class PixManagerTests : ManagerTestBase<PixManager>
 
         AssertRequestMethod(HttpMethod.Post);
         AssertRequestUrl("/v3/pix/addressKeys");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("key_123", result.Data.Id);
         Assert.Equal("12345678901", result.Data.Key);
         Assert.Equal(PixAddressKeyType.CPF, result.Data.Type);
-        Assert.Equal("ACTIVE", result.Data.Status);
+        Assert.Equal(Codout.Apis.Asaas.Models.Pix.Enums.PixAddressKeyStatus.ACTIVE, result.Data.Status);
     }
 
     [Fact]
@@ -254,7 +254,7 @@ public class PixManagerTests : ManagerTestBase<PixManager>
         AssertRequestUrlContains("/v3/pix/addressKeys");
         AssertRequestUrlContains("offset=0");
         AssertRequestUrlContains("limit=10");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Single(result.Data);
         Assert.Equal("key_1", result.Data[0].Id);
         Assert.Equal(PixAddressKeyType.EMAIL, result.Data[0].Type);
@@ -273,7 +273,7 @@ public class PixManagerTests : ManagerTestBase<PixManager>
 
         AssertRequestMethod(HttpMethod.Get);
         AssertRequestUrl("/v3/pix/addressKeys/key_find");
-        Assert.True(result.WasSucessfull());
+        Assert.True(result.WasSuccessful());
         Assert.Equal("key_find", result.Data.Id);
     }
 
@@ -305,7 +305,7 @@ public class PixManagerTests : ManagerTestBase<PixManager>
 
         var result = await Manager.CancelTransaction("invalid_tx");
 
-        Assert.False(result.WasSucessfull());
+        Assert.False(result.WasSuccessful());
         Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         Assert.NotEmpty(result.Errors);
     }
@@ -318,6 +318,44 @@ public class PixManagerTests : ManagerTestBase<PixManager>
         var result = await Manager.FindAddressKey("nonexistent");
 
         Assert.Null(result.Data);
+    }
+
+    #endregion
+
+    #region FindTransaction / DeleteStaticQrCode / GetAddressKeyTokenBucket
+
+    [Fact]
+    public async Task FindTransaction_SendsGetToTransactionRoute()
+    {
+        SetupOkResponse("{\"id\":\"pix_tx_42\",\"status\":\"DONE\"}");
+
+        var result = await Manager.FindTransaction("pix_tx_42");
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/pix/transactions/pix_tx_42");
+    }
+
+    [Fact]
+    public async Task DeleteStaticQrCode_SendsDeleteToStaticQrCodeRoute()
+    {
+        SetupOkResponse("{\"deleted\":true,\"id\":\"qr_1\"}");
+
+        var result = await Manager.DeleteStaticQrCode("qr_1");
+
+        AssertRequestMethod(HttpMethod.Delete);
+        AssertRequestUrl("/v3/pix/qrCodes/static/qr_1");
+    }
+
+    [Fact]
+    public async Task GetAddressKeyTokenBucket_SendsGetToTokenBucketRoute()
+    {
+        SetupOkResponse("{\"remainingTokens\":5,\"maxTokens\":10}");
+
+        var result = await Manager.GetAddressKeyTokenBucket();
+
+        AssertRequestMethod(HttpMethod.Get);
+        AssertRequestUrl("/v3/pix/tokenBucket/addressKey");
+        Assert.Equal(5, result.Data.RemainingTokens);
     }
 
     #endregion
