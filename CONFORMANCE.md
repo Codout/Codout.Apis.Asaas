@@ -586,6 +586,7 @@ Nenhum. Todos os 27 managers passaram por auditoria schema-first.
 - Status: 15 tests escritos, validados via skip automático. Infra de CI configurada para nightly run.
 - Risco: alguma assinatura de método pode estar ligeiramente diferente do que o sandbox aceita; algum CPF de teste pode ser rejeitado; algum fix B-XX pode comportar-se diferente no runtime real.
 - Mitigação: workflow `integration-sandbox.yml` rodará nightly. Primeiras 1–2 execuções vão revelar e estabilizar.
+- **Próximo passo para fechar:** push da branch `audit/asaas-api-conformance` + configurar `ASAAS_SANDBOX_TOKEN` em GitHub Secrets + disparar workflow "Integration (sandbox)" em Actions → Run workflow. Atualizar este documento com link do run.
 
 **2. Algumas fixtures foram escritas manualmente a partir dos exemplos MCP (não auto-geradas).**
 - Risco: se eu copiei mal um exemplo (ex: esqueci um campo que aparece em outros casos), o contract test passa mas o modelo continua incompleto.
