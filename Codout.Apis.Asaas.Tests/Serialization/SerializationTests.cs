@@ -299,8 +299,8 @@ public class SerializationTests
             "specialTaxRegime": "MICROEMPRESA",
             "serviceListItem": "14.01",
             "rpsSerie": "A",
-            "rpsNumber": "100",
-            "loteNumber": "1",
+            "rpsNumber": 100,
+            "loteNumber": 1,
             "username": "testuser",
             "accessToken": "token123"
         }
@@ -318,8 +318,8 @@ public class SerializationTests
         Assert.Equal("MICROEMPRESA", result.SpecialTaxRegime);
         Assert.Equal("14.01", result.ServiceListItem);
         Assert.Equal("A", result.RpsSerie);
-        Assert.Equal("100", result.RpsNumber);
-        Assert.Equal("1", result.LoteNumber);
+        Assert.Equal(100, result.RpsNumber);
+        Assert.Equal(1, result.LoteNumber);
         Assert.Equal("testuser", result.Username);
         Assert.Equal("token123", result.AccessToken);
     }

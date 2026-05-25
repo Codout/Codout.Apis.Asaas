@@ -17,7 +17,7 @@ public class FiscalInfoManagerTests : ManagerTestBase<FiscalInfoManager>
     [Fact]
     public async Task Find_SendsGetRequestToFiscalInfoRoute()
     {
-        SetupOkResponse("{\"email\":\"test@example.com\",\"municipalInscription\":\"12345\",\"stateInscription\":\"67890\",\"simplesNacional\":true,\"culturalProjectsPromoter\":false,\"cnae\":\"6201-5/00\",\"specialTaxRegime\":\"MICROEMPRESA\",\"serviceListItem\":\"14.01\",\"rpsSerie\":\"A\",\"rpsNumber\":\"100\",\"loteNumber\":\"1\",\"username\":\"testuser\",\"accessToken\":\"token123\"}");
+        SetupOkResponse("{\"email\":\"test@example.com\",\"municipalInscription\":\"12345\",\"simplesNacional\":true,\"culturalProjectsPromoter\":false,\"cnae\":\"6201-5/00\",\"specialTaxRegime\":\"MICROEMPRESA\",\"serviceListItem\":\"14.01\",\"rpsSerie\":\"A\",\"rpsNumber\":100,\"loteNumber\":1,\"username\":\"testuser\"}");
 
         var result = await Manager.Find();
 
@@ -27,17 +27,15 @@ public class FiscalInfoManagerTests : ManagerTestBase<FiscalInfoManager>
         Assert.NotNull(result.Data);
         Assert.Equal("test@example.com", result.Data.Email);
         Assert.Equal("12345", result.Data.MunicipalInscription);
-        Assert.Equal("67890", result.Data.StateInscription);
         Assert.True(result.Data.SimplesNacional);
         Assert.False(result.Data.CulturalProjectsPromoter);
         Assert.Equal("6201-5/00", result.Data.Cnae);
         Assert.Equal("MICROEMPRESA", result.Data.SpecialTaxRegime);
         Assert.Equal("14.01", result.Data.ServiceListItem);
         Assert.Equal("A", result.Data.RpsSerie);
-        Assert.Equal("100", result.Data.RpsNumber);
-        Assert.Equal("1", result.Data.LoteNumber);
+        Assert.Equal(100, result.Data.RpsNumber);
+        Assert.Equal(1, result.Data.LoteNumber);
         Assert.Equal("testuser", result.Data.Username);
-        Assert.Equal("token123", result.Data.AccessToken);
     }
 
     #endregion
