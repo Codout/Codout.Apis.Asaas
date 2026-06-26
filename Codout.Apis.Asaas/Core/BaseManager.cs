@@ -176,6 +176,13 @@ namespace Codout.Apis.Asaas.Core
 
         private Uri BuildBaseAddress()
         {
+            // Override opcional (ex.: Mockoon/testes locais). Quando definido em
+            // ApiSettings.BaseUrl, ignora o ambiente e usa a URL informada.
+            if (!string.IsNullOrWhiteSpace(Settings.BaseUrl))
+            {
+                return new Uri(Settings.BaseUrl);
+            }
+
             if (Settings.AsaasEnvironment.IsProduction())
             {
                 return new Uri(ProductionUrl);

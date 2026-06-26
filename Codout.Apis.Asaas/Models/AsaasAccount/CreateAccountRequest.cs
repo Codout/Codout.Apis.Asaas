@@ -27,4 +27,15 @@ public class CreateAccountRequest
     public string Province { get; set; }
 
     public string PostalCode { get; set; }
+
+    /// <summary>
+    /// Data de nascimento do titular (PF), formato yyyy-MM-dd. Obrigatorio para
+    /// pessoa fisica; omitir para pessoa juridica.
+    /// </summary>
+    public string BirthDate { get; set; }
+
+    /// <summary>
+    /// Faturamento/renda mensal em BRL. Obrigatorio no Asaas desde 2024.
+    /// </summary>
+    public decimal? IncomeValue { get; set; }
 }
