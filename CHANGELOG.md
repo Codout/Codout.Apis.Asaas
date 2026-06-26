@@ -5,6 +5,27 @@ Todas as mudancas notaveis deste projeto serao documentadas neste arquivo.
 O formato e baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semantico](https://semver.org/lang/pt-BR/).
 
+## [3.3.0] - 2026-06-26 — Onboarding de subcontas (white-label/BaaS)
+
+Ajustes para o fluxo de criação de subcontas via API e suporte a testes contra
+mocks locais. Todas as mudanças são **aditivas** (não-breaking): novos campos
+opcionais e um parâmetro de construtor opcional com default.
+
+### Adicionado
+
+**AsaasAccount (criação de subconta):**
+- `CreateAccountRequest.IncomeValue` (`decimal?`) — faturamento/renda mensal em
+  BRL. **Obrigatório no Asaas desde 2024** para criar subcontas.
+- `CreateAccountRequest.BirthDate` (`string`, formato `yyyy-MM-dd`) — data de
+  nascimento do titular. Obrigatório para pessoa física; omitir para PJ.
+
+**Infraestrutura:**
+- `ApiSettings.BaseUrl` (`string`, opcional) — override da URL base. Quando
+  informado, sobrepõe o ambiente (`AsaasEnvironment`) e é usado em
+  `BaseManager.BuildBaseAddress()`. Uso típico: apontar para um mock local
+  (ex.: Mockoon) em testes. Novo parâmetro opcional `baseUrl = null` no
+  construtor de `ApiSettings` (compatível com o uso existente).
+
 ## [3.2.0] - 2026-05-24 — Auditoria schema-first **completa** (27/27 managers)
 
 Segunda rodada da auditoria, agora cobrindo os 16 managers restantes que tinham
