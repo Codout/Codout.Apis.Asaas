@@ -6,7 +6,7 @@
 
         <!-- NuGet Package -->
         <PackageId>Asaas.Api</PackageId>
-        <Version>3.2.0</Version>
+        <Version>3.3.0</Version>
         <Authors>Clovis Coli Jr</Authors>
         <Company>Codout</Company>
         <Description>SDK .NET no-oficial para integracao com a API v3 do Asaas (asaas.com). Suporta cobrancas (Boleto, Pix, Cartao), assinaturas, transferencias, links de pagamento, notas fiscais, antecipacoes, negativacoes e muito mais. Zero dependencias externas.</Description>
@@ -18,6 +18,11 @@
         <RepositoryUrl>https://github.com/codout/Codout.Apis.Asaas</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>
+v3.3.0 — Onboarding de subcontas (white-label/BaaS):
+- CreateAccountRequest: + IncomeValue (obrigatorio no Asaas desde 2024) e
+  BirthDate (yyyy-MM-dd, PF).
+- ApiSettings.BaseUrl: override opcional da URL base (ex.: mock local/Mockoon).
+
 v3.2.0 — Auditoria schema-first COMPLETA contra MCP oficial:
 - 27/27 managers auditados endpoint-a-endpoint
 - 42 famílias de bugs corrigidos (B-19 a B-42), incluindo enums inventados,
