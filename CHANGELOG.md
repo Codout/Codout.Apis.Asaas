@@ -5,6 +5,17 @@ Todas as mudancas notaveis deste projeto serao documentadas neste arquivo.
 O formato e baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semantico](https://semver.org/lang/pt-BR/).
 
+## [3.3.1] - 2026-07-28 — Decimal null-safe na deserializacao
+
+### Corrigido
+
+- **Decimal deserialization**: Criado `FlexibleDecimalConverter` /
+  `FlexibleNullableDecimalConverter` para aceitar `null` em campos
+  `decimal` non-nullable retornados pela API Asaas (ex.:
+  `Invoice.deductions` apos `POST /v3/invoices` com status `SCHEDULED`).
+  Antes, a deserializacao lancava `JsonException: The JSON value could
+  not be converted to System.Decimal`. `null` e tratado como `0`.
+
 ## [3.3.0] - 2026-06-26 — Onboarding de subcontas (white-label/BaaS)
 
 Ajustes para o fluxo de criação de subcontas via API e suporte a testes contra

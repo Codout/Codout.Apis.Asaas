@@ -19,6 +19,8 @@ internal static class JsonSerializerConfiguration
         options.Converters.Add(new SafeEnumConverterFactory());
         options.Converters.Add(new FlexibleDateTimeConverter());
         options.Converters.Add(new FlexibleNullableDateTimeConverter());
+        options.Converters.Add(new FlexibleDecimalConverter());
+        options.Converters.Add(new FlexibleNullableDecimalConverter());
 
         return options;
     }
