@@ -100,6 +100,28 @@ public class InvoiceContractTests
     }
 
     [Fact]
+    public void InvoiceResponse_DeserializesWhenDeductionsIsNull()
+    {
+        // Regressao: a API Asaas retorna deductions=null em NFSe SCHEDULED
+        // (ex.: apos POST /v3/invoices). Sem FlexibleDecimalConverter o
+        // System.Text.Json lanca JsonException em decimal non-nullable.
+        var json = FixtureLoader.Load("Invoice/invoice-response-null-deductions.json");
+
+        var result = JsonContractAssert.DeserializeFixture<Invoice>(json);
+
+        Assert.Equal("inv_000000000001", result.Id);
+        Assert.Equal(InvoiceStatus.SCHEDULED, result.Status);
+        Assert.Equal("pay_000000000001", result.PaymentId);
+        Assert.Equal(100.00m, result.Value);
+        Assert.Equal(0m, result.Deductions);
+        Assert.Equal(new DateTime(2026, 1, 15), result.EffectiveDate);
+        Assert.Equal("TEST-1", result.ExternalReference);
+        Assert.Equal("100001", result.MunicipalServiceId);
+        Assert.NotNull(result.Taxes);
+        Assert.Equal("1.0101.11.00", result.Taxes.NbsCode);
+    }
+
+    [Fact]
     public void TaxesResponse_HasAllReformaTributariaFields()
     {
         // B-21a: schema InvoiceTaxesResponseDTO inclui stateIbs, stateIbsValue,
