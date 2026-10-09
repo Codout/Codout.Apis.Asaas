@@ -41,6 +41,7 @@
 - [Managers Disponíveis](#managers-disponíveis)
 - [Exemplos por Domínio](#exemplos-por-domínio)
   - [Cobranças (Pix / Boleto / Cartão)](#cobranças-pix--boleto--cartão)
+  - [Consultas de splits pagos e recebidos](#consultas-de-splits-pagos-e-recebidos)
   - [Assinaturas](#assinaturas)
   - [Links de pagamento](#links-de-pagamento)
   - [Pix](#pix)
@@ -320,6 +321,57 @@ var withCard = await asaas.Payment.CreateWithCreditCard(new CreatePaymentRequest
 });
 ```
 
+### Consultas de splits pagos e recebidos
+
+A partir de **3.4.0**, os quatro métodos de consulta aceitam `payment` como
+objeto (contrato atual), string de ID (formato simplificado), `null` ou ausente.
+O modelo `PaymentSplitPaymentInfo` expõe todos os metadados sem parsing de JSON:
+
+```csharp
+var response = await asaas.Payment.FindPaidSplit("split_test");
+if (response.WasSuccessful())
+{
+    var split = response.Data;
+    string paymentId = split.Payment; // API pública anterior preservada
+    var payment = split.PaymentInfo;
+    Console.WriteLine(payment?.Id);
+    Console.WriteLine(payment?.ConfirmedDate);     // DateTime?; yyyy-MM-dd na API
+    Console.WriteLine(payment?.InvoiceNumber);     // string; preserva zeros iniciais
+    Console.WriteLine(payment?.ExternalReference); // referência da cobrança
+    Console.WriteLine(split.ExternalReference);   // referência do split
+}
+
+var paid = await asaas.Payment.ListPaidSplits(0, 10);
+var received = await asaas.Payment.FindReceivedSplit("split_test");
+var receivedPage = await asaas.Payment.ListReceivedSplits(0, 10);
+```
+
+Quando `payment` é string, `PaymentInfo` contém apenas `Id`; para `null` ou
+ausente, tanto `Payment` quanto `PaymentInfo` são `null`. Número, booleano e
+array geram `System.Text.Json.JsonException` com mensagem explícita e caminho
+de `payment`, conforme o padrão de falhas de desserialização do SDK. Metadados
+com tipos inválidos também falham; campos desconhecidos são ignorados.
+
+`CancellationReason`, `OriginAccountId` e `DestinationAccountId` completam os
+campos documentados do split. Valores continuam `decimal?`; não há recálculo
+ou substituição de `totalValue`, inclusive quando um split `REFUNDED` retorna
+zero. `CreditDate` e `PaymentInfo.ConfirmedDate` usam os converters de datas do SDK.
+
+**Compatibilidade:** ler ou atribuir `Payment` continua funcionando como string.
+A atribuição substitui `PaymentInfo` por uma referência somente com ID, limpando
+os metadados anteriores; `Payment = null` limpa a referência. Se precisar alterar
+o ID preservando os metadados, atribua `PaymentInfo.Id`.
+
+Na serialização com a configuração do SDK, existe apenas a chave `payment`:
+uma referência com apenas ID é emitida como string (inclusive um objeto recebido
+com apenas ID); com metadados, como objeto. `null` é omitido. Campos desconhecidos
+não são preservados ao serializar, seguindo a convenção dos demais modelos.
+
+Contratos consultados: [split pago individual](https://docs.asaas.com/reference/recuperar-um-unico-split-pago.md),
+[lista de splits pagos](https://docs.asaas.com/reference/listar-splits-pagos.md),
+[split recebido individual](https://docs.asaas.com/reference/recuperar-um-unico-split-recebido.md) e
+[lista de splits recebidos](https://docs.asaas.com/reference/listar-splits-recebidos.md).
+
 ### Assinaturas
 
 ```csharp
@@ -564,9 +616,9 @@ Esta biblioteca passa por **auditoria schema-first contínua** contra o [MCP ofi
 | Managers auditados | **27 / 27** (100%) |
 | Endpoints cobertos | ~150 |
 | Famílias de bugs corrigidos | **42** (B-19 a B-42) |
-| Testes unit + contract | **664** passando |
-| Integration tests sandbox | **15 / 15** passando |
-| Warnings de build | **0** |
+| Testes unit + contract | **751** passando localmente na v3.4.0 |
+| Integration tests sandbox | **15 ignorados** na validação local v3.4.0; resultado histórico 15/15 em 2026-05-25 |
+| Warnings de build | **1 NU1902** preexistente no SourceLink; testes também emitem 3 avisos CS0618 preexistentes |
 
 Relatório completo: [CONFORMANCE.md](CONFORMANCE.md) — inclui tabela endpoint-a-endpoint por manager, lista de bugs por padrão (envelope, casing, nullable, enums inventados, etc.) e riscos remanescentes classificados.
 
@@ -645,8 +697,8 @@ Codout.Apis.Asaas/
 Este projeto segue [Versionamento Semântico](https://semver.org/lang/pt-BR/):
 
 - **MAJOR** (`x.0.0`): mudanças incompatíveis — campos removidos, tipos alterados, métodos renomeados.
-- **MINOR** (`3.x.0`): novos endpoints, novos campos opcionais, novos filtros, bug fixes que mudem tipo de campo opcional (e.g. `string` → `enum?`).
-- **PATCH** (`3.2.x`): bug fixes não-comportamentais, melhorias de doc, cleanup.
+- **MINOR** (`3.x.0`): adições compatíveis de API pública, como endpoints, campos opcionais e filtros.
+- **PATCH** (`3.x.y`): correções compatíveis, melhorias de documentação e cleanup sem adicionar API pública.
 
 Cada release tem uma entrada detalhada no [CHANGELOG.md](CHANGELOG.md) com:
 

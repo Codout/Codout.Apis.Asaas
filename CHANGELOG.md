@@ -5,6 +5,59 @@ Todas as mudancas notaveis deste projeto serao documentadas neste arquivo.
 O formato e baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semantico](https://semver.org/lang/pt-BR/).
 
+## [3.4.0] - 2026-10-08 — Consultas de splits com cobrança tipada
+
+### Corrigido
+
+- **B-43:** `PaymentManager.FindPaidSplit`, `ListPaidSplits`, `FindReceivedSplit`
+  e `ListReceivedSplits` agora desserializam o objeto `payment` do contrato atual
+  sem exigir interpretação manual de JSON. Mantido o suporte a string, `null`
+  e propriedade ausente; número, booleano e array lançam `JsonException` com
+  mensagem explícita e caminho de `payment`. Metadados com tipos inválidos
+  também falham, seguindo o comportamento do serializer do SDK.
+- Valores financeiros continuam `decimal?`, sem recalcular valores de splits
+  `REFUNDED` (inclusive `totalValue: 0`). Datas usam os converters existentes.
+
+### Adicionado
+
+- `PaymentSplitView.PaymentInfo` (`PaymentSplitPaymentInfo`), com `Id`,
+  `ConfirmedDate` (`DateTime?`), `InvoiceNumber` e `ExternalReference`.
+- `PaymentSplitView.CancellationReason`, `OriginAccountId` e
+  `DestinationAccountId` (`string`), presentes nos quatro contratos OpenAPI
+  oficiais conferidos em 2026-10-08. Referências e confronto de campos em
+  [CONFORMANCE.md §13](CONFORMANCE.md#13--paymentmanager-resto--).
+- 87 casos de teste com HTTP simulado e configuração real do serializer,
+  cobrindo os quatro métodos, formatos antigos, metadados, campos adicionais,
+  precisão decimal, datas, estorno, erros e serialização. A regressão original
+  foi executada antes da correção: os quatro métodos falharam em `$.payment`
+  (ou `$[0].payment` nas listas).
+
+### Validação local
+
+- `dotnet build Codout.Apis.Asaas/ -c Release --no-restore`: sucesso, zero
+  erros; um aviso preexistente `NU1902` em `Microsoft.Build.Tasks.Git` 8.0.0,
+  dependência de build do SourceLink (não adicionada ao pacote do consumidor).
+- `dotnet test Codout.Apis.Asaas.Tests/ -c Release --no-restore`: **751
+  aprovados, zero falhas, 15 ignorados**. Token do sandbox removido somente do
+  processo de teste para garantir ausência de chamadas reais. Três avisos
+  preexistentes `CS0618` nos testes de outros modelos.
+- `dotnet pack Codout.Apis.Asaas/ -c Release --no-build --no-restore`:
+  geração local de `Asaas.Api.3.4.0.nupkg` e símbolos; sem publicação.
+
+### Compatibilidade
+
+- Release **MINOR** por adicionar API pública opcional, conforme SemVer.
+  `Payment` mantém o tipo público `string` e os acessores de leitura/escrita;
+  retorna o mesmo identificador de `PaymentInfo.Id`. Os managers não mudaram.
+- Atribuir `Payment` substitui `PaymentInfo` por uma referência contendo apenas
+  o novo ID (limpa metadados anteriores); atribuir `null` limpa a referência.
+  Para editar o ID preservando metadados, utilize `PaymentInfo.Id`.
+- No JSON há apenas `payment`, nunca `paymentInfo`: referências com apenas ID
+  são serializadas como string; com metadados, como objeto. Um objeto recebido
+  contendo apenas ID é normalizado para string ao serializar. `null` é omitido
+  conforme a configuração existente. Campos desconhecidos são ignorados na
+  leitura e não são preservados na serialização, como nos demais modelos.
+
 ## [3.3.0] - 2026-06-26 — Onboarding de subcontas (white-label/BaaS)
 
 Ajustes para o fluxo de criação de subcontas via API e suporte a testes contra

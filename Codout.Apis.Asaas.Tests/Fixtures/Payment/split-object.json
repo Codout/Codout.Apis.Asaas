@@ -1,0 +1,20 @@
+{
+  "id": "split_test",
+  "walletId": "wallet_test",
+  "fixedValue": 80.25,
+  "percentualValue": null,
+  "totalValue": 80.25,
+  "cancellationReason": null,
+  "status": "DONE",
+  "externalReference": "split_reference",
+  "description": "Split de teste",
+  "originAccountId": "account_origin",
+  "destinationAccountId": "account_destination",
+  "creditDate": "2026-10-08",
+  "payment": {
+    "id": "pay_test",
+    "confirmedDate": "2026-10-08",
+    "invoiceNumber": "00110291",
+    "externalReference": "pedido_test"
+  }
+}

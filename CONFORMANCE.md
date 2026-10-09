@@ -259,6 +259,50 @@ Quirk: filtro Payment usa `[ge]/[le]` **lowercase** (Invoice usa `[Ge]/[Le]` upp
 
 Contract tests: `PaymentContractTests` (21 tests: 6 existentes + 7 novos do resto).
 
+### Atualização localizada v3.4.0 — B-43 (2026-10-08)
+
+Os quatro contratos abaixo foram conferidos nas definições OpenAPI embutidas
+nas versões Markdown da documentação oficial. Esta verificação e seus testes
+utilizam HTTP simulado; não revalidam a auditoria histórica dos demais endpoints
+nem executam operações reais no sandbox.
+
+| Método | Contrato oficial | Schema do item |
+|---|---|---|
+| `FindPaidSplit` | [GET paid/{id}](https://docs.asaas.com/reference/recuperar-um-unico-split-pago.md) | `PaymentSplitGetResponseDTO` |
+| `ListPaidSplits` | [GET paid](https://docs.asaas.com/reference/listar-splits-pagos.md) | `PaymentSplitGetResponseDTO` em `data` |
+| `FindReceivedSplit` | [GET received/{id}](https://docs.asaas.com/reference/recuperar-um-unico-split-recebido.md) | `PaymentSplitReceivedGetResponseDTO` |
+| `ListReceivedSplits` | [GET received](https://docs.asaas.com/reference/listar-splits-recebidos.md) | `PaymentSplitReceivedGetResponseDTO` em `data` |
+
+Todos os schemas de item possuem os mesmos 13 campos. Confronto com o modelo:
+
+| JSON | SDK | Ajuste |
+|---|---|---|
+| `id`, `walletId` | `Id`, `WalletId` (`string`) | Preservados |
+| `fixedValue`, `percentualValue`, `totalValue` | `decimal?` | Preservados sem cálculos |
+| `status` | `Status` (`string`) | Preservado; inclusive `REFUNDED` |
+| `cancellationReason` | `CancellationReason` (`string`) | Adicionado; os contratos paid/received têm enumerações próprias |
+| `externalReference`, `description` | `ExternalReference`, `Description` (`string`) | Preservados |
+| `originAccountId`, `destinationAccountId` | `OriginAccountId`, `DestinationAccountId` (`string`) | Adicionados |
+| `creditDate` | `CreditDate` (`DateTime?`) | Preservado; converter existente |
+| `payment` | `PaymentInfo` (`PaymentSplitPaymentInfo`) | Objeto tipado; alias público `Payment` continua `string` com o ID |
+
+`PaymentSplitPaymentInfoResponseDTO` contém exatamente `id` (`string`),
+`confirmedDate` (`string`, formato `date`), `invoiceNumber` (`string`) e
+`externalReference` (`string`). O modelo usa `DateTime?` na data e `string`
+nos demais campos. Referências externas do split e da cobrança são distintas.
+
+O converter é aplicado à propriedade `PaymentInfo`, sem converter de modelo
+nem alterações em `BaseManager`, `PaymentManager` ou na configuração global.
+Aceita adicionalmente a string legada; `null`/ausente deixam a referência nula.
+Tipos inválidos produzem `JsonException`. A serialização preserva os campos
+conhecidos, usa apenas `payment` e mantém string para referências apenas com ID.
+
+Evidências: fixture representativa `Fixtures/Payment/split-object.json`
+(IDs fictícios, campos conforme o contrato) e `PaymentSplitTests` com 87 casos.
+A regressão foi executada antes do fix e falhou nos quatro métodos com
+`JsonException` em `payment`. Após o fix os mesmos quatro casos passaram,
+junto da matriz de compatibilidade, precisão, estorno, erros e serialização.
+
 ## §14 — SubscriptionManager — ✅
 
 | Endpoint | MCP | Bugs corrigidos |
